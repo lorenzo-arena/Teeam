@@ -29,7 +29,8 @@ SOURCES += \
 
 HEADERS += \
         mainwindow.h \
-    abstractview.h
+    abstractview.h \
+    ganttentity.h
 
 FORMS += \
         mainwindow.ui
