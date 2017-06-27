@@ -2,18 +2,21 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "abstractview.h"
 
 namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, public AbstractView
 {
     Q_OBJECT
 
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+    void UpdateView();
 
 private:
     Ui::MainWindow *ui;
