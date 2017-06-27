@@ -32,3 +32,8 @@ HEADERS += \
 
 FORMS += \
         mainwindow.ui
+
+INCLUDEPATH += "C:\KDAB\KDChart-2.6.0\include\KDGantt"
+INCLUDEPATH += "C:\KDAB\KDChart-2.6.0\include\KDChart"
+
+LIBS += "C:\KDAB\KDChart-2.6.0\lib\kdchartd2.dll"
