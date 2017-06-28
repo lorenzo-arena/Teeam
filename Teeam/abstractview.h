@@ -1,7 +1,6 @@
 #ifndef ABSTRACTVIEW_H
 #define ABSTRACTVIEW_H
 
-
 class AbstractView
 {
 public:

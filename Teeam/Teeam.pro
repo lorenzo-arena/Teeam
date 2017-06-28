@@ -25,12 +25,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    task.cpp
 
 HEADERS += \
         mainwindow.h \
     abstractview.h \
-    ganttentity.h
+    ganttentity.h \
+    abstractmodel.h \
+    abstractcontroller.h \
+    generictask.h \
+    task.h
 
 FORMS += \
         mainwindow.ui
