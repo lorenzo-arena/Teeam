@@ -27,7 +27,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    task.cpp
+    task.cpp \
+    teeamganttview.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -36,7 +37,8 @@ HEADERS += \
     abstractmodel.h \
     abstractcontroller.h \
     generictask.h \
-    task.h
+    task.h \
+    teeamganttview.h
 
 FORMS += \
         mainwindow.ui

@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout">
     <item>
-	 <widget class="KDGantt::View" name="ganttView" native="true"/>
+	 <widget class="TeeamGanttView" name="ganttView" native="true"/>
     </item>
    </layout>
   </widget>
