@@ -7,5 +7,4 @@ You can organize everything you are working at using Gannt diagrams
 ## To compile:
 
  - project needs KD Chart libraries, you can find at [KDChart Homepage](https://www.kdab.com/development-resources/qt-tools/kd-chart/)
- - Remember to modify ui_mainwindow.h if it gives errors; it must include "KDGanttView" instead of "view.h"
 
