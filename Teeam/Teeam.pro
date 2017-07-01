@@ -28,7 +28,11 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     task.cpp \
-    teeamganttview.cpp
+    teeamganttview.cpp \
+    milestone.cpp \
+    teeamproject.cpp \
+    taskgroup.cpp \
+    ganttcontroller.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -38,7 +42,11 @@ HEADERS += \
     abstractcontroller.h \
     generictask.h \
     task.h \
-    teeamganttview.h
+    teeamganttview.h \
+    milestone.h \
+    teeamproject.h \
+    taskgroup.h \
+    ganttcontroller.h
 
 FORMS += \
         mainwindow.ui
@@ -47,3 +55,6 @@ INCLUDEPATH += "C:\KDAB\KDChart-2.6.0\include\KDGantt"
 INCLUDEPATH += "C:\KDAB\KDChart-2.6.0\include\KDChart"
 
 LIBS += "C:\KDAB\KDChart-2.6.0\lib\kdchartd2.dll"
+
+RESOURCES += \
+    teeamres.qrc

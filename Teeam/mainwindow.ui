@@ -13,10 +13,20 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="teeamres.qrc">
+    <normaloff>:/icons/icons/barchart.png</normaloff>:/icons/icons/barchart.png</iconset>
+  </property>
+  <property name="iconSize">
+   <size>
+    <width>32</width>
+    <height>32</height>
+   </size>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout">
     <item>
-	 <widget class="TeeamGanttView" name="ganttView" native="true"/>
+     <widget class="TeeamGanttView" name="ganttView" native="true"/>
     </item>
    </layout>
   </widget>
@@ -59,6 +69,15 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <customwidgets>
+  <customwidget>
+   <class>TeeamGanttView</class>
+   <extends>QWidget</extends>
+   <header>teeamganttview.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="teeamres.qrc"/>
+ </resources>
  <connections/>
 </ui>

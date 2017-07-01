@@ -1,8 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
 #include "abstractview.h"
+
+#include <QMainWindow>
+
+#include <KDGanttDateTimeGrid>
 
 namespace Ui {
 class MainWindow;
@@ -20,6 +23,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    KDGantt::DateTimeGrid* dateTimeGrid;
+    void initGanttView();
 };
 
 #endif // MAINWINDOW_H
