@@ -32,7 +32,9 @@ SOURCES += \
     milestone.cpp \
     teeamproject.cpp \
     taskgroup.cpp \
-    ganttcontroller.cpp
+    ganttcontroller.cpp \
+    observer.cpp \
+    addprojectdialog.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -46,10 +48,13 @@ HEADERS += \
     milestone.h \
     teeamproject.h \
     taskgroup.h \
-    ganttcontroller.h
+    ganttcontroller.h \
+    observer.h \
+    addprojectdialog.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    addprojectdialog.ui
 
 INCLUDEPATH += "C:\KDAB\KDChart-2.6.0\include\KDGantt"
 INCLUDEPATH += "C:\KDAB\KDChart-2.6.0\include\KDChart"
