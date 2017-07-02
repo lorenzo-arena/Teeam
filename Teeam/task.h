@@ -1,10 +1,9 @@
 #ifndef TASK_H
 #define TASK_H
 
-#include "ganttentity.h"
 #include "generictask.h"
 
-class Task : public GanttEntity, public GenericTask
+class Task : public GenericTask
 {
 public:
     Task();

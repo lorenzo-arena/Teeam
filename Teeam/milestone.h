@@ -1,11 +1,9 @@
 #ifndef MILESTONE_H
 #define MILESTONE_H
 
-
-#include "ganttentity.h"
 #include "generictask.h"
 
-class Milestone : public GanttEntity, public GenericTask
+class Milestone : public GenericTask
 {
 public:
     Milestone();

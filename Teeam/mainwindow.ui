@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>911</width>
+    <height>556</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Teeam</string>
   </property>
   <property name="windowIcon">
    <iconset resource="teeamres.qrc">
@@ -35,7 +35,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
+     <width>911</width>
      <height>20</height>
     </rect>
    </property>
@@ -49,6 +49,10 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <addaction name="actionAdd_Project"/>
+    <addaction name="actionAdd_Task_Group"/>
+    <addaction name="actionAdd_Task"/>
+    <addaction name="actionAdd_Milestone"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
@@ -65,6 +69,26 @@
   <action name="action_Quit">
    <property name="text">
     <string>E&amp;xit</string>
+   </property>
+  </action>
+  <action name="actionAdd_Project">
+   <property name="text">
+    <string>Add &amp;Project</string>
+   </property>
+  </action>
+  <action name="actionAdd_Task_Group">
+   <property name="text">
+    <string>Add Task &amp;Group</string>
+   </property>
+  </action>
+  <action name="actionAdd_Task">
+   <property name="text">
+    <string>Add &amp;Task</string>
+   </property>
+  </action>
+  <action name="actionAdd_Milestone">
+   <property name="text">
+    <string>Add &amp;Milestone</string>
    </property>
   </action>
  </widget>

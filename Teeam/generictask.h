@@ -1,10 +1,12 @@
 #ifndef GENERICTASK_H
 #define GENERICTASK_H
 
+#include "ganttentity.h"
+
 #include <QColor>
 #include <QList>
 
-class GenericTask
+class GenericTask : public GanttEntity
 {
 public:
     GenericTask(){}
