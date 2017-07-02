@@ -63,3 +63,9 @@ LIBS += "C:\KDAB\KDChart-2.6.0\lib\kdchartd2.dll"
 
 RESOURCES += \
     teeamres.qrc
+
+DEFINES += APP_NAME=\\\"Teeam\\\"
+
+VERSION = 1.0.0
+
+DEFINES += APP_VERSION=\\\"$$VERSION\\\"
