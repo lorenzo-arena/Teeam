@@ -10,8 +10,9 @@
 #include <QTreeView>
 #include <QSettings>
 #include <QCloseEvent>
+#include <QSet>
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(FreeDaysModel *freeDaysModel, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
@@ -19,6 +20,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     initGanttView();
 
+    // Aggancio i vari modelli
+    this->freeDaysModel = freeDaysModel;
+    this->freeDaysModel->attach(this);
+
+    ganttController = new GanttController(freeDaysModel);
+
+    // Prelevo i settings dai registri
     QSettings settings;
     settings.beginGroup(KEY_MAINWINDOW);
     if(settings.contains(KEY_MAINWINDOW_MAXIMIZED))    // setto la dimensione della finestra
@@ -33,6 +41,22 @@ MainWindow::MainWindow(QWidget *parent) :
     settings.endGroup();
 
     settings.beginGroup(KEY_DATETIMEVIEW);
+    // lancio un update dei freeDays
+    settings.beginGroup(KEY_DATETIMEVIEW_FREEDAYSGROUP);
+    Days days = {
+        settings.value(KEY_DATETIMEVIEW_MON).toBool(),
+        settings.value(KEY_DATETIMEVIEW_TUE).toBool(),
+        settings.value(KEY_DATETIMEVIEW_WED).toBool(),
+        settings.value(KEY_DATETIMEVIEW_THU).toBool(),
+        settings.value(KEY_DATETIMEVIEW_FRI).toBool(),
+        settings.value(KEY_DATETIMEVIEW_SAT).toBool(),
+        settings.value(KEY_DATETIMEVIEW_SUN).toBool(),
+    };
+    QColor color = settings.value(KEY_DATETIMEVIEW_COLOR).value<QColor>();
+    ganttController->SetFreeDays(days);
+    ganttController->SetFreeDaysColor(color);
+    settings.endGroup();
+    //--------------------------------------------------------
     if(settings.contains(KEY_DATETIMEVIEW_DAYWIDTH))
     {
         int width = settings.value(KEY_DATETIMEVIEW_DAYWIDTH).toInt();
@@ -45,11 +69,12 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     settings.endGroup();
 
-    ganttController = new GanttController();
+    //------------------------------------------------------------
 }
 
 MainWindow::~MainWindow()
 {
+    freeDaysModel->detach(this);
     delete ganttController;
     delete dateTimeGrid;
     delete ui;
@@ -80,6 +105,29 @@ void MainWindow::initGanttView()
 
 void MainWindow::UpdateView()
 {
+    if(freeDaysModel->GetChanged())
+    {
+        QSet<Qt::DayOfWeek> days;
+        if(freeDaysModel->GetFreeDays().bMonday)
+            days.insert(Qt::Monday);
+        if(freeDaysModel->GetFreeDays().bTuesday)
+            days.insert(Qt::Tuesday);
+        if(freeDaysModel->GetFreeDays().bWednesday)
+            days.insert(Qt::Wednesday);
+        if(freeDaysModel->GetFreeDays().bThursday)
+            days.insert(Qt::Thursday);
+        if(freeDaysModel->GetFreeDays().bFriday)
+            days.insert(Qt::Friday);
+        if(freeDaysModel->GetFreeDays().bSaturday)
+            days.insert(Qt::Saturday);
+        if(freeDaysModel->GetFreeDays().bSunday)
+            days.insert(Qt::Sunday);
+
+        dateTimeGrid->setFreeDays(days);
+
+        QBrush brush(freeDaysModel->GetFreeDaysColor());
+        dateTimeGrid->setFreeDaysBrush(brush);
+    }
     return;
 }
 
@@ -147,13 +195,18 @@ void MainWindow::on_actionZoom_Out_triggered()
 
 void MainWindow::on_actionSet_Free_Days_triggered()
 {
-    FreeDaysDialog *dialog = new FreeDaysDialog( this );
+    FreeDaysDialog *dialog = new FreeDaysDialog( freeDaysModel->GetFreeDays(), freeDaysModel->GetFreeDaysColor(), this );
     if ( dialog->exec() == QDialog::Rejected || !dialog ) {
         delete dialog;
         return;
     }
 
-    // TODO : settare giorni liberi
+    Days days = dialog->GetSelectedDays();
+    ganttController->SetFreeDays(days);
+    QColor color = dialog->GetSelectedColor();
+    ganttController->SetFreeDaysColor(color);
+    delete dialog;
+    return;
 }
 
 void MainWindow::closeEvent(QCloseEvent *eventArgs)
@@ -165,7 +218,17 @@ void MainWindow::closeEvent(QCloseEvent *eventArgs)
     settings.setValue(KEY_MAINWINDOW_SIZE, size());
     settings.endGroup();
 
-    settings.beginGroup(KEY_DATETIMEVIEW);
+    settings.beginGroup(KEY_DATETIMEVIEW);  
+    settings.beginGroup(KEY_DATETIMEVIEW_FREEDAYSGROUP);
+    settings.setValue(KEY_DATETIMEVIEW_MON, dateTimeGrid->freeDays().contains(Qt::Monday));
+    settings.setValue(KEY_DATETIMEVIEW_TUE, dateTimeGrid->freeDays().contains(Qt::Tuesday));
+    settings.setValue(KEY_DATETIMEVIEW_WED, dateTimeGrid->freeDays().contains(Qt::Wednesday));
+    settings.setValue(KEY_DATETIMEVIEW_THU, dateTimeGrid->freeDays().contains(Qt::Thursday));
+    settings.setValue(KEY_DATETIMEVIEW_FRI, dateTimeGrid->freeDays().contains(Qt::Friday));
+    settings.setValue(KEY_DATETIMEVIEW_SAT, dateTimeGrid->freeDays().contains(Qt::Saturday));
+    settings.setValue(KEY_DATETIMEVIEW_SUN, dateTimeGrid->freeDays().contains(Qt::Sunday));
+    settings.setValue(KEY_DATETIMEVIEW_COLOR, dateTimeGrid->freeDaysBrush().color());
+    settings.endGroup();
     settings.setValue(KEY_DATETIMEVIEW_DAYWIDTH, dateTimeGrid->dayWidth());
     settings.setValue(KEY_DATETIMEVIEW_SCALE, dateTimeGrid->scale());
     settings.endGroup();

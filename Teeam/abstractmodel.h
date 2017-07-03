@@ -10,10 +10,13 @@ public:
     virtual ~AbstractModel(){}
 
 public:
-    virtual void AbstractModel() = 0;
     virtual void attach(AbstractView *view) = 0;
     virtual void detach(AbstractView *view) = 0;
     virtual void notify() = 0;
+
+protected:
+    bool bChanged;
+    void setChanged() { bChanged = true; }
 };
 
 #endif // ABSTRACTMODEL_H

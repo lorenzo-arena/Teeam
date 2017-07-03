@@ -1,4 +1,6 @@
 #include "mainwindow.h"
+#include "freedaysmodel.h"
+
 #include <QApplication>
 
 int main(int argc, char *argv[])
@@ -9,7 +11,9 @@ int main(int argc, char *argv[])
     qApp->setOrganizationName("Teeam");
     qApp->setOrganizationDomain("");
 
-    MainWindow w;
+    FreeDaysModel freeDays;
+
+    MainWindow w(&freeDays);
     w.setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion());
     w.show();
 

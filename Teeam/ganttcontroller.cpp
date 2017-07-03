@@ -1,26 +1,33 @@
 #include "ganttcontroller.h"
 
-GanttController::GanttController()
+GanttController::GanttController(FreeDaysModel *freeDays)
 {
-
+    this->freeDays = freeDays;
 }
 
-bool GanttController::AddProject()
+void GanttController::AddProject()
 {
-    return true;
 }
 
-bool GanttController::AddTaskGroup()
+void GanttController::AddTaskGroup()
 {
-    return true;
 }
 
-bool GanttController::AddTask()
+void GanttController::AddTask()
 {
-    return true;
 }
 
-bool GanttController::AddMilestone()
+void GanttController::AddMilestone()
 {
-    return true;
 }
+
+void GanttController::SetFreeDays(Days days)
+{
+    this->freeDays->SetFreeDays(days);
+}
+
+void GanttController::SetFreeDaysColor(QColor color)
+{
+    this->freeDays->SetFreeDaysColor(color);
+}
+

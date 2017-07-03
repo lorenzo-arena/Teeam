@@ -2,7 +2,9 @@
 #define MAINWINDOW_H
 
 #include "abstractview.h"
+#include "abstractmodel.h"
 #include "ganttcontroller.h"
+#include "freedaysmodel.h"
 
 #include <QMainWindow>
 
@@ -17,7 +19,7 @@ class MainWindow : public QMainWindow, public AbstractView
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(FreeDaysModel *freeDaysModel,QWidget *parent = 0);
     ~MainWindow();
 
     void UpdateView();
@@ -46,9 +48,10 @@ private:
 
 // private components
 private:
-    Ui::MainWindow* ui;
-    KDGantt::DateTimeGrid* dateTimeGrid;
-    GanttController* ganttController;
+    Ui::MainWindow *ui;
+    KDGantt::DateTimeGrid *dateTimeGrid;
+    GanttController *ganttController;
+    FreeDaysModel *freeDaysModel;
 
     // identificativi per settings MainWindow
     const QString KEY_MAINWINDOW = "teeam_mainwindow";
@@ -59,6 +62,15 @@ private:
     const QString KEY_DATETIMEVIEW = "teeam_datetimeview";
     const QString KEY_DATETIMEVIEW_SCALE = "scale";
     const QString KEY_DATETIMEVIEW_DAYWIDTH = "daywidth";
+    const QString KEY_DATETIMEVIEW_FREEDAYSGROUP = "freedays";
+    const QString KEY_DATETIMEVIEW_MON = "mon";
+    const QString KEY_DATETIMEVIEW_TUE = "tue";
+    const QString KEY_DATETIMEVIEW_WED = "wed";
+    const QString KEY_DATETIMEVIEW_THU = "thu";
+    const QString KEY_DATETIMEVIEW_FRI = "fri";
+    const QString KEY_DATETIMEVIEW_SAT = "sat";
+    const QString KEY_DATETIMEVIEW_SUN = "sun";
+    const QString KEY_DATETIMEVIEW_COLOR = "color";
 };
 
 #endif // MAINWINDOW_H

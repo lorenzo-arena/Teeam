@@ -8,6 +8,9 @@ AddProjectDialog::AddProjectDialog(QWidget *parent, Qt::WindowFlags f) :
     ui(new Ui::AddProjectDialog)
 {
     ui->setupUi(this);
+
+    QDialog::setFixedSize(this->size());
+
     ui->lineEdit->installEventFilter(this);
     ui->label->installEventFilter(this);
     ui->buttonOk->installEventFilter(this);

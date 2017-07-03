@@ -35,7 +35,8 @@ SOURCES += \
     ganttcontroller.cpp \
     observer.cpp \
     addprojectdialog.cpp \
-    freedaysdialog.cpp
+    freedaysdialog.cpp \
+    freedaysmodel.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -52,7 +53,8 @@ HEADERS += \
     ganttcontroller.h \
     observer.h \
     addprojectdialog.h \
-    freedaysdialog.h
+    freedaysdialog.h \
+    freedaysmodel.h
 
 FORMS += \
         mainwindow.ui \
