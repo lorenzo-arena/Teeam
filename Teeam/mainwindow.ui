@@ -54,8 +54,18 @@
     <addaction name="actionAdd_Task"/>
     <addaction name="actionAdd_Milestone"/>
    </widget>
+   <widget class="QMenu" name="menu_Timeline">
+    <property name="title">
+     <string>&amp;Timeline</string>
+    </property>
+    <addaction name="actionZoom_In"/>
+    <addaction name="actionZoom_Out"/>
+    <addaction name="separator"/>
+    <addaction name="actionSet_Free_Days"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
+   <addaction name="menu_Timeline"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -64,6 +74,9 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionZoom_In"/>
+   <addaction name="actionZoom_Out"/>
+   <addaction name="separator"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_Quit">
@@ -89,6 +102,29 @@
   <action name="actionAdd_Milestone">
    <property name="text">
     <string>Add &amp;Milestone</string>
+   </property>
+  </action>
+  <action name="actionZoom_In">
+   <property name="icon">
+    <iconset resource="teeamres.qrc">
+     <normaloff>:/icons/icons/zoom_in.png</normaloff>:/icons/icons/zoom_in.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom &amp;In</string>
+   </property>
+  </action>
+  <action name="actionZoom_Out">
+   <property name="icon">
+    <iconset resource="teeamres.qrc">
+     <normaloff>:/icons/icons/zoom_out.png</normaloff>:/icons/icons/zoom_out.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom &amp;Out</string>
+   </property>
+  </action>
+  <action name="actionSet_Free_Days">
+   <property name="text">
+    <string>Set &amp;Free Days</string>
    </property>
   </action>
  </widget>

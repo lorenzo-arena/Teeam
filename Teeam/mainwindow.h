@@ -35,7 +35,12 @@ private slots:
 
     void closeEvent(QCloseEvent *eventArgs);
 
-// private methods
+    void on_actionZoom_In_triggered();
+
+    void on_actionZoom_Out_triggered();
+
+    void on_actionSet_Free_Days_triggered();
+
 private:
     void initGanttView();
 
@@ -44,10 +49,16 @@ private:
     Ui::MainWindow* ui;
     KDGantt::DateTimeGrid* dateTimeGrid;
     GanttController* ganttController;
+
+    // identificativi per settings MainWindow
     const QString KEY_MAINWINDOW = "teeam_mainwindow";
     const QString KEY_MAINWINDOW_MAXIMIZED = "maximized";
     const QString KEY_MAINWINDOW_SIZE = "size";
-    const QString KEY_MAINWINDOW_POS = "position";
+
+    // identificativi per settings DateTimeView
+    const QString KEY_DATETIMEVIEW = "teeam_datetimeview";
+    const QString KEY_DATETIMEVIEW_SCALE = "scale";
+    const QString KEY_DATETIMEVIEW_DAYWIDTH = "daywidth";
 };
 
 #endif // MAINWINDOW_H

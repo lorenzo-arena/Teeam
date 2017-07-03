@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "addprojectdialog.h"
+#include "freedaysdialog.h"
 
 #include <QApplication>
 #include <QList>
@@ -29,10 +30,18 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         resize(settings.value(KEY_MAINWINDOW_SIZE).toSize());
     }
+    settings.endGroup();
 
-    if (settings.contains(KEY_MAINWINDOW_POS)) // setto la posizione della finestra
+    settings.beginGroup(KEY_DATETIMEVIEW);
+    if(settings.contains(KEY_DATETIMEVIEW_DAYWIDTH))
     {
-        move(settings.value(KEY_MAINWINDOW_POS).toPoint());
+        int width = settings.value(KEY_DATETIMEVIEW_DAYWIDTH).toInt();
+        dateTimeGrid->setDayWidth(width);
+    }
+    if(settings.contains(KEY_DATETIMEVIEW_SCALE))
+    {
+        KDGantt::DateTimeGrid::Scale scale = static_cast<KDGantt::DateTimeGrid::Scale>(settings.value(KEY_DATETIMEVIEW_SCALE).toInt());
+        dateTimeGrid->setScale(scale);
     }
     settings.endGroup();
 
@@ -107,13 +116,61 @@ void MainWindow::on_actionAdd_Milestone_triggered()
 
 }
 
+void MainWindow::on_actionZoom_In_triggered()
+{
+    qreal dayWidth = dateTimeGrid->dayWidth();
+    if (dayWidth > 400)
+    {
+        dateTimeGrid->setScale(KDGantt::DateTimeGrid::ScaleHour);
+        dateTimeGrid->setDayWidth(dayWidth + 40);
+    }
+    else
+        dateTimeGrid->setDayWidth(dayWidth + 20);
+}
+
+void MainWindow::on_actionZoom_Out_triggered()
+{
+    qreal dayWidth = dateTimeGrid->dayWidth();
+    if (dayWidth <= 400)
+    {
+        dateTimeGrid->setScale(KDGantt::DateTimeGrid::ScaleDay);
+        if (dayWidth <= 20)
+             dateTimeGrid->setDayWidth(20);
+        else
+            dateTimeGrid->setDayWidth(dayWidth - 20);
+    }
+    else
+    {
+        dateTimeGrid->setDayWidth(dayWidth - 40);
+    }
+}
+
+void MainWindow::on_actionSet_Free_Days_triggered()
+{
+    FreeDaysDialog *dialog = new FreeDaysDialog( this );
+    if ( dialog->exec() == QDialog::Rejected || !dialog ) {
+        delete dialog;
+        return;
+    }
+
+    // TODO : settare giorni liberi
+}
+
 void MainWindow::closeEvent(QCloseEvent *eventArgs)
 {
     QSettings settings;
+
     settings.beginGroup(KEY_MAINWINDOW);
     settings.setValue(KEY_MAINWINDOW_MAXIMIZED, isMaximized());
     settings.setValue(KEY_MAINWINDOW_SIZE, size());
-    settings.setValue(KEY_MAINWINDOW_POS, pos());
     settings.endGroup();
+
+    settings.beginGroup(KEY_DATETIMEVIEW);
+    settings.setValue(KEY_DATETIMEVIEW_DAYWIDTH, dateTimeGrid->dayWidth());
+    settings.setValue(KEY_DATETIMEVIEW_SCALE, dateTimeGrid->scale());
+    settings.endGroup();
+
     eventArgs->accept();
 }
+
+
