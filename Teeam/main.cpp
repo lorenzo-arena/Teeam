@@ -13,7 +13,11 @@ int main(int argc, char *argv[])
 
     FreeDaysModel freeDays;
 
-    MainWindow w(&freeDays);
+    // TODO : add project initialization
+
+    GanttController ganttController(&freeDays);
+
+    MainWindow w(&ganttController, &freeDays);
     w.setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion());
     w.show();
 

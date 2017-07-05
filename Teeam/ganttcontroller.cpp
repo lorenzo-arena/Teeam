@@ -1,11 +1,14 @@
 #include "ganttcontroller.h"
 
-GanttController::GanttController(FreeDaysModel *freeDays)
+GanttController::GanttController(FreeDaysModel *freeDays, TeeamProject *project)
 {
     this->freeDays = freeDays;
+
+    if(project != nullptr)
+        this->project = project;
 }
 
-void GanttController::AddProject()
+void GanttController::NewProject()
 {
 }
 

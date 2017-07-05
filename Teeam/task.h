@@ -8,6 +8,8 @@ class Task : public GenericTask
 public:
     Task();
 
+private:
+    QDateTime end;
 
 public:
     void AddDependency(GenericTask* dependency);

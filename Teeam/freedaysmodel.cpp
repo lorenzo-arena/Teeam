@@ -4,8 +4,6 @@
 
 FreeDaysModel::FreeDaysModel()
 {
-    viewers = new QList<AbstractView*>;
-
     days.bMonday = false;
     days.bTuesday = false;
     days.bWednesday = false;
@@ -21,27 +19,6 @@ FreeDaysModel::FreeDaysModel()
 
 FreeDaysModel::~FreeDaysModel()
 {
-    delete viewers;
-}
-
-void FreeDaysModel::attach(AbstractView *view)
-{
-    viewers->append(view);
-}
-
-void FreeDaysModel::detach(AbstractView *view)
-{
-    viewers->removeAll(view);
-}
-
-void FreeDaysModel::notify()
-{
-    if(bChanged)
-    {
-        for(int i = 0; i < viewers->count(); i++)
-            viewers->at(i)->UpdateView();
-    }
-    bChanged = false;
 }
 
 Days FreeDaysModel::GetFreeDays()

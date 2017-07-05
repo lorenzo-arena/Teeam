@@ -12,7 +12,7 @@
 #include <QCloseEvent>
 #include <QSet>
 
-MainWindow::MainWindow(FreeDaysModel *freeDaysModel, QWidget *parent) :
+MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, TeeamProject *project, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
@@ -24,7 +24,13 @@ MainWindow::MainWindow(FreeDaysModel *freeDaysModel, QWidget *parent) :
     this->freeDaysModel = freeDaysModel;
     this->freeDaysModel->attach(this);
 
-    ganttController = new GanttController(freeDaysModel);
+    if(project != nullptr)
+    {
+        this->projectModel = project;
+        this->projectModel->attach(this);
+    }
+
+    this->ganttController = ganttController;
 
     // Prelevo i settings dai registri
     QSettings settings;

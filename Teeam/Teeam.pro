@@ -33,7 +33,6 @@ SOURCES += \
     teeamproject.cpp \
     taskgroup.cpp \
     ganttcontroller.cpp \
-    observer.cpp \
     addprojectdialog.cpp \
     freedaysdialog.cpp \
     freedaysmodel.cpp
@@ -51,7 +50,6 @@ HEADERS += \
     teeamproject.h \
     taskgroup.h \
     ganttcontroller.h \
-    observer.h \
     addprojectdialog.h \
     freedaysdialog.h \
     freedaysmodel.h

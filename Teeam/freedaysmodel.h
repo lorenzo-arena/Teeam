@@ -25,9 +25,6 @@ public:
     ~FreeDaysModel();
 
 public:
-    void attach(AbstractView *view);
-    void detach(AbstractView *view);
-    void notify();
     Days GetFreeDays();
     QColor GetFreeDaysColor();
 
@@ -37,7 +34,6 @@ public:
     bool GetChanged();
 
 private:
-    QList<AbstractView*> *viewers;
     Days days;
     QColor color;
 };

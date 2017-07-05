@@ -12,6 +12,7 @@ public:
     TaskGroup(QColor color);
 
 private:
+    QDateTime end;
     QColor color;
     QList<GenericTask*> taskList;
 

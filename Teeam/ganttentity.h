@@ -16,9 +16,7 @@ public:
 protected:
     QString name;
     QDateTime start;
-    QDateTime end;
     QList<QString> people;
-    QList<AbstractView*> viewers;
 };
 
 #endif // GANNTENTITY_H

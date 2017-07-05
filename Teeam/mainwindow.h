@@ -5,6 +5,7 @@
 #include "abstractmodel.h"
 #include "ganttcontroller.h"
 #include "freedaysmodel.h"
+#include "teeamproject.h"
 
 #include <QMainWindow>
 
@@ -19,7 +20,7 @@ class MainWindow : public QMainWindow, public AbstractView
     Q_OBJECT
 
 public:
-    explicit MainWindow(FreeDaysModel *freeDaysModel,QWidget *parent = 0);
+    explicit MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, TeeamProject *project = nullptr, QWidget *parent = nullptr);
     ~MainWindow();
 
     void UpdateView();
@@ -52,6 +53,7 @@ private:
     KDGantt::DateTimeGrid *dateTimeGrid;
     GanttController *ganttController;
     FreeDaysModel *freeDaysModel;
+    TeeamProject *projectModel;
 
     // identificativi per settings MainWindow
     const QString KEY_MAINWINDOW = "teeam_mainwindow";

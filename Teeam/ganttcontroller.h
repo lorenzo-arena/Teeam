@@ -2,17 +2,18 @@
 #define GANTTCONTROLLER_H
 
 #include "freedaysmodel.h"
+#include "teeamproject.h"
 
 #include <QColor>
 
 class GanttController
 {
 public:
-    GanttController(FreeDaysModel *freeDays);
+    GanttController(FreeDaysModel *freeDays, TeeamProject *project = nullptr);
 
 // controller interface
 public:
-    void AddProject();
+    void NewProject();
     void AddTaskGroup();
     void AddTask();
     void AddMilestone();
@@ -21,6 +22,8 @@ public:
 
 private:
     FreeDaysModel *freeDays;
+    TeeamProject *project;
+
 
 };
 
