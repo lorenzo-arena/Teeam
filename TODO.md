@@ -6,4 +6,8 @@
  - add resize controls for Gantt DateTimeView under a new menu -
  - add free days dialog management ✓
  - set correct color filled button in FreeDaysDialog
-
+ - fix freeday visualization in hour scale bug
+ - clean observer ✓
+ - move endDate only to Task class
+ - setup project management in gantt view
+ - setup serialization

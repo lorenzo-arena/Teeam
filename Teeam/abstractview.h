@@ -1,9 +1,7 @@
 #ifndef ABSTRACTVIEW_H
 #define ABSTRACTVIEW_H
 
-#include "observer.h"
-
-class AbstractView : public Observer
+class AbstractView
 {
 public:
     AbstractView(){}

@@ -1,7 +1,7 @@
 #ifndef GANNTENTITY_H
 #define GANNTENTITY_H
 
-#include "observer.h"
+#include "abstractview.h"
 
 #include <QString>
 #include <QDateTime>
@@ -18,7 +18,7 @@ protected:
     QDateTime start;
     QDateTime end;
     QList<QString> people;
-    QList<Observer*> observers;
+    QList<AbstractView*> viewers;
 };
 
 #endif // GANNTENTITY_H

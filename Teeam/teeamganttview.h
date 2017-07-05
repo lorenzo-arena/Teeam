@@ -2,7 +2,6 @@
 #define TEEAMGANTTVIEW_H
 
 #include "abstractview.h"
-#include "observer.h"
 #include "teeamproject.h"
 
 #include <QList>
