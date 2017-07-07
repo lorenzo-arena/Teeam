@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     GanttController ganttController(&freeDays, &project);
 
     MainWindow w(&ganttController, &freeDays, &project);
-    w.setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion());
+    w.setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion()); // TODO : controllare??
     w.show();
 
     return a.exec();
