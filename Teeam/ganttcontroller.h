@@ -9,11 +9,11 @@
 class GanttController
 {
 public:
-    GanttController(FreeDaysModel *freeDays, TeeamProject *project = nullptr);
+    GanttController(FreeDaysModel *freeDays, TeeamProject *project);
 
 // controller interface
 public:
-    void NewProject();
+    void NewProject(TeeamProject *project, QString projectName);
     void AddTaskGroup();
     void AddTask();
     void AddMilestone();

@@ -11,3 +11,5 @@
  - move endDate only to Task class ✓
  - setup project management in gantt view ✓
  - setup serialization
+ - add new "Save Project dialog"
+ - implement all gantt dialogs

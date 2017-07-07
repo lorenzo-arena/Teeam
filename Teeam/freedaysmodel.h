@@ -31,8 +31,6 @@ public:
     void SetFreeDays(Days days);
     void SetFreeDaysColor(QColor color);
 
-    bool GetChanged();
-
 private:
     Days days;
     QColor color;

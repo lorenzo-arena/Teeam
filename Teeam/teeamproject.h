@@ -19,6 +19,8 @@ private:
 
 public:
     void AddTaskGroup(TaskGroup* taskGroup);
+    QString getName();
+    void setName(QString projectName);
 };
 
 #endif // TEEAMPROJECT_H

@@ -22,10 +22,12 @@ public:
         }
         bChanged = false;
     }
+    bool isChanged() { return bChanged; }
 
 protected:
     bool bChanged;
     void setChanged() { bChanged = true; }
+
     QList<AbstractView *> viewers;
 };
 

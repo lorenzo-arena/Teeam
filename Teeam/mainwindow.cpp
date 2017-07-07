@@ -12,7 +12,7 @@
 #include <QCloseEvent>
 #include <QSet>
 
-MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, TeeamProject *project, QWidget *parent) :
+MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, TeeamProject *projectModel, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
@@ -24,11 +24,8 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
     this->freeDaysModel = freeDaysModel;
     this->freeDaysModel->attach(this);
 
-    if(project != nullptr)
-    {
-        this->projectModel = project;
-        this->projectModel->attach(this);
-    }
+    this->projectModel = projectModel;
+    this->projectModel->attach(this);
 
     this->ganttController = ganttController;
 
@@ -98,9 +95,9 @@ void MainWindow::initGanttView()
     dateTimeGrid->setDayWidth(50);
     ui->ganttView->setGrid( dateTimeGrid );
 
-    QStandardItemModel *model = new QStandardItemModel( 0, 1, this );
-    model->setHeaderData( 0, Qt::Horizontal, tr( "Project Tree View" ) );
-    ui->ganttView->setModel( model );
+    viewModel = new QStandardItemModel( 0, 1, this );
+    viewModel->setHeaderData( 0, Qt::Horizontal, tr( "Project Tree View" ) );
+    ui->ganttView->setModel( viewModel );
 
     QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
     leftView->setColumnHidden( 1, true );
@@ -111,7 +108,7 @@ void MainWindow::initGanttView()
 
 void MainWindow::UpdateView()
 {
-    if(freeDaysModel->GetChanged())
+    if(freeDaysModel->isChanged())
     {
         QSet<Qt::DayOfWeek> days;
         if(freeDaysModel->GetFreeDays().bMonday)
@@ -134,6 +131,28 @@ void MainWindow::UpdateView()
         QBrush brush(freeDaysModel->GetFreeDaysColor());
         dateTimeGrid->setFreeDaysBrush(brush);
     }
+
+    if(projectModel->isChanged())
+    {
+        // TODO : da sistemare!! (ma sembra vada, deve essere impostato max 1 progetto)
+        QModelIndexList selectedIndexes = ui->ganttView->selectionModel()->selectedIndexes();
+        const QModelIndex parent = selectedIndexes.value( 0 );
+
+        if ( !viewModel->insertRow( viewModel->rowCount( parent ), parent ) )
+            return;
+
+        int row = viewModel->rowCount( parent ) - 1;
+        if ( row == 0 && parent.isValid() )
+            viewModel->insertColumns( viewModel->columnCount( parent ), 5, parent );
+
+        viewModel->setData( viewModel->index( row, 0, parent ), projectModel->getName() );
+        viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeSummary);
+
+        viewModel->setData( viewModel->index( row, 4, parent ), 50 );
+
+        //addConstraint( dialog->depends(), model->index( row, 0, parent ) );
+        //setReadOnly( model->index( row, 0, parent ), true );
+    }
     return;
 }
 
@@ -150,7 +169,10 @@ void MainWindow::on_actionAdd_Project_triggered()
         return;
     }
 
-    QString projectName = dialog->GetProjectName();
+    // TODO : re-inizializzo il progetto, devo salvare quello vecchio e agganciarmi al nuovo
+    projectModel = new TeeamProject();
+    projectModel->attach(this);
+    ganttController->NewProject(projectModel, dialog->GetProjectName());
     delete dialog;
     return;
 }

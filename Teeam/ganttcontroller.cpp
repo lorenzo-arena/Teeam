@@ -4,12 +4,13 @@ GanttController::GanttController(FreeDaysModel *freeDays, TeeamProject *project)
 {
     this->freeDays = freeDays;
 
-    if(project != nullptr)
-        this->project = project;
+    this->project = project;
 }
 
-void GanttController::NewProject()
+void GanttController::NewProject(TeeamProject *project, QString projectName)
 {
+    this->project = project;
+    project->setName(projectName);
 }
 
 void GanttController::AddTaskGroup()

@@ -17,6 +17,9 @@ AddProjectDialog::AddProjectDialog(QWidget *parent, Qt::WindowFlags f) :
     ui->buttonCancel->installEventFilter(this);
 
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+    setWindowFlags(windowFlags() | Qt::Window);
+
+    ui->lineEdit->setFocus();
 }
 
 QString AddProjectDialog::GetProjectName()
@@ -35,7 +38,7 @@ void AddProjectDialog::on_buttonOk_clicked()
     else
     {
         projectName = ui->lineEdit->text();
-        this->close();
+        QDialog::accept();
     }
 }
 

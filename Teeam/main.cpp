@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "freedaysmodel.h"
+#include "teeamproject.h"
 
 #include <QApplication>
 
@@ -12,12 +13,13 @@ int main(int argc, char *argv[])
     qApp->setOrganizationDomain("");
 
     FreeDaysModel freeDays;
+    TeeamProject project;
 
     // TODO : add project initialization
 
-    GanttController ganttController(&freeDays);
+    GanttController ganttController(&freeDays, &project);
 
-    MainWindow w(&ganttController, &freeDays);
+    MainWindow w(&ganttController, &freeDays, &project);
     w.setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion());
     w.show();
 

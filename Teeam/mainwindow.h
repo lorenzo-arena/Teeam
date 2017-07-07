@@ -10,6 +10,7 @@
 #include <QMainWindow>
 
 #include <KDGanttDateTimeGrid>
+#include <QStandardItemModel>
 
 namespace Ui {
 class MainWindow;
@@ -20,7 +21,7 @@ class MainWindow : public QMainWindow, public AbstractView
     Q_OBJECT
 
 public:
-    explicit MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, TeeamProject *project = nullptr, QWidget *parent = nullptr);
+    explicit MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, TeeamProject *projectModel, QWidget *parent = nullptr);
     ~MainWindow();
 
     void UpdateView();
@@ -54,6 +55,7 @@ private:
     GanttController *ganttController;
     FreeDaysModel *freeDaysModel;
     TeeamProject *projectModel;
+    QStandardItemModel *viewModel; // the model used to control the real GanttView
 
     // identificativi per settings MainWindow
     const QString KEY_MAINWINDOW = "teeam_mainwindow";

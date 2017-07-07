@@ -1,7 +1,5 @@
 #include "freedaysmodel.h"
 
-#include <QListIterator>
-
 FreeDaysModel::FreeDaysModel()
 {
     days.bMonday = false;
@@ -43,11 +41,6 @@ void FreeDaysModel::SetFreeDaysColor(QColor color)
     this->color = color;
     bChanged = true;
     notify();
-}
-
-bool FreeDaysModel::GetChanged()
-{
-    return bChanged;
 }
 
 
