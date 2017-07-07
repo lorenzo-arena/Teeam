@@ -2,6 +2,7 @@
 
 GanttController::GanttController(FreeDaysModel *freeDays, TeeamProject *project)
 {
+    // Aggiungere puntatori task + milestone
     this->freeDays = freeDays;
 
     this->project = project;
