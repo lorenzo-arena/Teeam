@@ -12,13 +12,23 @@
 #include <QCloseEvent>
 #include <QSet>
 
+class MyStandardItem : public QStandardItem {
+public:
+  MyStandardItem( const QVariant& v ) : QStandardItem()
+  {
+    setData( v, Qt::DisplayRole );
+  }
+  MyStandardItem( const QString& v ) : QStandardItem()
+  {
+    setData( v, Qt::DisplayRole );
+  }
+};
+
 MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, TeeamProject *projectModel, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    initGanttView();
 
     // Aggancio i vari modelli
     this->freeDaysModel = freeDaysModel;
@@ -28,6 +38,11 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
     this->projectModel->attach(this);
 
     this->ganttController = ganttController;
+
+    costraintModel = new KDGantt::ConstraintModel(this);
+    ui->ganttView->setConstraintModel(costraintModel);
+
+    initGanttView();
 
     // Prelevo i settings dai registri
     QSettings settings;
@@ -59,20 +74,7 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
     ganttController->SetFreeDays(days);
     ganttController->SetFreeDaysColor(color);
     settings.endGroup();
-    //--------------------------------------------------------
-    if(settings.contains(KEY_DATETIMEVIEW_DAYWIDTH))
-    {
-        int width = settings.value(KEY_DATETIMEVIEW_DAYWIDTH).toInt();
-        dateTimeGrid->setDayWidth(width);
-    }
-    if(settings.contains(KEY_DATETIMEVIEW_SCALE))
-    {
-        KDGantt::DateTimeGrid::Scale scale = static_cast<KDGantt::DateTimeGrid::Scale>(settings.value(KEY_DATETIMEVIEW_SCALE).toInt());
-        dateTimeGrid->setScale(scale);
-    }
     settings.endGroup();
-
-    //------------------------------------------------------------
 }
 
 MainWindow::~MainWindow()
@@ -92,16 +94,35 @@ void MainWindow::initGanttView()
     ui->ganttView->splitter()->setSizes(splitList);
 
     dateTimeGrid = new KDGantt::DateTimeGrid();
-    dateTimeGrid->setDayWidth(50);
     ui->ganttView->setGrid( dateTimeGrid );
 
-    viewModel = new QStandardItemModel( 0, 1, this );
+    viewModel = new QStandardItemModel( 0, 6, this );
     viewModel->setHeaderData( 0, Qt::Horizontal, tr( "Project Tree View" ) );
     ui->ganttView->setModel( viewModel );
 
     QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
     leftView->setColumnHidden( 1, true );
+    leftView->setColumnHidden( 2, true );
+    leftView->setColumnHidden( 3, true );
+    leftView->setColumnHidden( 4, true );
+    leftView->setColumnHidden( 5, true );
     leftView->header()->setStretchLastSection( true );
+
+    QSettings settings;
+    settings.beginGroup(KEY_DATETIMEVIEW);
+    if(settings.contains(KEY_DATETIMEVIEW_DAYWIDTH))
+    {
+        int width = settings.value(KEY_DATETIMEVIEW_DAYWIDTH).toInt();
+        dateTimeGrid->setDayWidth(width);
+    }
+    if(settings.contains(KEY_DATETIMEVIEW_SCALE))
+    {
+        KDGantt::DateTimeGrid::Scale scale = static_cast<KDGantt::DateTimeGrid::Scale>(settings.value(KEY_DATETIMEVIEW_SCALE).toInt());
+        dateTimeGrid->setScale(scale);
+    }
+    settings.endGroup();
+
+    ui->ganttView->leftView()->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
 
     ui->ganttView->installEventFilter(this);
 }
@@ -135,6 +156,9 @@ void MainWindow::UpdateView()
     if(projectModel->isChanged())
     {
         // TODO : da sistemare!! (ma sembra vada, deve essere impostato max 1 progetto)
+        QDateTime startdt = QDateTime::currentDateTime();
+        QDateTime enddt = startdt.addDays( 1 );
+
         QModelIndexList selectedIndexes = ui->ganttView->selectionModel()->selectedIndexes();
         const QModelIndex parent = selectedIndexes.value( 0 );
 
@@ -145,14 +169,16 @@ void MainWindow::UpdateView()
         if ( row == 0 && parent.isValid() )
             viewModel->insertColumns( viewModel->columnCount( parent ), 5, parent );
 
-        viewModel->setData( viewModel->index( row, 0, parent ), projectModel->getName() );
-        viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeSummary);
-
-        viewModel->setData( viewModel->index( row, 4, parent ), 50 );
-
-        //addConstraint( dialog->depends(), model->index( row, 0, parent ) );
-        //setReadOnly( model->index( row, 0, parent ), true );
+        viewModel->setData( viewModel->index( row, 0, parent ), "Prova" );
+        viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeSummary );
+        //viewModel->setData( viewModel->index( row, 2, parent ), startdt, KDGantt::StartTimeRole );
+        //viewModel->setData( viewModel->index( row, 3, parent ), enddt, KDGantt::EndTimeRole );
+        viewModel->setData( viewModel->index( row, 4, parent ), 10 );
+        const QString legend( "" );
+        if ( ! legend.isEmpty() )
+        viewModel->setData( viewModel->index( row, 5, parent ), legend );
     }
+
     return;
 }
 

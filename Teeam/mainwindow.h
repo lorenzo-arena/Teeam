@@ -8,9 +8,10 @@
 #include "teeamproject.h"
 
 #include <QMainWindow>
+#include <QStandardItemModel>
 
 #include <KDGanttDateTimeGrid>
-#include <QStandardItemModel>
+#include <KDGanttConstraintModel>
 
 namespace Ui {
 class MainWindow;
@@ -56,6 +57,7 @@ private:
     FreeDaysModel *freeDaysModel;
     TeeamProject *projectModel;
     QStandardItemModel *viewModel; // the model used to control the real GanttView
+    KDGantt::ConstraintModel *costraintModel;
 
     // identificativi per settings MainWindow
     const QString KEY_MAINWINDOW = "teeam_mainwindow";
