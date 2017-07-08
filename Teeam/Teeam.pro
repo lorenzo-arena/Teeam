@@ -28,7 +28,6 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     task.cpp \
-    teeamganttview.cpp \
     milestone.cpp \
     teeamproject.cpp \
     taskgroup.cpp \
@@ -45,7 +44,6 @@ HEADERS += \
     abstractcontroller.h \
     generictask.h \
     task.h \
-    teeamganttview.h \
     milestone.h \
     teeamproject.h \
     taskgroup.h \
