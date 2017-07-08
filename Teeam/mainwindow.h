@@ -29,21 +29,13 @@ public:
 
 private slots:
     void on_action_Quit_triggered();
-
     void on_actionAdd_Project_triggered();
-
     void on_actionAdd_Task_Group_triggered();
-
     void on_actionAdd_Task_triggered();
-
     void on_actionAdd_Milestone_triggered();
-
     void closeEvent(QCloseEvent *eventArgs);
-
     void on_actionZoom_In_triggered();
-
     void on_actionZoom_Out_triggered();
-
     void on_actionSet_Free_Days_triggered();
 
 private:

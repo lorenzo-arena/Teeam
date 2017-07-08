@@ -14,3 +14,4 @@
  - add new "Save Project dialog"
  - implement all gantt dialogs
  - fix scale commands on rightclick
+ - add File->New../Save/Save As
