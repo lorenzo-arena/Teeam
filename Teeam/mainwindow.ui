@@ -112,6 +112,9 @@
    <property name="text">
     <string>Zoom &amp;In</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl++</string>
+   </property>
   </action>
   <action name="actionZoom_Out">
    <property name="icon">
@@ -120,6 +123,9 @@
    </property>
    <property name="text">
     <string>Zoom &amp;Out</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+-</string>
    </property>
   </action>
   <action name="actionSet_Free_Days">
