@@ -200,20 +200,40 @@ void MainWindow::on_actionZoom_In_triggered()
         dateTimeGrid->setScale(KDGantt::DateTimeGrid::ScaleHour);
         dateTimeGrid->setDayWidth(dayWidth + 40);
     }
+    else if (dayWidth > 60)
+    {
+        dateTimeGrid->setScale(KDGantt::DateTimeGrid::ScaleDay);
+        dateTimeGrid->setDayWidth(dayWidth + 40);
+    }
+    else if (dayWidth > 20)
+    {
+        dateTimeGrid->setScale(KDGantt::DateTimeGrid::ScaleWeek);
+        dateTimeGrid->setDayWidth(dayWidth + 10);
+    }
     else
-        dateTimeGrid->setDayWidth(dayWidth + 20);
+        dateTimeGrid->setDayWidth(dayWidth + 5);
 }
 
 void MainWindow::on_actionZoom_Out_triggered()
 {
     qreal dayWidth = dateTimeGrid->dayWidth();
-    if (dayWidth <= 400)
+    if(dayWidth <= 20)
+    {
+        dateTimeGrid->setScale(KDGantt::DateTimeGrid::ScaleMonth);
+        if (dayWidth <= 5)
+             dateTimeGrid->setDayWidth(5);
+        else
+            dateTimeGrid->setDayWidth(dayWidth - 5);
+    }
+    else if(dayWidth <= 60)
+    {
+        dateTimeGrid->setScale(KDGantt::DateTimeGrid::ScaleWeek);
+        dateTimeGrid->setDayWidth(10);
+    }
+    else if (dayWidth <= 400)
     {
         dateTimeGrid->setScale(KDGantt::DateTimeGrid::ScaleDay);
-        if (dayWidth <= 20)
-             dateTimeGrid->setDayWidth(20);
-        else
-            dateTimeGrid->setDayWidth(dayWidth - 20);
+        dateTimeGrid->setDayWidth(dayWidth - 40);
     }
     else
     {
