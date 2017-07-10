@@ -16,7 +16,7 @@ class AddTaskGroupDialog : public QDialog
 public:
     explicit AddTaskGroupDialog(QWidget *parent = 0, Qt::WindowFlags f = 0 );
 
-    QString GetProjectName();
+    QString GetTaskGroupName();
 
 private slots:
     void on_buttonOk_clicked();

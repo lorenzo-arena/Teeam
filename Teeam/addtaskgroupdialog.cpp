@@ -22,7 +22,7 @@ AddTaskGroupDialog::AddTaskGroupDialog(QWidget *parent, Qt::WindowFlags f) :
     ui->lineEdit->setFocus();
 }
 
-QString AddTaskGroupDialog::GetProjectName()
+QString AddTaskGroupDialog::GetTaskGroupName()
 {
     return taskgroupName;
 }

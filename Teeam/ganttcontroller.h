@@ -14,7 +14,7 @@ public:
 // controller interface
 public:
     void NewProject(TeeamProject *project, QString projectName);
-    void AddTaskGroup();
+    void AddTaskGroup(QString taskGroupName);
     void AddTask();
     void AddMilestone();
     void SetFreeDays(Days days);

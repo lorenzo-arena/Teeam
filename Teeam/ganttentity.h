@@ -1,8 +1,6 @@
 #ifndef GANNTENTITY_H
 #define GANNTENTITY_H
 
-#include "abstractview.h"
-
 #include <QString>
 #include <QDateTime>
 #include <QList>

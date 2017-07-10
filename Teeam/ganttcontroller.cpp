@@ -1,5 +1,7 @@
 #include "ganttcontroller.h"
 
+#include "taskgroup.h"
+
 GanttController::GanttController(FreeDaysModel *freeDays, TeeamProject *project)
 {
     // Aggiungere puntatori task + milestone
@@ -14,8 +16,10 @@ void GanttController::NewProject(TeeamProject *project, QString projectName)
     project->setName(projectName);
 }
 
-void GanttController::AddTaskGroup()
+void GanttController::AddTaskGroup(QString taskGroupName)
 {
+    TaskGroup *taskGroup = new TaskGroup(taskGroupName);
+    project->AddTaskGroup(taskGroup);
 }
 
 void GanttController::AddTask()

@@ -172,7 +172,7 @@ void MainWindow::UpdateView()
 
             //viewModel->insertColumns( viewModel->columnCount(), 5 );
 
-            viewModel->setData( viewModel->index( 0, 0 ), "Prova" );
+            viewModel->setData( viewModel->index( 0, 0 ), projectModel->getName() );
             viewModel->setData( viewModel->index( 0, 1 ), KDGantt::TypeSummary );
             //viewModel->setData( viewModel->index( 0, 2 ), startdt, KDGantt::StartTimeRole );
             //viewModel->setData( viewModel->index( 0, 3 ), enddt, KDGantt::EndTimeRole );
@@ -184,6 +184,7 @@ void MainWindow::UpdateView()
 
         if(projectModel->isTaskGroupChanged())
         {
+            // TODO : aggiunge ogni volta una copia completa della lista!!!
             for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
             {
                 const QModelIndex parent = viewModel->index(0,0);
@@ -195,7 +196,7 @@ void MainWindow::UpdateView()
                 if ( row == 0 && parent.isValid() )
                     viewModel->insertColumns( viewModel->columnCount( parent ), 5, parent );
 
-                viewModel->setData( viewModel->index( row, 0, parent ), "Prova" );
+                viewModel->setData( viewModel->index( row, 0, parent ), projectModel->GetTaskGroup().at(i)->getName() );
                 viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeSummary );
                 //viewModel->setData( viewModel->index( row, 2, parent ), startdt, KDGantt::StartTimeRole );
                 //viewModel->setData( viewModel->index( row, 3, parent ), enddt, KDGantt::EndTimeRole );
@@ -239,7 +240,7 @@ void MainWindow::on_actionAdd_Task_Group_triggered()
         return;
     }
 
-    ganttController->AddTaskGroup();
+    ganttController->AddTaskGroup(dialog->GetTaskGroupName());
     delete dialog;
     return;
 }

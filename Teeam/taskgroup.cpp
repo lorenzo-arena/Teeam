@@ -1,8 +1,13 @@
 #include "taskgroup.h"
 
-TaskGroup::TaskGroup(QColor color)
+TaskGroup::TaskGroup(QString taskGroupName)
 {
-    this->color = color;
+    this->name = taskGroupName;
+}
+
+QString TaskGroup::getName()
+{
+    return this->name;
 }
 
 void TaskGroup::AddTask(GenericTask *task)

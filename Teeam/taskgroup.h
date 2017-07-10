@@ -1,15 +1,17 @@
 #ifndef TASKGROUP_H
 #define TASKGROUP_H
 
+#include "ganttentity.h"
 #include "generictask.h"
 
 #include <QList>
 #include <QColor>
 
-class TaskGroup
+class TaskGroup : public GanttEntity
 {
 public:
-    TaskGroup(QColor color);
+    TaskGroup(QString taskGroupName);
+    QString getName();
 
 private:
     QDateTime end;
