@@ -134,81 +134,112 @@ void MainWindow::UpdateView()
 {
     if(freeDaysModel->isChanged())
     {
-        QSet<Qt::DayOfWeek> days;
-        if(freeDaysModel->GetFreeDays().bMonday)
-            days.insert(Qt::Monday);
-        if(freeDaysModel->GetFreeDays().bTuesday)
-            days.insert(Qt::Tuesday);
-        if(freeDaysModel->GetFreeDays().bWednesday)
-            days.insert(Qt::Wednesday);
-        if(freeDaysModel->GetFreeDays().bThursday)
-            days.insert(Qt::Thursday);
-        if(freeDaysModel->GetFreeDays().bFriday)
-            days.insert(Qt::Friday);
-        if(freeDaysModel->GetFreeDays().bSaturday)
-            days.insert(Qt::Saturday);
-        if(freeDaysModel->GetFreeDays().bSunday)
-            days.insert(Qt::Sunday);
-
-        dateTimeGrid->setFreeDays(days);
-
-        QBrush brush(freeDaysModel->GetFreeDaysColor());
-        dateTimeGrid->setFreeDaysBrush(brush);
+        UpdateFreeDaysView();
     }
 
     if(projectModel->isChanged())
     {
         if(projectModel->isProjectChanged())
         {
-            QDateTime startdt = QDateTime::currentDateTime();
-            QDateTime enddt = startdt.addDays( 1 );
-
-            // TODO : aggiungere codice per ripulire dal vecchio progetto eventualmente
-
-            // Da usare solo per aggiungere task o taskGroup
-            //QModelIndexList selectedIndexes = ui->ganttView->selectionModel()->selectedIndexes();
-            if ( !viewModel->insertRow( 0 ) )
-                return;
-
-            //viewModel->insertColumns( viewModel->columnCount(), 5 );
-
-            viewModel->setData( viewModel->index( 0, 0 ), projectModel->getName() );
-            viewModel->setData( viewModel->index( 0, 1 ), KDGantt::TypeSummary );
-            //viewModel->setData( viewModel->index( 0, 2 ), startdt, KDGantt::StartTimeRole );
-            //viewModel->setData( viewModel->index( 0, 3 ), enddt, KDGantt::EndTimeRole );
-            viewModel->setData( viewModel->index( 0, 4 ), 10 );
-            const QString legend( "" );
-            if ( ! legend.isEmpty() )
-            viewModel->setData( viewModel->index( 0, 5 ), legend );
+            UpdateProjectView();
         }
 
         if(projectModel->isTaskGroupChanged())
         {
-            // TODO : aggiunge ogni volta una copia completa della lista!!!
-            for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
-            {
-                const QModelIndex parent = viewModel->index(0,0);
-
-                if ( !viewModel->insertRow( viewModel->rowCount( parent ), parent ) )
-                    return;
-
-                int row = viewModel->rowCount( parent ) - 1;
-                if ( row == 0 && parent.isValid() )
-                    viewModel->insertColumns( viewModel->columnCount( parent ), 5, parent );
-
-                viewModel->setData( viewModel->index( row, 0, parent ), projectModel->GetTaskGroup().at(i)->getName() );
-                viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeSummary );
-                //viewModel->setData( viewModel->index( row, 2, parent ), startdt, KDGantt::StartTimeRole );
-                //viewModel->setData( viewModel->index( row, 3, parent ), enddt, KDGantt::EndTimeRole );
-                viewModel->setData( viewModel->index( row, 4, parent ), 10 );
-                const QString legend( "" );
-                if ( ! legend.isEmpty() )
-                viewModel->setData( viewModel->index( row, 5, parent ), legend );
-            }
+            UpdateTaskGroupView();
         }
     }
 
     return;
+}
+
+void MainWindow::UpdateFreeDaysView()
+{
+    QSet<Qt::DayOfWeek> days;
+    if(freeDaysModel->GetFreeDays().bMonday)
+        days.insert(Qt::Monday);
+    if(freeDaysModel->GetFreeDays().bTuesday)
+        days.insert(Qt::Tuesday);
+    if(freeDaysModel->GetFreeDays().bWednesday)
+        days.insert(Qt::Wednesday);
+    if(freeDaysModel->GetFreeDays().bThursday)
+        days.insert(Qt::Thursday);
+    if(freeDaysModel->GetFreeDays().bFriday)
+        days.insert(Qt::Friday);
+    if(freeDaysModel->GetFreeDays().bSaturday)
+        days.insert(Qt::Saturday);
+    if(freeDaysModel->GetFreeDays().bSunday)
+        days.insert(Qt::Sunday);
+
+    dateTimeGrid->setFreeDays(days);
+
+    QBrush brush(freeDaysModel->GetFreeDaysColor());
+    dateTimeGrid->setFreeDaysBrush(brush);
+}
+
+void MainWindow::UpdateProjectView()
+{
+    QDateTime startdt = QDateTime::currentDateTime();
+    QDateTime enddt = startdt.addDays( 1 );
+
+    // TODO : aggiungere codice per ripulire dal vecchio progetto eventualmente
+
+    // Da usare solo per aggiungere task o taskGroup
+    //QModelIndexList selectedIndexes = ui->ganttView->selectionModel()->selectedIndexes();
+    if ( !viewModel->insertRow( 0 ) )
+        return;
+
+    //viewModel->insertColumns( viewModel->columnCount(), 5 );
+
+    viewModel->setData( viewModel->index( 0, 0 ), projectModel->getName() );
+    viewModel->setData( viewModel->index( 0, 1 ), KDGantt::TypeSummary );
+    //viewModel->setData( viewModel->index( 0, 2 ), startdt, KDGantt::StartTimeRole );
+    //viewModel->setData( viewModel->index( 0, 3 ), enddt, KDGantt::EndTimeRole );
+    viewModel->setData( viewModel->index( 0, 4 ), 10 );
+    const QString legend( "" );
+    if ( ! legend.isEmpty() )
+        viewModel->setData( viewModel->index( 0, 5 ), legend );
+}
+
+void MainWindow::UpdateTaskGroupView()
+{
+    for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
+    {
+        if(projectModel->GetTaskGroup().at(i)->IsNew())
+        {
+            const QModelIndex parent = viewModel->index(0,0);
+
+            if ( !viewModel->insertRow( i, parent ) )
+                return;
+
+            int row = i;
+            if ( row == 0 && parent.isValid() )
+                viewModel->insertColumns( viewModel->columnCount( parent ), 5, parent );
+
+            viewModel->setData( viewModel->index( row, 0, parent ), projectModel->GetTaskGroup().at(i)->getName() );
+            viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeSummary );
+            //viewModel->setData( viewModel->index( row, 2, parent ), startdt, KDGantt::StartTimeRole );
+            //viewModel->setData( viewModel->index( row, 3, parent ), enddt, KDGantt::EndTimeRole );
+            viewModel->setData( viewModel->index( row, 4, parent ), 10 );
+            const QString legend( "" );
+            if ( ! legend.isEmpty() )
+                viewModel->setData( viewModel->index( row, 5, parent ), legend );
+        }
+        else if(projectModel->GetTaskGroup().at(i)->isChanged())
+        {
+            // TODO : da utilizzare!
+            const QModelIndex parent = viewModel->index(0,0);
+            int row = i;
+            viewModel->setData( viewModel->index( row, 0, parent ), projectModel->GetTaskGroup().at(i)->getName() );
+            viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeSummary );
+            //viewModel->setData( viewModel->index( row, 2, parent ), startdt, KDGantt::StartTimeRole );
+            //viewModel->setData( viewModel->index( row, 3, parent ), enddt, KDGantt::EndTimeRole );
+            viewModel->setData( viewModel->index( row, 4, parent ), 10 );
+            const QString legend( "" );
+            if ( ! legend.isEmpty() )
+                viewModel->setData( viewModel->index( row, 5, parent ), legend );
+        }
+    }
 }
 
 void MainWindow::on_action_Quit_triggered()

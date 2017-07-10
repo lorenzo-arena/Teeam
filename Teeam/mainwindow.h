@@ -69,6 +69,9 @@ private:
     const QString KEY_DATETIMEVIEW_SAT = "sat";
     const QString KEY_DATETIMEVIEW_SUN = "sun";
     const QString KEY_DATETIMEVIEW_COLOR = "color";
+    void UpdateFreeDaysView();
+    void UpdateProjectView();
+    void UpdateTaskGroupView();
 };
 
 #endif // MAINWINDOW_H
