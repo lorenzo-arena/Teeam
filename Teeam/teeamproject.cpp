@@ -35,6 +35,7 @@ void TeeamProject::AddTaskGroup(TaskGroup *taskGroup)
     notify();
     taskGroupChanged = false;
     bChanged = false;
+    taskGroup->setNew(false);
 }
 
 QList<TaskGroup *> TeeamProject::GetTaskGroup()

@@ -1,11 +1,13 @@
 #ifndef GANNTENTITY_H
 #define GANNTENTITY_H
 
+#include "abstractmodel.h"
+
 #include <QString>
 #include <QDateTime>
 #include <QList>
 
-class GanttEntity
+class GanttEntity : public AbstractModel
 {
 public:
     GanttEntity(){}

@@ -1,15 +1,15 @@
 #ifndef TEEAMPROJECT_H
 #define TEEAMPROJECT_H
 
-#include "abstractmodel.h"
 #include "abstractview.h"
 #include "ganttentity.h"
 #include "taskgroup.h"
 
 #include <QList>
 
-class TeeamProject: public GanttEntity, public AbstractModel
+class TeeamProject: public GanttEntity
 {
+    friend class TaskGroup;
 public:
     TeeamProject();
 
