@@ -34,7 +34,10 @@ SOURCES += \
     ganttcontroller.cpp \
     addprojectdialog.cpp \
     freedaysdialog.cpp \
-    freedaysmodel.cpp
+    freedaysmodel.cpp \
+    addtaskgroupdialog.cpp \
+    addtaskdialog.cpp \
+    addmilestonedialog.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -50,12 +53,18 @@ HEADERS += \
     ganttcontroller.h \
     addprojectdialog.h \
     freedaysdialog.h \
-    freedaysmodel.h
+    freedaysmodel.h \
+    addtaskgroupdialog.h \
+    addtaskdialog.h \
+    addmilestonedialog.h
 
 FORMS += \
         mainwindow.ui \
     addprojectdialog.ui \
-    freedaysdialog.ui
+    freedaysdialog.ui \
+    addtaskgroupdialog.ui \
+    addtaskdialog.ui \
+    addmilestonedialog.ui
 
 INCLUDEPATH += "C:\KDAB\KDChart-2.6.0\include\KDGantt"
 INCLUDEPATH += "C:\KDAB\KDChart-2.6.0\include\KDChart"

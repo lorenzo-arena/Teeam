@@ -14,11 +14,15 @@ public:
     TeeamProject();
 
 private:
-    QDateTime end;
     QList<TaskGroup*> taskGroupList;
+    bool taskGroupChanged;
+    bool projectChanged;
 
 public:
     void AddTaskGroup(TaskGroup* taskGroup);
+    QList<TaskGroup *> GetTaskGroup();
+    bool isTaskGroupChanged();
+    bool isProjectChanged();
     QString getName();
     void setName(QString projectName);
 };

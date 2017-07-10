@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "addprojectdialog.h"
+#include "addtaskgroupdialog.h"
+#include "addtaskdialog.h"
+#include "addmilestonedialog.h"
 #include "freedaysdialog.h"
 
 #include <QApplication>
@@ -155,28 +158,53 @@ void MainWindow::UpdateView()
 
     if(projectModel->isChanged())
     {
-        // TODO : da sistemare!! (ma sembra vada, deve essere impostato max 1 progetto)
-        QDateTime startdt = QDateTime::currentDateTime();
-        QDateTime enddt = startdt.addDays( 1 );
+        if(projectModel->isProjectChanged())
+        {
+            QDateTime startdt = QDateTime::currentDateTime();
+            QDateTime enddt = startdt.addDays( 1 );
 
-        QModelIndexList selectedIndexes = ui->ganttView->selectionModel()->selectedIndexes();
-        const QModelIndex parent = selectedIndexes.value( 0 );
+            // TODO : aggiungere codice per ripulire dal vecchio progetto eventualmente
 
-        if ( !viewModel->insertRow( viewModel->rowCount( parent ), parent ) )
-            return;
+            // Da usare solo per aggiungere task o taskGroup
+            //QModelIndexList selectedIndexes = ui->ganttView->selectionModel()->selectedIndexes();
+            if ( !viewModel->insertRow( 0 ) )
+                return;
 
-        int row = viewModel->rowCount( parent ) - 1;
-        if ( row == 0 && parent.isValid() )
-            viewModel->insertColumns( viewModel->columnCount( parent ), 5, parent );
+            //viewModel->insertColumns( viewModel->columnCount(), 5 );
 
-        viewModel->setData( viewModel->index( row, 0, parent ), "Prova" );
-        viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeSummary );
-        //viewModel->setData( viewModel->index( row, 2, parent ), startdt, KDGantt::StartTimeRole );
-        //viewModel->setData( viewModel->index( row, 3, parent ), enddt, KDGantt::EndTimeRole );
-        viewModel->setData( viewModel->index( row, 4, parent ), 10 );
-        const QString legend( "" );
-        if ( ! legend.isEmpty() )
-        viewModel->setData( viewModel->index( row, 5, parent ), legend );
+            viewModel->setData( viewModel->index( 0, 0 ), "Prova" );
+            viewModel->setData( viewModel->index( 0, 1 ), KDGantt::TypeSummary );
+            //viewModel->setData( viewModel->index( 0, 2 ), startdt, KDGantt::StartTimeRole );
+            //viewModel->setData( viewModel->index( 0, 3 ), enddt, KDGantt::EndTimeRole );
+            viewModel->setData( viewModel->index( 0, 4 ), 10 );
+            const QString legend( "" );
+            if ( ! legend.isEmpty() )
+            viewModel->setData( viewModel->index( 0, 5 ), legend );
+        }
+
+        if(projectModel->isTaskGroupChanged())
+        {
+            for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
+            {
+                const QModelIndex parent = viewModel->index(0,0);
+
+                if ( !viewModel->insertRow( viewModel->rowCount( parent ), parent ) )
+                    return;
+
+                int row = viewModel->rowCount( parent ) - 1;
+                if ( row == 0 && parent.isValid() )
+                    viewModel->insertColumns( viewModel->columnCount( parent ), 5, parent );
+
+                viewModel->setData( viewModel->index( row, 0, parent ), "Prova" );
+                viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeSummary );
+                //viewModel->setData( viewModel->index( row, 2, parent ), startdt, KDGantt::StartTimeRole );
+                //viewModel->setData( viewModel->index( row, 3, parent ), enddt, KDGantt::EndTimeRole );
+                viewModel->setData( viewModel->index( row, 4, parent ), 10 );
+                const QString legend( "" );
+                if ( ! legend.isEmpty() )
+                viewModel->setData( viewModel->index( row, 5, parent ), legend );
+            }
+        }
     }
 
     return;
@@ -205,7 +233,15 @@ void MainWindow::on_actionAdd_Project_triggered()
 
 void MainWindow::on_actionAdd_Task_Group_triggered()
 {
+    AddTaskGroupDialog *dialog = new AddTaskGroupDialog( this );
+    if ( dialog->exec() == QDialog::Rejected || !dialog ) {
+        delete dialog;
+        return;
+    }
 
+    ganttController->AddTaskGroup();
+    delete dialog;
+    return;
 }
 
 void MainWindow::on_actionAdd_Task_triggered()

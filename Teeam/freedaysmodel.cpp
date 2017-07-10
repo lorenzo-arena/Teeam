@@ -40,6 +40,8 @@ void FreeDaysModel::SetFreeDays(Days days)
 
     if(bChanged)
         notify();
+
+    bChanged = false;
 }
 
 QColor FreeDaysModel::GetFreeDaysColor()
@@ -52,6 +54,7 @@ void FreeDaysModel::SetFreeDaysColor(QColor color)
     this->color = color;
     bChanged = true;
     notify();
+    bChanged = false;
 }
 
 
