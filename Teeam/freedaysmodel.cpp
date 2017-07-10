@@ -26,9 +26,20 @@ Days FreeDaysModel::GetFreeDays()
 
 void FreeDaysModel::SetFreeDays(Days days)
 {
-    this->days = days;
-    bChanged = true;
-    notify();
+    if( this->days.bMonday != days.bMonday       ||
+        this->days.bTuesday != days.bTuesday     ||
+        this->days.bWednesday != days.bWednesday ||
+        this->days.bThursday != days.bThursday   ||
+        this->days.bFriday != days.bFriday       ||
+        this->days.bSaturday != days.bSaturday   ||
+        this->days.bSunday != days.bSunday )
+    {
+        bChanged = true;
+        this->days = days;
+    }
+
+    if(bChanged)
+        notify();
 }
 
 QColor FreeDaysModel::GetFreeDaysColor()
