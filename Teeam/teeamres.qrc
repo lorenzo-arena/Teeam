@@ -3,5 +3,7 @@
         <file>icons/barchart.png</file>
         <file>icons/zoom_in.png</file>
         <file>icons/zoom_out.png</file>
+        <file>icons/bullet_arrow_left.png</file>
+        <file>icons/bullet_arrow_right.png</file>
     </qresource>
 </RCC>

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+
 #include "addprojectdialog.h"
 #include "addtaskgroupdialog.h"
 #include "addtaskdialog.h"
@@ -277,8 +278,31 @@ void MainWindow::on_actionAdd_Task_Group_triggered()
 }
 
 void MainWindow::on_actionAdd_Task_triggered()
-{
+{   
+    QList<QString> groupList;
+    for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
+        groupList << projectModel->GetTaskGroup().at(i)->getName();
 
+    AddTaskDialog *dialog = new AddTaskDialog( groupList, this );
+    if ( dialog->exec() == QDialog::Rejected || !dialog ) {
+        delete dialog;
+        return;
+    }
+
+    QString selectedParent = dialog->GetSelectedGroup();
+    QString taskName = dialog->GetTaskName();
+
+    /********************************************************
+    // Usare una cosa simile ma con la treeView per ritrovare la posizione del group parent??
+    QComboBox* combo = new QComboBox();
+    combo->addItem("True", "True");
+    combo->addItem("False", "False");
+    combo->setCurrentIndex(combo->findData("False"));
+    *************************************************/
+
+    ganttController->AddTask();
+    delete dialog;
+    return;
 }
 
 void MainWindow::on_actionAdd_Milestone_triggered()

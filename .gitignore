@@ -1,5 +1,6 @@
 # Teeam build folder
 build-Teeam-Desktop_Qt_5_9_0_MinGW_32bit-Debug/
+build-Teeam-Desktop_Qt_5_9_0_MinGW_32bit-Release/
 
 # Windows image file caches
 Thumbs.db
