@@ -1,6 +1,7 @@
 #include "addtaskdialog.h"
 #include "ui_addtaskdialog.h"
 
+#include <QDateTime>
 #include <QMessageBox>
 
 AddTaskDialog::AddTaskDialog(QList<QString> groupList, QWidget *parent) :
@@ -9,10 +10,14 @@ AddTaskDialog::AddTaskDialog(QList<QString> groupList, QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Setto i vari elementi della dialog
     ui->taskGroupcomboBox->addItem("None");
     ui->taskGroupcomboBox->setCurrentIndex(0);
     for (int i = 0; i < groupList.length(); i++)
         ui->taskGroupcomboBox->addItem(groupList.at(i));
+
+    ui->startdateTimeEdit->setDateTime(QDateTime::currentDateTime());
+    ui->enddateTimeEdit->setDateTime(QDateTime::currentDateTime());
 
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowFlags(windowFlags() | Qt::Window);
