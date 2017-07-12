@@ -15,18 +15,6 @@
 #include <QCloseEvent>
 #include <QSet>
 
-class MyStandardItem : public QStandardItem {
-public:
-  MyStandardItem( const QVariant& v ) : QStandardItem()
-  {
-    setData( v, Qt::DisplayRole );
-  }
-  MyStandardItem( const QString& v ) : QStandardItem()
-  {
-    setData( v, Qt::DisplayRole );
-  }
-};
-
 MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, TeeamProject *projectModel, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -38,7 +26,8 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
     this->freeDaysModel->attach(this);
 
     this->projectModel = projectModel;
-    this->projectModel->attach(this);
+    if(projectModel != nullptr)
+        this->projectModel->attach(this);
 
     this->ganttController = ganttController;
 
@@ -78,6 +67,14 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
     ganttController->SetFreeDaysColor(color);
     settings.endGroup();
     settings.endGroup();
+
+    // Disabilito alcune voci dal menu se non ho caricato un progetto
+    if(this->projectModel == nullptr)
+    {
+        ui->actionAdd_Task_Group->setEnabled(false);
+        ui->actionAdd_Task->setEnabled(false);
+        ui->actionAdd_Milestone->setEnabled(false);
+    }
 }
 
 MainWindow::~MainWindow()
@@ -137,19 +134,21 @@ void MainWindow::UpdateView()
         UpdateFreeDaysView();
     }
 
-    if(projectModel->isChanged())
+    if(projectModel != nullptr)
     {
-        if(projectModel->isProjectChanged())
+        if(projectModel->isChanged())
         {
-            UpdateProjectView();
-        }
+            if(projectModel->isProjectChanged())
+            {
+                UpdateProjectView();
+            }
 
-        if(projectModel->isTaskGroupChanged())
-        {
-            UpdateTaskGroupView();
+            if(projectModel->isTaskGroupChanged())
+            {
+                UpdateTaskGroupView();
+            }
         }
     }
-
     return;
 }
 
@@ -259,6 +258,12 @@ void MainWindow::on_actionAdd_Project_triggered()
     projectModel = new TeeamProject();
     projectModel->attach(this);
     ganttController->NewProject(projectModel, dialog->GetProjectName());
+
+    // Abilito alcune voci del menu
+    ui->actionAdd_Task_Group->setEnabled(true);
+    ui->actionAdd_Task->setEnabled(true);
+    ui->actionAdd_Milestone->setEnabled(true);
+
     delete dialog;
     return;
 }

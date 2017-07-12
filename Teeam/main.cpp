@@ -17,9 +17,9 @@ int main(int argc, char *argv[])
 
     // TODO : add project initialization
 
-    GanttController ganttController(&freeDays, &project);
+    GanttController ganttController(&freeDays);//, nullptr);
 
-    MainWindow w(&ganttController, &freeDays, &project);
+    MainWindow w(&ganttController, &freeDays);//, nullptr);
     w.setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion());
     w.show();
 
