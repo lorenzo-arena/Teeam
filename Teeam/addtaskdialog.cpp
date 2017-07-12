@@ -19,6 +19,9 @@ AddTaskDialog::AddTaskDialog(QList<QString> groupList, QWidget *parent) :
     ui->startdateTimeEdit->setDateTime(QDateTime::currentDateTime());
     ui->enddateTimeEdit->setDateTime(QDateTime::currentDateTime());
 
+    start = QDateTime::currentDateTime();
+    end = QDateTime::currentDateTime();
+
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowFlags(windowFlags() | Qt::Window);
 
@@ -28,16 +31,6 @@ AddTaskDialog::AddTaskDialog(QList<QString> groupList, QWidget *parent) :
 AddTaskDialog::~AddTaskDialog()
 {
     delete ui;
-}
-
-QString AddTaskDialog::GetSelectedGroup()
-{
-    return selectedGroup;
-}
-
-QString AddTaskDialog::GetTaskName()
-{
-    return taskName;
 }
 
 void AddTaskDialog::on_buttonOk_clicked()
@@ -50,7 +43,7 @@ void AddTaskDialog::on_buttonOk_clicked()
     }
     else
     {
-        taskName = ui->lineEdit->text();
+        name = ui->lineEdit->text();
         QDialog::accept();
     }
 }
@@ -58,6 +51,21 @@ void AddTaskDialog::on_buttonOk_clicked()
 void AddTaskDialog::on_buttonCancel_clicked()
 {
     this->close();
+}
+
+void AddTaskDialog::on_taskGroupcomboBox_currentTextChanged(const QString &arg1)
+{
+    selectedGroup = arg1;
+}
+
+void AddTaskDialog::on_startdateTimeEdit_dateTimeChanged(const QDateTime &dateTime)
+{
+    start = dateTime;
+}
+
+void AddTaskDialog::on_enddateTimeEdit_dateTimeChanged(const QDateTime &dateTime)
+{
+    end = dateTime;
 }
 
 bool AddTaskDialog::eventFilter(QObject* target, QEvent* event)
@@ -72,9 +80,4 @@ bool AddTaskDialog::eventFilter(QObject* target, QEvent* event)
         }
     }
     return QDialog::eventFilter(target, event);
-}
-
-void AddTaskDialog::on_taskGroupcomboBox_currentTextChanged(const QString &arg1)
-{
-    selectedGroup = arg1;
 }

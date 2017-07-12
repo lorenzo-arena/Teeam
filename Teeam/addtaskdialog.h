@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QString>
 #include <QList>
+#include <QDateTime>
 
 namespace Ui {
 class AddTaskDialog;
@@ -16,8 +17,10 @@ class AddTaskDialog : public QDialog
 public:
     explicit AddTaskDialog(QList<QString> groupList, QWidget *parent = 0);
     ~AddTaskDialog();
-    QString GetSelectedGroup();
-    QString GetTaskName();
+    QString GetSelectedGroup() { return selectedGroup; }
+    QString GetTaskName() { return name; }
+    QDateTime GetStartDateTime() { return start; }
+    QDateTime GetEndDateTime() { return end; }
 
 private slots:
     void on_buttonOk_clicked();
@@ -26,10 +29,16 @@ private slots:
 
     void on_taskGroupcomboBox_currentTextChanged(const QString &arg1);
 
+    void on_startdateTimeEdit_dateTimeChanged(const QDateTime &dateTime);
+
+    void on_enddateTimeEdit_dateTimeChanged(const QDateTime &dateTime);
+
 private:
     Ui::AddTaskDialog *ui;
-    QString taskName;
+    QString name;
     QString selectedGroup;
+    QDateTime start;
+    QDateTime end;
 };
 
 #endif // ADDTASKDIALOG_H

@@ -291,6 +291,8 @@ void MainWindow::on_actionAdd_Task_triggered()
 
     QString selectedParent = dialog->GetSelectedGroup();
     QString taskName = dialog->GetTaskName();
+    QDateTime start = dialog->GetStartDateTime();
+    QDateTime end = dialog->GetEndDateTime();
 
     /********************************************************
     // Usare una cosa simile ma con la treeView per ritrovare la posizione del group parent??
