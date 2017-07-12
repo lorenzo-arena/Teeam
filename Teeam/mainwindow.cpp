@@ -14,6 +14,7 @@
 #include <QSettings>
 #include <QCloseEvent>
 #include <QSet>
+#include <QLocale>
 
 MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, TeeamProject *projectModel, QWidget *parent) :
     QMainWindow(parent),
@@ -95,6 +96,9 @@ void MainWindow::initGanttView()
 
     dateTimeGrid = new KDGantt::DateTimeGrid();
     ui->ganttView->setGrid( dateTimeGrid );
+    // TODO : sistemare!
+    //QLocale curLocale(QLocale("en_US"));
+    //dateTimeGrid->setProperty("locale", curLocale);
 
     viewModel = new QStandardItemModel( 0, 6, this );
     viewModel->setHeaderData( 0, Qt::Horizontal, tr( "Project Tree View" ) );

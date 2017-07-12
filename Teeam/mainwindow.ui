@@ -17,6 +17,9 @@
    <iconset resource="teeamres.qrc">
     <normaloff>:/icons/icons/barchart.png</normaloff>:/icons/icons/barchart.png</iconset>
   </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
   <property name="iconSize">
    <size>
     <width>32</width>
@@ -137,9 +140,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>TeeamGanttView</class>
+   <class>KDGantt::View</class>
    <extends>QWidget</extends>
-   <header>teeamganttview.h</header>
+   <header>kdgantt::view.h</header>
   </customwidget>
  </customwidgets>
  <resources>

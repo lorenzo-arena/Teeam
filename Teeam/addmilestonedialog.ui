@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>AddMilestoneDialog</class>
- <widget name="AddMilestoneDialog" class="QDialog">
+ <widget class="QDialog" name="AddMilestoneDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,7 +13,10 @@
   <property name="windowTitle">
    <string>Add Milestone</string>
   </property>
-   <layout class="QGridLayout" name="gridLayout">
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
     <number>20</number>
    </property>
