@@ -136,7 +136,7 @@
     <string> End Date/Time:</string>
    </property>
   </widget>
-  <widget class="QListView" name="takPeoplelistView">
+  <widget class="QListView" name="taskPeoplelistView">
    <property name="geometry">
     <rect>
      <x>190</x>

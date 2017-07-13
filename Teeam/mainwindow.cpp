@@ -285,7 +285,11 @@ void MainWindow::on_actionAdd_Task_triggered()
 
     QList<QString> people;
     for(int i = 0; i < 10; i++)
-        people << "Pippo";
+    {
+        QString index = QString::number(i);
+        QString pippo = "Pippo " + index;
+        people << pippo;
+     }
 
     AddTaskDialog *dialog = new AddTaskDialog( groupList, people, this );
     if ( dialog->exec() == QDialog::Rejected || !dialog ) {

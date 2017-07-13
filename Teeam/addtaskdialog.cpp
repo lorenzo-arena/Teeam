@@ -94,3 +94,37 @@ bool AddTaskDialog::eventFilter(QObject* target, QEvent* event)
     }
     return QDialog::eventFilter(target, event);
 }
+
+void AddTaskDialog::on_insertPeoplepushButton_clicked()
+{
+    QModelIndex selection = ui->totalPeoplelistView->currentIndex();
+    if(selection.isValid())
+    {
+        // Tiro su il nome della persona
+        QString person = ui->totalPeoplelistView->model()->data(selection).toString();
+        // Lo rimuovo dalla prima lista
+        totalPeopleModel->removeRow(selection.row());
+        // Lo aggiungo alla seconda
+        QStringList tempList = taskPeopleModel->stringList();
+        tempList << person;
+        taskPeopleModel->setStringList(tempList);
+        ui->taskPeoplelistView->setModel(taskPeopleModel);
+    }
+}
+
+void AddTaskDialog::on_removePeoplepushButton_clicked()
+{
+    QModelIndex selection = ui->taskPeoplelistView->currentIndex();
+    if(selection.isValid())
+    {
+        // Tiro su il nome della persona
+        QString person = ui->taskPeoplelistView->model()->data(selection).toString();
+        // Lo rimuovo dalla prima lista
+        taskPeopleModel->removeRow(selection.row());
+        // Lo aggiungo alla seconda
+        QStringList tempList = totalPeopleModel->stringList();
+        tempList << person;
+        totalPeopleModel->setStringList(tempList);
+        ui->totalPeoplelistView->setModel(totalPeopleModel);
+    }
+}

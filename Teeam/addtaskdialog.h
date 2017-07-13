@@ -30,6 +30,8 @@ private slots:
     void on_taskGroupcomboBox_currentTextChanged(const QString &arg1);
     void on_startdateTimeEdit_dateTimeChanged(const QDateTime &dateTime);
     void on_enddateTimeEdit_dateTimeChanged(const QDateTime &dateTime);
+    void on_insertPeoplepushButton_clicked();
+    void on_removePeoplepushButton_clicked();
 
 private:
     Ui::AddTaskDialog *ui;
