@@ -4,7 +4,7 @@
 #include <QDateTime>
 #include <QMessageBox>
 
-AddTaskDialog::AddTaskDialog(QList<QString> groupList, QWidget *parent) :
+AddTaskDialog::AddTaskDialog(QList<QString> groupList, QList<QString> peopleList, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AddTaskDialog)
 {
@@ -15,6 +15,17 @@ AddTaskDialog::AddTaskDialog(QList<QString> groupList, QWidget *parent) :
     ui->taskGroupcomboBox->setCurrentIndex(0);
     for (int i = 0; i < groupList.length(); i++)
         ui->taskGroupcomboBox->addItem(groupList.at(i));
+
+    totalPeopleModel = new QStringListModel(this);
+    QStringList totalPeopleList;
+    taskPeopleModel = new QStringListModel(this);
+
+    for (int i = 0; i < peopleList.length(); i++)
+        totalPeopleList << peopleList.at(i);
+
+    totalPeopleModel->setStringList(totalPeopleList);
+
+    ui->totalPeoplelistView->setModel(totalPeopleModel);
 
     ui->startdateTimeEdit->setDateTime(QDateTime::currentDateTime());
     ui->enddateTimeEdit->setDateTime(QDateTime::currentDateTime());
@@ -30,6 +41,8 @@ AddTaskDialog::AddTaskDialog(QList<QString> groupList, QWidget *parent) :
 
 AddTaskDialog::~AddTaskDialog()
 {
+    delete totalPeopleModel;
+    delete taskPeopleModel;
     delete ui;
 }
 

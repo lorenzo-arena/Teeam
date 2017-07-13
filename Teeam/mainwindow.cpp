@@ -283,7 +283,11 @@ void MainWindow::on_actionAdd_Task_triggered()
     for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
         groupList << projectModel->GetTaskGroup().at(i)->getName();
 
-    AddTaskDialog *dialog = new AddTaskDialog( groupList, this );
+    QList<QString> people;
+    for(int i = 0; i < 10; i++)
+        people << "Pippo";
+
+    AddTaskDialog *dialog = new AddTaskDialog( groupList, people, this );
     if ( dialog->exec() == QDialog::Rejected || !dialog ) {
         delete dialog;
         return;
