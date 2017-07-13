@@ -16,6 +16,26 @@
 #include <QSet>
 #include <QLocale>
 
+TeeamDateTimeScaleFormatter::TeeamDateTimeScaleFormatter(const KDGantt::DateTimeScaleFormatter &other)
+    : DateTimeScaleFormatter(other)
+{
+
+}
+
+QString TeeamDateTimeScaleFormatter::text(const QDateTime &datetime)
+{
+    QString result;
+    // additional feature: Weeknumber
+    const QString shortWeekNumber = QString::number( datetime.date().weekNumber()) + QLatin1String("/")
+                                                                                     + QString::number( datetime.date().year());
+    const QString longWeekNumber = ( shortWeekNumber.length() == 1 ? QString::fromLatin1( "0" ) : QString() ) + shortWeekNumber;
+    result.replace( QString::fromLatin1( "ww" ), longWeekNumber );
+    result.replace( QString::fromLatin1( "w" ), shortWeekNumber );
+    QLocale locale(QLocale::English, QLocale::UnitedStates);
+    result = locale.toString(datetime, QLocale::ShortFormat);
+    return result;
+}
+
 MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, TeeamProject *projectModel, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -95,10 +115,9 @@ void MainWindow::initGanttView()
     ui->ganttView->splitter()->setSizes(splitList);
 
     dateTimeGrid = new KDGantt::DateTimeGrid();
+    dateTimeGrid->setUserDefinedLowerScale(new TeeamDateTimeScaleFormatter(*(dateTimeGrid->userDefinedLowerScale())));
+    dateTimeGrid->setUserDefinedUpperScale(new TeeamDateTimeScaleFormatter(*(dateTimeGrid->userDefinedUpperScale())));
     ui->ganttView->setGrid( dateTimeGrid );
-    // TODO : sistemare!
-    //QLocale curLocale(QLocale("en_US"));
-    //dateTimeGrid->setProperty("locale", curLocale);
 
     viewModel = new QStandardItemModel( 0, 6, this );
     viewModel->setHeaderData( 0, Qt::Horizontal, tr( "Project Tree View" ) );
@@ -386,5 +405,3 @@ void MainWindow::closeEvent(QCloseEvent *eventArgs)
 
     eventArgs->accept();
 }
-
-
