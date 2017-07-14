@@ -25,10 +25,10 @@ AddTaskDialog::AddTaskDialog(QList<QString> groupList, QList<QString> peopleList
     ui->totalPeoplelistView->setModel(&totalPeopleModel);
 
     ui->startdateTimeEdit->setDateTime(QDateTime::currentDateTime());
-    ui->enddateTimeEdit->setDateTime(QDateTime::currentDateTime());
+    ui->enddateTimeEdit->setDateTime(QDateTime::currentDateTime().addDays(1));
 
-    start = QDateTime::currentDateTime();
-    end = QDateTime::currentDateTime();
+    start = ui->startdateTimeEdit->dateTime();
+    end = ui->enddateTimeEdit->dateTime();
 
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowFlags(windowFlags() | Qt::Window);
@@ -46,14 +46,27 @@ AddTaskDialog::~AddTaskDialog()
 
 void AddTaskDialog::on_buttonOk_clicked()
 {
+    // Estraggo il nome del task per controllarlo
     QString editText = ui->lineEdit->text();
+
+    // Estraggo le date per controllarle
+    QDateTime tempStart = ui->startdateTimeEdit->dateTime();
+    QDateTime tempEnd = ui->enddateTimeEdit->dateTime();
+
     if(editText == "")
     {
         QMessageBox::warning(this, "Error", "You must specify a name for the new task.", QMessageBox::Ok);
         return;
     }
+    else if(tempEnd < tempStart)
+    {
+        QMessageBox::warning(this, "Error", "Start date must be before end date.", QMessageBox::Ok);
+        return;
+    }
     else
     {
+        start = ui->startdateTimeEdit->dateTime();
+        end = ui->enddateTimeEdit->dateTime();
         name = ui->lineEdit->text();
         QDialog::accept();
     }
