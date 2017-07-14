@@ -33,6 +33,9 @@ AddTaskDialog::AddTaskDialog(QList<QString> groupList, QList<QString> peopleList
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowFlags(windowFlags() | Qt::Window);
 
+    ui->lineEdit->installEventFilter(this);
+    ui->startdateTimeEdit->installEventFilter(this);
+    ui->enddateTimeEdit->installEventFilter(this);
     ui->lineEdit->setFocus();
 }
 
@@ -46,7 +49,7 @@ void AddTaskDialog::on_buttonOk_clicked()
     QString editText = ui->lineEdit->text();
     if(editText == "")
     {
-        QMessageBox::warning(this, "Error", "You must specify a name for the new project.", QMessageBox::Ok);
+        QMessageBox::warning(this, "Error", "You must specify a name for the new task.", QMessageBox::Ok);
         return;
     }
     else
