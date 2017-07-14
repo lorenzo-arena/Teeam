@@ -82,10 +82,13 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
 }
 
 MainWindow::~MainWindow()
-{
-    freeDaysModel->detach(this);
-    delete ganttController;
+{  
     delete dateTimeGrid;
+    delete ganttController;
+    delete freeDaysModel;
+    delete projectModel;
+    delete viewModel;
+    delete costraintModel;
     delete ui;
 }
 
@@ -148,6 +151,12 @@ void MainWindow::UpdateView()
         if(projectModel->isTaskGroupChanged())
         {
             UpdateTaskGroupView();
+        }
+
+        // TODO : refactor??
+        if(projectModel->isEntitiesListChanged())
+        {
+            UpdateEntitiesView();
         }
     }
 
@@ -229,7 +238,7 @@ void MainWindow::UpdateTaskGroupView()
         else if(projectModel->GetTaskGroup().at(i)->isChanged())
         {
             // TODO : da utilizzare!
-            const QModelIndex parent = viewModel->index(0,0);
+            /*const QModelIndex parent = viewModel->index(0,0);
             int row = i;
             viewModel->setData( viewModel->index( row, 0, parent ), projectModel->GetTaskGroup().at(i)->getName() );
             viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeSummary );
@@ -238,7 +247,64 @@ void MainWindow::UpdateTaskGroupView()
             viewModel->setData( viewModel->index( row, 4, parent ), 10 );
             const QString legend( "" );
             if ( ! legend.isEmpty() )
-                viewModel->setData( viewModel->index( row, 5, parent ), legend );
+                viewModel->setData( viewModel->index( row, 5, parent ), legend );*/
+        }
+    }
+}
+
+void MainWindow::UpdateEntitiesView()
+{
+    for(int i = 0; i < projectModel->GetEntitiesList().length(); i++)
+    {
+        if(projectModel->GetEntitiesList().at(i)->IsNew())
+        {
+            const QModelIndex parent = viewModel->index(0,0);
+
+            if ( !viewModel->insertRow( i, parent ) )
+                return;
+
+            int row = i;
+            if ( row == 0 && parent.isValid() )
+                viewModel->insertColumns( viewModel->columnCount( parent ), 5, parent );
+
+
+            if(projectModel->GetEntitiesList().at(i)->getEntityType() == TASK_CODE)
+            {
+                viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getName() );
+                viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeTask );
+                viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getStart(), KDGantt::StartTimeRole );
+                viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getEnd(), KDGantt::EndTimeRole );
+                viewModel->setData( viewModel->index( row, 4, parent ), 0 ); // TODO : add completition
+                const QString legend( "" );
+                if ( ! legend.isEmpty() )
+                    viewModel->setData( viewModel->index( row, 5, parent ), legend );
+            }
+            else if(projectModel->GetEntitiesList().at(i)->getEntityType() == MILESTONE_CODE)
+            {
+                // TODO : implement!
+                /*viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Milestone *>(projectModel->GetEntitiesList().at(i))->getName()  );
+                viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeEvent );
+                viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Milestone *>(projectModel->GetEntitiesList().at(i))->getStart(), KDGantt::StartTimeRole );
+                //viewModel->setData( viewModel->index( row, 3, parent ), enddt, KDGantt::EndTimeRole );
+                viewModel->setData( viewModel->index( row, 4, parent ), 0 ); // TODO : add completition
+                const QString legend( "" );
+                if ( ! legend.isEmpty() )
+                    viewModel->setData( viewModel->index( row, 5, parent ), legend );*/
+            }
+            else
+                return;
+        }
+        else if(projectModel->GetEntitiesList().at(i)->isChanged())
+        {
+            // TODO : da utilizzare!
+            /*viewModel->setData( viewModel->index( row, 0, parent ), projectModel->GetEntitiesList().at(i)-> );
+            viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeTask );
+            viewModel->setData( viewModel->index( row, 2, parent ), startdt, KDGantt::StartTimeRole );
+            viewModel->setData( viewModel->index( row, 3, parent ), enddt, KDGantt::EndTimeRole );
+            viewModel->setData( viewModel->index( row, 4, parent ), 0 ); // TODO : add completition
+            const QString legend( "" );
+            if ( ! legend.isEmpty() )
+                viewModel->setData( viewModel->index( row, 5, parent ), legend );*/
         }
     }
 }
@@ -258,8 +324,8 @@ void MainWindow::on_actionAdd_Project_triggered()
 
     // TODO : re-inizializzo il progetto, devo salvare quello vecchio e agganciarmi al nuovo
     projectModel = new TeeamProject();
-    projectModel->attach(this);
-    ganttController->NewProject(projectModel, dialog->GetProjectName());
+    ganttController->NewProject(this, projectModel, dialog->GetProjectName());
+
     delete dialog;
     return;
 }
@@ -272,7 +338,8 @@ void MainWindow::on_actionAdd_Task_Group_triggered()
         return;
     }
 
-    ganttController->AddTaskGroup(dialog->GetTaskGroupName());
+    ganttController->AddTaskGroup(this, dialog->GetTaskGroupName());
+
     delete dialog;
     return;
 }
@@ -292,8 +359,8 @@ void MainWindow::on_actionAdd_Task_triggered()
         return;
     }
 
-    QString selectedParent = dialog->GetSelectedGroup();
     QString taskName = dialog->GetTaskName();
+    int selectedParent = dialog->GetSelectedGroup();
     QDateTime start = dialog->GetStartDateTime();
     QDateTime end = dialog->GetEndDateTime();
     QList<QString> taskPeople = dialog->GetPeople();
@@ -305,8 +372,10 @@ void MainWindow::on_actionAdd_Task_triggered()
     combo->addItem("False", "False");
     combo->setCurrentIndex(combo->findData("False"));
     *************************************************/
-
-    ganttController->AddTask();
+    if(selectedParent > 0)
+        ganttController->AddTask(this, taskName, start, end, taskPeople, selectedParent);
+    else
+        ganttController->AddTask(this, taskName, start, end, taskPeople);
     delete dialog;
     return;
 }

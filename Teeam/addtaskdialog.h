@@ -18,7 +18,7 @@ class AddTaskDialog : public QDialog
 public:
     explicit AddTaskDialog(QList<QString> groupList, QList<QString> peopleList, QWidget *parent = 0);
     ~AddTaskDialog();
-    QString GetSelectedGroup() { return selectedGroup; }
+    int GetSelectedGroup() { return selectedGroup; }
     QString GetTaskName() { return name; }
     QDateTime GetStartDateTime() { return start; }
     QDateTime GetEndDateTime() { return end; }
@@ -28,16 +28,16 @@ private slots:
     void on_buttonOk_clicked();
     void on_buttonCancel_clicked();
     bool eventFilter(QObject *target, QEvent *event);
-    void on_taskGroupcomboBox_currentTextChanged(const QString &arg1);
     void on_startdateTimeEdit_dateTimeChanged(const QDateTime &dateTime);
     void on_enddateTimeEdit_dateTimeChanged(const QDateTime &dateTime);
     void on_insertPeoplepushButton_clicked();
     void on_removePeoplepushButton_clicked();
+    void on_taskGroupcomboBox_currentIndexChanged(int index);
 
 private:
     Ui::AddTaskDialog *ui;
     QString name;
-    QString selectedGroup;
+    int selectedGroup;
     QDateTime start;
     QDateTime end;
     QStringListModel totalPeopleModel;

@@ -61,11 +61,6 @@ void AddTaskDialog::on_buttonCancel_clicked()
     this->close();
 }
 
-void AddTaskDialog::on_taskGroupcomboBox_currentTextChanged(const QString &arg1)
-{
-    selectedGroup = arg1;
-}
-
 void AddTaskDialog::on_startdateTimeEdit_dateTimeChanged(const QDateTime &dateTime)
 {
     start = dateTime;
@@ -122,4 +117,9 @@ void AddTaskDialog::on_removePeoplepushButton_clicked()
         totalPeopleModel.setStringList(tempList);
         ui->totalPeoplelistView->setModel(&totalPeopleModel);
     }
+}
+
+void AddTaskDialog::on_taskGroupcomboBox_currentIndexChanged(int index)
+{
+    selectedGroup = index;
 }

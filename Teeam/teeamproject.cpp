@@ -5,6 +5,7 @@ TeeamProject::TeeamProject()
     bChanged = false;
     projectChanged = false;
     taskGroupChanged = false;
+    entitiesListChanged = false;
 }
 
 void TeeamProject::setName(QString projectName)
@@ -15,11 +16,6 @@ void TeeamProject::setName(QString projectName)
     notify();
     projectChanged = false;
     bChanged = false;
-}
-
-bool TeeamProject::isProjectChanged()
-{
-    return projectChanged;
 }
 
 QString TeeamProject::getName()
@@ -38,14 +34,14 @@ void TeeamProject::AddTaskGroup(TaskGroup *taskGroup)
     taskGroup->setNew(false);
 }
 
-QList<TaskGroup *> TeeamProject::GetTaskGroup()
+void TeeamProject::AddTaskOrMilestone(GenericTask *entity)
 {
-    return taskGroupList;
+    entitiesList.append(entity);
+    entitiesListChanged = true;
+    bChanged = true;
+    notify();
+    entitiesListChanged = false;
+    bChanged = false;
+    entity->setNew(false);
 }
-
-bool TeeamProject::isTaskGroupChanged()
-{
-    return taskGroupChanged;
-}
-
 

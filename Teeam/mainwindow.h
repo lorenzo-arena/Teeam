@@ -72,6 +72,7 @@ private:
     void UpdateFreeDaysView();
     void UpdateProjectView();
     void UpdateTaskGroupView();
+    void UpdateEntitiesView();
 };
 
 #endif // MAINWINDOW_H

@@ -16,12 +16,7 @@ bool TaskGroup::IsNew()
     return isNew;
 }
 
-void TaskGroup::setNew(bool b)
-{
-    isNew = b;
-}
-
 void TaskGroup::AddTask(GenericTask *task)
 {
-    taskList.append(task);
+    taskList.append(task);    
 }

@@ -3,17 +3,23 @@
 
 #include "ganttentity.h"
 #include "generictask.h"
+#include "teeamproject.h"
 
 #include <QList>
 #include <QColor>
 
+class GenericTask;
+class TeeamProject;
+
 class TaskGroup : public GanttEntity
 {
+    friend class GenericTask;
     friend class TeeamProject;
 public:
     TaskGroup(QString taskGroupName);
     QString getName();
     bool IsNew();
+    void AddTask(GenericTask* task);
 
 private:
     QDateTime end;
@@ -22,10 +28,8 @@ private:
     bool isNew;
 
 protected:
-    void setNew(bool b);
+    void setNew(bool b) { isNew = b; }
 
-private:
-    void AddTask(GenericTask* task);
 };
 
 #endif // TASKGROUP_H

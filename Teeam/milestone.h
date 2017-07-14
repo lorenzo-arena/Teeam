@@ -8,7 +8,6 @@ class Milestone : public GenericTask
 public:
     Milestone();
 
-
 public:
     void AddDependency(GenericTask* dependency);
 };
