@@ -64,6 +64,11 @@ void AddTaskDialog::on_buttonCancel_clicked()
 void AddTaskDialog::on_startdateTimeEdit_dateTimeChanged(const QDateTime &dateTime)
 {
     start = dateTime;
+    if(end < start)
+    {
+        ui->enddateTimeEdit->setDateTime(start);
+        end = start;
+    }
 }
 
 void AddTaskDialog::on_enddateTimeEdit_dateTimeChanged(const QDateTime &dateTime)
