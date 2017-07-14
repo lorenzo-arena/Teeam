@@ -44,7 +44,6 @@ HEADERS += \
     abstractview.h \
     ganttentity.h \
     abstractmodel.h \
-    abstractcontroller.h \
     generictask.h \
     task.h \
     milestone.h \
