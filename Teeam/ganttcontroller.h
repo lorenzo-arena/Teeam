@@ -13,7 +13,7 @@
 class GanttController
 {
 public:
-    GanttController(FreeDaysModel *freeDays, TeeamProject *project);
+    GanttController(FreeDaysModel *freeDays, TeeamProject *project = nullptr);
 
 // controller interface
 public:

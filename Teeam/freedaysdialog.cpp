@@ -72,7 +72,7 @@ void FreeDaysDialog::on_ButtonColor_clicked()
 {
     QColor tempColor = QColorDialog::getColor(color, this);
     if(!tempColor.isValid()) return;
-    QPixmap pixmap(ui->ButtonColor->width(),ui->ButtonColor->height());
+    QPixmap pixmap(ui->ButtonColor->iconSize().width(),ui->ButtonColor->iconSize().height());
     pixmap.fill(tempColor);
     QIcon ButtonIcon(pixmap);
     ui->ButtonColor->setIcon(pixmap);

@@ -4,6 +4,8 @@
 #include <QDialog>
 #include <QWidget>
 #include <QKeyEvent>
+#include <QList>
+#include <QString>
 
 namespace Ui {
 class AddTaskGroupDialog;
@@ -14,7 +16,7 @@ class AddTaskGroupDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddTaskGroupDialog(QWidget *parent = 0, Qt::WindowFlags f = 0 );
+    explicit AddTaskGroupDialog(QList<QString> existingGroups, QWidget *parent = 0, Qt::WindowFlags f = 0 );
 
     QString GetTaskGroupName();
 
@@ -26,6 +28,7 @@ private slots:
 private:
     Ui::AddTaskGroupDialog* ui;
     QString taskgroupName;
+    QList<QString> existingGroups;
 };
 
 #endif // ADDTASKGROUPDIALOG_H

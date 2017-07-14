@@ -15,18 +15,27 @@
 #include <QSettings>
 #include <QCloseEvent>
 #include <QSet>
+#include <QLocale>
 
-class MyStandardItem : public QStandardItem {
-public:
-  MyStandardItem( const QVariant& v ) : QStandardItem()
-  {
-    setData( v, Qt::DisplayRole );
-  }
-  MyStandardItem( const QString& v ) : QStandardItem()
-  {
-    setData( v, Qt::DisplayRole );
-  }
-};
+TeeamDateTimeScaleFormatter::TeeamDateTimeScaleFormatter(const KDGantt::DateTimeScaleFormatter &other)
+    : DateTimeScaleFormatter(other)
+{
+
+}
+
+QString TeeamDateTimeScaleFormatter::text(const QDateTime &datetime)
+{
+    QString result;
+    // additional feature: Weeknumber
+    const QString shortWeekNumber = QString::number( datetime.date().weekNumber()) + QLatin1String("/")
+                                                                                     + QString::number( datetime.date().year());
+    const QString longWeekNumber = ( shortWeekNumber.length() == 1 ? QString::fromLatin1( "0" ) : QString() ) + shortWeekNumber;
+    result.replace( QString::fromLatin1( "ww" ), longWeekNumber );
+    result.replace( QString::fromLatin1( "w" ), shortWeekNumber );
+    QLocale locale(QLocale::English, QLocale::UnitedStates);
+    result = locale.toString(datetime, QLocale::ShortFormat);
+    return result;
+}
 
 MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, TeeamProject *projectModel, QWidget *parent) :
     QMainWindow(parent),
@@ -39,7 +48,8 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
     this->freeDaysModel->attach(this);
 
     this->projectModel = projectModel;
-    this->projectModel->attach(this);
+    if(projectModel != nullptr)
+        this->projectModel->attach(this);
 
     this->ganttController = ganttController;
 
@@ -79,6 +89,14 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
     ganttController->SetFreeDaysColor(color);
     settings.endGroup();
     settings.endGroup();
+
+    // Disabilito alcune voci dal menu se non ho caricato un progetto
+    if(this->projectModel == nullptr)
+    {
+        ui->actionAdd_Task_Group->setEnabled(false);
+        ui->actionAdd_Task->setEnabled(false);
+        ui->actionAdd_Milestone->setEnabled(false);
+    }
 }
 
 MainWindow::~MainWindow()
@@ -101,6 +119,8 @@ void MainWindow::initGanttView()
     ui->ganttView->splitter()->setSizes(splitList);
 
     dateTimeGrid = new KDGantt::DateTimeGrid();
+    dateTimeGrid->setUserDefinedLowerScale(new TeeamDateTimeScaleFormatter(*(dateTimeGrid->userDefinedLowerScale())));
+    dateTimeGrid->setUserDefinedUpperScale(new TeeamDateTimeScaleFormatter(*(dateTimeGrid->userDefinedUpperScale())));
     ui->ganttView->setGrid( dateTimeGrid );
 
     viewModel = new QStandardItemModel( 0, 6, this );
@@ -141,16 +161,19 @@ void MainWindow::UpdateView()
         UpdateFreeDaysView();
     }
 
-    if(projectModel->isChanged())
+    if(projectModel != nullptr)
     {
-        if(projectModel->isProjectChanged())
+        if(projectModel->isChanged())
         {
-            UpdateProjectView();
-        }
+            if(projectModel->isProjectChanged())
+            {
+                UpdateProjectView();
+            }
 
-        if(projectModel->isTaskGroupChanged())
-        {
-            UpdateTaskGroupView();
+            if(projectModel->isTaskGroupChanged())
+            {
+                UpdateTaskGroupView();
+            }
         }
 
         // TODO : refactor??
@@ -159,7 +182,6 @@ void MainWindow::UpdateView()
             UpdateEntitiesView();
         }
     }
-
     return;
 }
 
@@ -326,13 +348,22 @@ void MainWindow::on_actionAdd_Project_triggered()
     projectModel = new TeeamProject();
     ganttController->NewProject(this, projectModel, dialog->GetProjectName());
 
+    // Abilito alcune voci del menu
+    ui->actionAdd_Task_Group->setEnabled(true);
+    ui->actionAdd_Task->setEnabled(true);
+    ui->actionAdd_Milestone->setEnabled(true);
+
     delete dialog;
     return;
 }
 
 void MainWindow::on_actionAdd_Task_Group_triggered()
 {
-    AddTaskGroupDialog *dialog = new AddTaskGroupDialog( this );
+    QList<QString> existingGroups;
+    for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
+        existingGroups.append(projectModel->GetTaskGroup().at(i)->getName());
+
+    AddTaskGroupDialog *dialog = new AddTaskGroupDialog( existingGroups, this );
     if ( dialog->exec() == QDialog::Rejected || !dialog ) {
         delete dialog;
         return;
@@ -476,5 +507,3 @@ void MainWindow::closeEvent(QCloseEvent *eventArgs)
 
     eventArgs->accept();
 }
-
-

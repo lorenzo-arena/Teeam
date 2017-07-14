@@ -12,17 +12,27 @@
 
 #include <KDGanttDateTimeGrid>
 #include <KDGanttConstraintModel>
+#include <KDGanttDateTimeScaleFormatter>
 
 namespace Ui {
 class MainWindow;
 }
+
+class TeeamDateTimeScaleFormatter : public KDGantt::DateTimeScaleFormatter
+{
+public:
+    TeeamDateTimeScaleFormatter( const DateTimeScaleFormatter& other );
+
+private:
+    QString text( const QDateTime& datetime );
+};
 
 class MainWindow : public QMainWindow, public AbstractView
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, TeeamProject *projectModel, QWidget *parent = nullptr);
+    explicit MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, TeeamProject *projectModel = nullptr, QWidget *parent = nullptr);
     ~MainWindow();
 
     void UpdateView();
