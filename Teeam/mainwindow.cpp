@@ -283,15 +283,10 @@ void MainWindow::on_actionAdd_Task_triggered()
     for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
         groupList << projectModel->GetTaskGroup().at(i)->getName();
 
-    QList<QString> people;
-    for(int i = 0; i < 10; i++)
-    {
-        QString index = QString::number(i);
-        QString pippo = "Pippo " + index;
-        people << pippo;
-     }
+    QList<QString> totalPeople;
+    // TODO : add people initialization
 
-    AddTaskDialog *dialog = new AddTaskDialog( groupList, people, this );
+    AddTaskDialog *dialog = new AddTaskDialog( groupList, totalPeople, this );
     if ( dialog->exec() == QDialog::Rejected || !dialog ) {
         delete dialog;
         return;
@@ -301,6 +296,7 @@ void MainWindow::on_actionAdd_Task_triggered()
     QString taskName = dialog->GetTaskName();
     QDateTime start = dialog->GetStartDateTime();
     QDateTime end = dialog->GetEndDateTime();
+    QList<QString> taskPeople = dialog->GetPeople();
 
     /********************************************************
     // Usare una cosa simile ma con la treeView per ritrovare la posizione del group parent??

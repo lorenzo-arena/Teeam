@@ -16,16 +16,13 @@ AddTaskDialog::AddTaskDialog(QList<QString> groupList, QList<QString> peopleList
     for (int i = 0; i < groupList.length(); i++)
         ui->taskGroupcomboBox->addItem(groupList.at(i));
 
-    totalPeopleModel = new QStringListModel(this);
     QStringList totalPeopleList;
-    taskPeopleModel = new QStringListModel(this);
 
     for (int i = 0; i < peopleList.length(); i++)
         totalPeopleList << peopleList.at(i);
 
-    totalPeopleModel->setStringList(totalPeopleList);
-
-    ui->totalPeoplelistView->setModel(totalPeopleModel);
+    totalPeopleModel.setStringList(totalPeopleList);
+    ui->totalPeoplelistView->setModel(&totalPeopleModel);
 
     ui->startdateTimeEdit->setDateTime(QDateTime::currentDateTime());
     ui->enddateTimeEdit->setDateTime(QDateTime::currentDateTime());
@@ -41,8 +38,6 @@ AddTaskDialog::AddTaskDialog(QList<QString> groupList, QList<QString> peopleList
 
 AddTaskDialog::~AddTaskDialog()
 {
-    delete totalPeopleModel;
-    delete taskPeopleModel;
     delete ui;
 }
 
@@ -103,12 +98,12 @@ void AddTaskDialog::on_insertPeoplepushButton_clicked()
         // Tiro su il nome della persona
         QString person = ui->totalPeoplelistView->model()->data(selection).toString();
         // Lo rimuovo dalla prima lista
-        totalPeopleModel->removeRow(selection.row());
+        totalPeopleModel.removeRow(selection.row());
         // Lo aggiungo alla seconda
-        QStringList tempList = taskPeopleModel->stringList();
+        QStringList tempList = taskPeopleModel.stringList();
         tempList << person;
-        taskPeopleModel->setStringList(tempList);
-        ui->taskPeoplelistView->setModel(taskPeopleModel);
+        taskPeopleModel.setStringList(tempList);
+        ui->taskPeoplelistView->setModel(&taskPeopleModel);
     }
 }
 
@@ -120,11 +115,11 @@ void AddTaskDialog::on_removePeoplepushButton_clicked()
         // Tiro su il nome della persona
         QString person = ui->taskPeoplelistView->model()->data(selection).toString();
         // Lo rimuovo dalla prima lista
-        taskPeopleModel->removeRow(selection.row());
+        taskPeopleModel.removeRow(selection.row());
         // Lo aggiungo alla seconda
-        QStringList tempList = totalPeopleModel->stringList();
+        QStringList tempList = totalPeopleModel.stringList();
         tempList << person;
-        totalPeopleModel->setStringList(tempList);
-        ui->totalPeoplelistView->setModel(totalPeopleModel);
+        totalPeopleModel.setStringList(tempList);
+        ui->totalPeoplelistView->setModel(&totalPeopleModel);
     }
 }

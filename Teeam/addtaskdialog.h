@@ -22,6 +22,7 @@ public:
     QString GetTaskName() { return name; }
     QDateTime GetStartDateTime() { return start; }
     QDateTime GetEndDateTime() { return end; }
+    QList<QString> GetPeople() { return taskPeopleModel.stringList(); }
 
 private slots:
     void on_buttonOk_clicked();
@@ -39,8 +40,8 @@ private:
     QString selectedGroup;
     QDateTime start;
     QDateTime end;
-    QStringListModel *totalPeopleModel;
-    QStringListModel *taskPeopleModel;
+    QStringListModel totalPeopleModel;
+    QStringListModel taskPeopleModel;
 
 };
 
