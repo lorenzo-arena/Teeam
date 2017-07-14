@@ -3,7 +3,7 @@
 
 #include <QMessageBox>
 
-AddTaskGroupDialog::AddTaskGroupDialog(QWidget *parent, Qt::WindowFlags f) :
+AddTaskGroupDialog::AddTaskGroupDialog(QList<QString> existingGroups, QWidget *parent, Qt::WindowFlags f) :
     QDialog(parent, f),
     ui(new Ui::AddTaskGroupDialog)
 {
@@ -20,6 +20,8 @@ AddTaskGroupDialog::AddTaskGroupDialog(QWidget *parent, Qt::WindowFlags f) :
     setWindowFlags(windowFlags() | Qt::Window);
 
     ui->lineEdit->setFocus();
+
+    this->existingGroups = existingGroups;
 }
 
 QString AddTaskGroupDialog::GetTaskGroupName()
@@ -37,6 +39,19 @@ void AddTaskGroupDialog::on_buttonOk_clicked()
     }
     else
     {
+        bool alreadyExists = false;
+        for(int i = 0; i < existingGroups.length(); i++)
+        {
+            if(existingGroups.at(i) == ui->lineEdit->text())
+                alreadyExists = true;
+        }
+
+        if(alreadyExists)
+        {
+            QMessageBox::warning(this, "Error", "You must specify a new name.", QMessageBox::Ok);
+            return;
+        }
+
         taskgroupName = ui->lineEdit->text();
         QDialog::accept();
     }

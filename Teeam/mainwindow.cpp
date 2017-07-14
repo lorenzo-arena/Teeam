@@ -294,7 +294,11 @@ void MainWindow::on_actionAdd_Project_triggered()
 
 void MainWindow::on_actionAdd_Task_Group_triggered()
 {
-    AddTaskGroupDialog *dialog = new AddTaskGroupDialog( this );
+    QList<QString> existingGroups;
+    for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
+        existingGroups.append(projectModel->GetTaskGroup().at(i)->getName());
+
+    AddTaskGroupDialog *dialog = new AddTaskGroupDialog( existingGroups, this );
     if ( dialog->exec() == QDialog::Rejected || !dialog ) {
         delete dialog;
         return;
