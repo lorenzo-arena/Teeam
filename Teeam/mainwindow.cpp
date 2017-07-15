@@ -115,6 +115,14 @@ void MainWindow::initGanttView()
               << (ui->ganttView->width()/2);
     ui->ganttView->splitter()->setSizes(splitList);
 
+    /***************************
+    *   TODO : subclass and use headerwidget to
+    *   toggle the menu on right click
+    *
+    ********************************/
+
+
+
     dateTimeGrid = new KDGantt::DateTimeGrid();
     dateTimeGrid->setUserDefinedLowerScale(new TeeamDateTimeScaleFormatter(*(dateTimeGrid->userDefinedLowerScale())));
     dateTimeGrid->setUserDefinedUpperScale(new TeeamDateTimeScaleFormatter(*(dateTimeGrid->userDefinedUpperScale())));
