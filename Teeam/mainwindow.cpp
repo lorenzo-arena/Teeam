@@ -117,20 +117,20 @@ void MainWindow::initGanttView()
 
     /***************************
     *   TODO : subclass and use headerwidget to
-    *   toggle the menu on right click
+    *   paint in english??
     *
     ********************************/
-
-
 
     dateTimeGrid = new KDGantt::DateTimeGrid();
     dateTimeGrid->setUserDefinedLowerScale(new TeeamDateTimeScaleFormatter(*(dateTimeGrid->userDefinedLowerScale())));
     dateTimeGrid->setUserDefinedUpperScale(new TeeamDateTimeScaleFormatter(*(dateTimeGrid->userDefinedUpperScale())));
     ui->ganttView->setGrid( dateTimeGrid );
+    ui->ganttView->graphicsView()->setHeaderContextMenuPolicy(Qt::ContextMenuPolicy::NoContextMenu);
 
     viewModel = new QStandardItemModel( 0, 6, this );
     viewModel->setHeaderData( 0, Qt::Horizontal, tr( "Project Tree View" ) );
     ui->ganttView->setModel( viewModel );
+
 
     QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
     leftView->setColumnHidden( 1, true );

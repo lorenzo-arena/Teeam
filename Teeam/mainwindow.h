@@ -13,6 +13,8 @@
 #include <KDGanttDateTimeGrid>
 #include <KDGanttConstraintModel>
 #include <KDGanttDateTimeScaleFormatter>
+#include <KDGanttView>
+#include <KDGanttGraphicsView>
 
 namespace Ui {
 class MainWindow;
