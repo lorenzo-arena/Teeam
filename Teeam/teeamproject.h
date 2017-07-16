@@ -16,11 +16,12 @@ class TeeamProject: public GanttEntity
     friend class TaskGroup;
     friend class GenericTask;
 public:
-    TeeamProject();
+    TeeamProject(QString projectName, QList<QString> peopleList);
 
 private:
     QList<TaskGroup*> taskGroupList;
     QList<GenericTask *> entitiesList;
+    QList<QString> peopleList;
     bool taskGroupChanged;
     bool projectChanged;
     bool entitiesListChanged;
@@ -28,14 +29,16 @@ private:
 public:
     void AddTaskGroup(TaskGroup* taskGroup);
     void AddTaskOrMilestone(GenericTask *entity);
-    QList<TaskGroup *> GetTaskGroup() { return taskGroupList; }
     QList<GenericTask *> GetEntitiesList() { return entitiesList; }
-    bool isTaskGroupChanged() { return taskGroupChanged; }
-    bool isProjectChanged() { return projectChanged; }
-    bool isEntitiesListChanged() { return entitiesListChanged; }
-
-    QString getName();
+    QList<TaskGroup *> GetTaskGroup() { return taskGroupList; }
+    bool IsTaskGroupChanged() { return taskGroupChanged; }
+    bool IsProjectChanged() { return projectChanged; }
+	bool IsEntitiesListChanged() { return entitiesListChanged; }
+    QString GetName() { return name; }
+    QList<QString> GetPeopleList() { return peopleList; }
     void setName(QString projectName);
+    void setPeopleList(QList<QString> peopleList);
+    void Show();
 };
 
 #endif // TEEAMPROJECT_H

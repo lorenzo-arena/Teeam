@@ -17,7 +17,7 @@ public:
 
 // controller interface
 public:
-    void NewProject(AbstractView *view, TeeamProject *project, QString projectName);
+    void NewProject(TeeamProject *newProject);
     void AddTaskGroup(AbstractView *view, QString taskGroupName);
     void AddTask(AbstractView *view, QString taskName, QDateTime start, QDateTime end, QList<QString> taskPeople, int completition, int selectedParent = -1);
     void AddMilestone();

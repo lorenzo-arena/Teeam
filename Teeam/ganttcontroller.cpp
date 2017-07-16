@@ -1,18 +1,19 @@
 #include "ganttcontroller.h"
 
+#include "abstractview.h"
+#include "taskgroup.h"
+
 GanttController::GanttController(FreeDaysModel *freeDays, TeeamProject *project)
 {
     // Aggiungere puntatori task + milestone
     this->freeDays = freeDays;
-
     this->project = project;
 }
 
-void GanttController::NewProject(AbstractView *view, TeeamProject *project, QString projectName)
+void GanttController::NewProject(TeeamProject *newProject)
 {
-    this->project = project;
-    this->project->attach(view);
-    project->setName(projectName);
+    this->project = newProject;
+    this->project->Show();
 }
 
 void GanttController::AddTaskGroup(AbstractView *view, QString taskGroupName)

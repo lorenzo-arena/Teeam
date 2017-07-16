@@ -4,6 +4,9 @@
 #include <QDialog>
 #include <QWidget>
 #include <QKeyEvent>
+#include <QStringListModel>
+#include <QList>
+#include <QString>
 
 namespace Ui {
     class AddProjectDialog;
@@ -16,16 +19,20 @@ class AddProjectDialog : public QDialog
 public:
     explicit AddProjectDialog(QWidget *parent = 0, Qt::WindowFlags f = 0 );
 
-    QString GetProjectName();
+    QString GetProjectName() { return projectName; }
+    QList<QString> GetPeopleList() { return peopleModel.stringList(); }
 
 private slots:
     void on_buttonOk_clicked();
     void on_buttonCancel_clicked();
     bool eventFilter(QObject *target, QEvent *event);
+    void on_addPersonButton_clicked();
+    void on_removePersonButton_clicked();
 
 private:
     Ui::AddProjectDialog* ui;
     QString projectName;
+    QStringListModel peopleModel;
 };
 
 #endif // ADDPROJECTDIALOG_H

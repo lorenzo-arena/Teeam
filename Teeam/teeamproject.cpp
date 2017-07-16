@@ -1,11 +1,17 @@
 #include "teeamproject.h"
 
-TeeamProject::TeeamProject()
+TeeamProject::TeeamProject(QString projectName, QList<QString> peopleList)
 {
     bChanged = false;
     projectChanged = false;
     taskGroupChanged = false;
     entitiesListChanged = false;
+    this->name = projectName;
+    this->peopleList = peopleList;
+    this->bChanged = false;
+    this->projectChanged = false;
+    this->taskGroupChanged = false;
+	this->entitiesListChanged = false;
 }
 
 void TeeamProject::setName(QString projectName)
@@ -18,9 +24,14 @@ void TeeamProject::setName(QString projectName)
     bChanged = false;
 }
 
-QString TeeamProject::getName()
+void TeeamProject::setPeopleList(QList<QString> peopleList)
 {
-    return name;
+    this->peopleList = peopleList;
+    projectChanged = true;
+    bChanged = true;
+    notify();
+    projectChanged = false;
+    bChanged = false;
 }
 
 void TeeamProject::AddTaskGroup(TaskGroup *taskGroup)
@@ -43,5 +54,15 @@ void TeeamProject::AddTaskOrMilestone(GenericTask *entity)
     entitiesListChanged = false;
     bChanged = false;
     entity->setNew(false);
+}
+
+// TODO : trovare soluzione migliore??
+void TeeamProject::Show()
+{
+    projectChanged = true;
+    bChanged = true;
+    notify();
+    projectChanged = false;
+    bChanged = false;
 }
 
