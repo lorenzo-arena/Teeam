@@ -177,7 +177,7 @@ void MainWindow::UpdateView()
         }
 
         // TODO : refactor??
-        if(projectModel->isEntitiesListChanged())
+        if(projectModel->IsEntitiesListChanged())
         {
             UpdateEntitiesView();
         }
