@@ -1,10 +1,12 @@
 #include "teeamproject.h"
 
-TeeamProject::TeeamProject()
+TeeamProject::TeeamProject(QString projectName, QList<QString> peopleList)
 {
-    bChanged = false;
-    projectChanged = false;
-    taskGroupChanged = false;
+    this->name = projectName;
+    this->peopleList = peopleList;
+    this->bChanged = false;
+    this->projectChanged = false;
+    this->taskGroupChanged = false;
 }
 
 void TeeamProject::setName(QString projectName)
@@ -16,15 +18,14 @@ void TeeamProject::setName(QString projectName)
     projectChanged = false;
     bChanged = false;
 }
-
-bool TeeamProject::isProjectChanged()
+void TeeamProject::setPeopleList(QList<QString> peopleList)
 {
-    return projectChanged;
-}
-
-QString TeeamProject::getName()
-{
-    return name;
+    this->peopleList = peopleList;
+    projectChanged = true;
+    bChanged = true;
+    notify();
+    projectChanged = false;
+    bChanged = false;
 }
 
 void TeeamProject::AddTaskGroup(TaskGroup *taskGroup)
@@ -38,14 +39,13 @@ void TeeamProject::AddTaskGroup(TaskGroup *taskGroup)
     taskGroup->setNew(false);
 }
 
-QList<TaskGroup *> TeeamProject::GetTaskGroup()
+// TODO : trovare soluzione migliore??
+void TeeamProject::Show()
 {
-    return taskGroupList;
+    projectChanged = true;
+    bChanged = true;
+    notify();
+    projectChanged = false;
+    bChanged = false;
 }
-
-bool TeeamProject::isTaskGroupChanged()
-{
-    return taskGroupChanged;
-}
-
 

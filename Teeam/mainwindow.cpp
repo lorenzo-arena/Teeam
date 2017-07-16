@@ -162,12 +162,12 @@ void MainWindow::UpdateView()
     {
         if(projectModel->isChanged())
         {
-            if(projectModel->isProjectChanged())
+            if(projectModel->IsProjectChanged())
             {
                 UpdateProjectView();
             }
 
-            if(projectModel->isTaskGroupChanged())
+            if(projectModel->IsTaskGroupChanged())
             {
                 UpdateTaskGroupView();
             }
@@ -202,23 +202,20 @@ void MainWindow::UpdateFreeDaysView()
 
 void MainWindow::UpdateProjectView()
 {
-    QDateTime startdt = QDateTime::currentDateTime();
-    QDateTime enddt = startdt.addDays( 1 );
-
     // TODO : aggiungere codice per ripulire dal vecchio progetto eventualmente
-
-    // Da usare solo per aggiungere task o taskGroup
-    //QModelIndexList selectedIndexes = ui->ganttView->selectionModel()->selectedIndexes();
-    if ( !viewModel->insertRow( 0 ) )
-        return;
+    if (viewModel->rowCount() == 0)
+    {
+        if ( !viewModel->insertRow( 0 ) )
+            return;
+    }
 
     //viewModel->insertColumns( viewModel->columnCount(), 5 );
 
-    viewModel->setData( viewModel->index( 0, 0 ), projectModel->getName() );
+    viewModel->setData( viewModel->index( 0, 0 ), projectModel->GetName() );
     viewModel->setData( viewModel->index( 0, 1 ), KDGantt::TypeSummary );
     //viewModel->setData( viewModel->index( 0, 2 ), startdt, KDGantt::StartTimeRole );
     //viewModel->setData( viewModel->index( 0, 3 ), enddt, KDGantt::EndTimeRole );
-    viewModel->setData( viewModel->index( 0, 4 ), 10 );
+    //viewModel->setData( viewModel->index( 0, 4 ), 10 );
     const QString legend( "" );
     if ( ! legend.isEmpty() )
         viewModel->setData( viewModel->index( 0, 5 ), legend );
@@ -279,9 +276,10 @@ void MainWindow::on_actionAdd_Project_triggered()
     }
 
     // TODO : re-inizializzo il progetto, devo salvare quello vecchio e agganciarmi al nuovo
-    projectModel = new TeeamProject();
-    projectModel->attach(this);
-    ganttController->NewProject(projectModel, dialog->GetProjectName());
+    TeeamProject *newProject = new TeeamProject(dialog->GetProjectName(), dialog->GetPeopleList());
+    this->projectModel = newProject;
+    newProject->attach(this);
+    ganttController->NewProject(newProject);
 
     // Abilito alcune voci del menu
     ui->actionAdd_Task_Group->setEnabled(true);
@@ -315,8 +313,7 @@ void MainWindow::on_actionAdd_Task_triggered()
     for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
         groupList << projectModel->GetTaskGroup().at(i)->getName();
 
-    QList<QString> totalPeople;
-    // TODO : add people initialization
+    QList<QString> totalPeople = projectModel->GetPeopleList();
 
     AddTaskDialog *dialog = new AddTaskDialog( groupList, totalPeople, this );
     if ( dialog->exec() == QDialog::Rejected || !dialog ) {

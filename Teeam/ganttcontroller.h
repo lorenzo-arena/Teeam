@@ -13,7 +13,7 @@ public:
 
 // controller interface
 public:
-    void NewProject(TeeamProject *project, QString projectName);
+    void NewProject(TeeamProject *newProject);
     void AddTaskGroup(QString taskGroupName);
     void AddTask();
     void AddMilestone();

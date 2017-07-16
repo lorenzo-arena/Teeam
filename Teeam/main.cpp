@@ -13,7 +13,6 @@ int main(int argc, char *argv[])
     qApp->setOrganizationDomain("");
 
     FreeDaysModel freeDays;
-    TeeamProject project;
 
     // TODO : add project initialization
 

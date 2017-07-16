@@ -36,6 +36,7 @@ public:
     ~MainWindow();
 
     void UpdateView();
+    void SetProjectModel(TeeamProject *project) { this->projectModel = project; }
 
 private slots:
     void on_action_Quit_triggered();
