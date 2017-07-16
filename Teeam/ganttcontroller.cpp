@@ -22,9 +22,9 @@ void GanttController::AddTaskGroup(AbstractView *view, QString taskGroupName)
     project->AddTaskGroup(taskGroup);
 }
 
-void GanttController::AddTask(AbstractView *view, QString taskName, QDateTime start, QDateTime end, QList<QString> taskPeople, int selectedParent)
+void GanttController::AddTask(AbstractView *view, QString taskName, QDateTime start, QDateTime end, QList<QString> taskPeople, int completition, int selectedParent)
 {
-    Task *task = new Task(taskName, start, end, taskPeople);
+    Task *task = new Task(taskName, start, end, taskPeople, completition);
     task->attach(view);
     if(selectedParent != -1)    
         project->GetTaskGroup().at(selectedParent-1)->AddTask(task);

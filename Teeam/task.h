@@ -9,11 +9,11 @@
 class Task : public GenericTask
 {
 public:
-    Task(QString taskName, QDateTime start, QDateTime end, QList<QString> taskPeople);
+    Task(QString taskName, QDateTime start, QDateTime end, QList<QString> taskPeople, int completition);
 
 private:
     QDateTime end;
-    QList<QString> people;
+    int completition;
 
 public:
     void AddDependency(GenericTask* dependency);
@@ -21,7 +21,7 @@ public:
     QDateTime getStart() { return start; }
     QDateTime getEnd() { return end; }
     QList<QString> getPeople() { return people; }
-
+    int getCompletition() { return completition; }
 };
 
 #endif // TASK_H

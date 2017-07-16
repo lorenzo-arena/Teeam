@@ -24,6 +24,7 @@ protected:
     void setNew(bool b) { isNew = b; }
     QColor color;
     QList<GenericTask*> dependecies;
+    QList<QString> people;
     int entityType; // La uso per distinguere tra Task e Milestone
 
 public:

@@ -296,7 +296,7 @@ void MainWindow::UpdateEntitiesView()
                 viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeTask );
                 viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getStart(), KDGantt::StartTimeRole );
                 viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getEnd(), KDGantt::EndTimeRole );
-                viewModel->setData( viewModel->index( row, 4, parent ), 0 ); // TODO : add completition
+                viewModel->setData( viewModel->index( row, 4, parent ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getCompletition() );
                 const QString legend( "" );
                 if ( ! legend.isEmpty() )
                     viewModel->setData( viewModel->index( row, 5, parent ), legend );
@@ -395,6 +395,7 @@ void MainWindow::on_actionAdd_Task_triggered()
     QDateTime start = dialog->GetStartDateTime();
     QDateTime end = dialog->GetEndDateTime();
     QList<QString> taskPeople = dialog->GetPeople();
+    int completition = dialog->GetCompletition();
 
     /********************************************************
     // Usare una cosa simile ma con la treeView per ritrovare la posizione del group parent??
@@ -404,9 +405,9 @@ void MainWindow::on_actionAdd_Task_triggered()
     combo->setCurrentIndex(combo->findData("False"));
     *************************************************/
     if(selectedParent > 0)
-        ganttController->AddTask(this, taskName, start, end, taskPeople, selectedParent);
+        ganttController->AddTask(this, taskName, start, end, taskPeople, completition, selectedParent);
     else
-        ganttController->AddTask(this, taskName, start, end, taskPeople);
+        ganttController->AddTask(this, taskName, start, end, taskPeople, completition);
     delete dialog;
     return;
 }

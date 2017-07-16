@@ -30,12 +30,15 @@ AddTaskDialog::AddTaskDialog(QList<QString> groupList, QList<QString> peopleList
     start = ui->startdateTimeEdit->dateTime();
     end = ui->enddateTimeEdit->dateTime();
 
+    completition = ui->completitionspinBox->value();
+
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowFlags(windowFlags() | Qt::Window);
 
     ui->lineEdit->installEventFilter(this);
     ui->startdateTimeEdit->installEventFilter(this);
     ui->enddateTimeEdit->installEventFilter(this);
+    ui->completitionspinBox->installEventFilter(this);
     ui->lineEdit->setFocus();
 }
 
@@ -143,4 +146,9 @@ void AddTaskDialog::on_removePeoplepushButton_clicked()
 void AddTaskDialog::on_taskGroupcomboBox_currentIndexChanged(int index)
 {
     selectedGroup = index;
+}
+
+void AddTaskDialog::on_completitionspinBox_valueChanged(int arg1)
+{
+    completition = arg1;
 }

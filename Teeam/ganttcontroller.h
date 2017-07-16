@@ -19,7 +19,7 @@ public:
 public:
     void NewProject(AbstractView *view, TeeamProject *project, QString projectName);
     void AddTaskGroup(AbstractView *view, QString taskGroupName);
-    void AddTask(AbstractView *view, QString taskName, QDateTime start, QDateTime end, QList<QString> taskPeople, int selectedParent = -1);
+    void AddTask(AbstractView *view, QString taskName, QDateTime start, QDateTime end, QList<QString> taskPeople, int completition, int selectedParent = -1);
     void AddMilestone();
     void SetFreeDays(Days days);
     void SetFreeDaysColor(QColor color);

@@ -23,6 +23,7 @@ public:
     QDateTime GetStartDateTime() { return start; }
     QDateTime GetEndDateTime() { return end; }
     QList<QString> GetPeople() { return taskPeopleModel.stringList(); }
+    int GetCompletition() { return completition; }
 
 private slots:
     void on_buttonOk_clicked();
@@ -34,6 +35,8 @@ private slots:
     void on_removePeoplepushButton_clicked();
     void on_taskGroupcomboBox_currentIndexChanged(int index);
 
+    void on_completitionspinBox_valueChanged(int arg1);
+
 private:
     Ui::AddTaskDialog *ui;
     QString name;
@@ -42,6 +45,7 @@ private:
     QDateTime end;
     QStringListModel totalPeopleModel;
     QStringListModel taskPeopleModel;
+    int completition;
 
 };
 

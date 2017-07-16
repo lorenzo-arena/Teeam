@@ -1,6 +1,6 @@
 #include "task.h"
 
-Task::Task(QString taskName, QDateTime start, QDateTime end, QList<QString> taskPeople)
+Task::Task(QString taskName, QDateTime start, QDateTime end, QList<QString> taskPeople, int completition)
     : GenericTask()
 {
     this->entityType = TASK_CODE;
@@ -8,6 +8,7 @@ Task::Task(QString taskName, QDateTime start, QDateTime end, QList<QString> task
     this->start = start;
     this->end = end;
     this->people = taskPeople;
+    this->completition = completition;
 }
 
 void Task::AddDependency(GenericTask* dependency)
