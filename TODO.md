@@ -18,3 +18,4 @@
  - add version on bottom of page
  - change all widgets language to English/UnitedStates ✓
  - change dataGridView locale
+ - add edit dialog on rightClick on tree view
