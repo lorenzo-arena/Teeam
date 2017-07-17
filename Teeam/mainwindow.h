@@ -40,7 +40,7 @@ public:
 
 private slots:
     void on_action_Quit_triggered();
-    void on_actionAdd_Project_triggered();
+    void on_actionNew_Project_triggered();
     void on_actionAdd_Task_Group_triggered();
     void on_actionAdd_Task_triggered();
     void on_actionAdd_Milestone_triggered();
