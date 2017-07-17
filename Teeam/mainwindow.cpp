@@ -232,6 +232,7 @@ void MainWindow::UpdateProjectView()
 
 void MainWindow::UpdateTaskGroupView()
 {
+    // Non ci arriva nemmeno in debug!!
     for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
     {
         const QModelIndex projectIndex = viewModel->index(0,0);
@@ -254,27 +255,25 @@ void MainWindow::UpdateTaskGroupView()
             if ( ! legend.isEmpty() )
                 viewModel->setData( viewModel->index( row, 5, projectIndex ), legend );
         }
-        else if(projectModel->GetTaskGroup().at(i)->isChanged())
+        //else if(projectModel->GetTaskGroup().at(i)->isChanged())
+        else
         {
-            // TODO : da utilizzare!
-
             // Se ho aggiunto un task a una lista:
             for (int j = 0; j < projectModel->GetTaskGroup().at(i)->GetEntitiesList().length(); j++)
             {
                 if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->IsNew())
                 {
-                    // TODO : non va!!
-                    QModelIndex parent = viewModel->index(i,0,projectIndex);
+                    const QModelIndex parent = viewModel->index(i,0,projectIndex);
 
                     if ( !viewModel->insertRow( j, parent ) )
                         return;
 
                     int row = j;
                     if ( row == 0 && projectIndex.isValid() )
-                        viewModel->insertColumns( viewModel->columnCount( projectIndex ), 5, projectIndex );
+                        viewModel->insertColumns( viewModel->columnCount( parent ), 5, parent );
 
                     if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == TASK_CODE)
-                    {
+                    {                   
                         viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Task *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getName() );
                         viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeTask );
                         viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Task *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getStart(), KDGantt::StartTimeRole );
@@ -315,7 +314,7 @@ void MainWindow::UpdateEntitiesView()
             if ( !viewModel->insertRow( projectModel->GetTaskGroup().length(), parent ) )
                 return;
 
-            int row = i;
+            int row = projectModel->GetTaskGroup().length() + i;
             if ( row == 0 && parent.isValid() )
                 viewModel->insertColumns( viewModel->columnCount( parent ), 5, parent );
 
@@ -349,14 +348,6 @@ void MainWindow::UpdateEntitiesView()
         else if(projectModel->GetEntitiesList().at(i)->isChanged())
         {
             // TODO : da utilizzare!
-            /*viewModel->setData( viewModel->index( row, 0, parent ), projectModel->GetEntitiesList().at(i)-> );
-            viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeTask );
-            viewModel->setData( viewModel->index( row, 2, parent ), startdt, KDGantt::StartTimeRole );
-            viewModel->setData( viewModel->index( row, 3, parent ), enddt, KDGantt::EndTimeRole );
-            viewModel->setData( viewModel->index( row, 4, parent ), 0 ); // TODO : add completition
-            const QString legend( "" );
-            if ( ! legend.isEmpty() )
-                viewModel->setData( viewModel->index( row, 5, parent ), legend );*/
         }
     }
 }

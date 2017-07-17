@@ -18,5 +18,7 @@
  - add version on bottom of page
  - change all widgets language to English/UnitedStates ✓
  - change dataGridView locale
- - clean abstractController
- - add completition in AddTask dialog
+ - clean abstractController ✓
+ - add completition in AddTask dialog ✓
+ - add entitiesEdit controls
+ - add milestrones
