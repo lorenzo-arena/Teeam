@@ -21,4 +21,5 @@
  - clean abstractController ✓
  - add completition in AddTask dialog ✓
  - add entitiesEdit controls
- - add milestrones
+ - add milestones
+ - implement constraints
