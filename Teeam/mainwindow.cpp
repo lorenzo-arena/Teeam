@@ -174,12 +174,12 @@ void MainWindow::UpdateView()
             {
                 UpdateTaskGroupView();
             }
-        }
 
-        // TODO : refactor??
-        if(projectModel->IsEntitiesListChanged())
-        {
-            UpdateEntitiesView();
+            // TODO : refactor??
+            if(projectModel->IsEntitiesListChanged())
+            {
+                UpdateEntitiesView();
+            }
         }
     }
     return;
@@ -234,39 +234,72 @@ void MainWindow::UpdateTaskGroupView()
 {
     for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
     {
+        const QModelIndex projectIndex = viewModel->index(0,0);
+
         if(projectModel->GetTaskGroup().at(i)->IsNew())
         {
-            const QModelIndex parent = viewModel->index(0,0);
-
-            if ( !viewModel->insertRow( i, parent ) )
+            if ( !viewModel->insertRow( i, projectIndex ) )
                 return;
 
             int row = i;
-            if ( row == 0 && parent.isValid() )
-                viewModel->insertColumns( viewModel->columnCount( parent ), 5, parent );
+            if ( row == 0 && projectIndex.isValid() )
+                viewModel->insertColumns( viewModel->columnCount( projectIndex ), 5, projectIndex );
 
-            viewModel->setData( viewModel->index( row, 0, parent ), projectModel->GetTaskGroup().at(i)->getName() );
-            viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeSummary );
-            //viewModel->setData( viewModel->index( row, 2, parent ), startdt, KDGantt::StartTimeRole );
-            //viewModel->setData( viewModel->index( row, 3, parent ), enddt, KDGantt::EndTimeRole );
-            viewModel->setData( viewModel->index( row, 4, parent ), 10 );
+            viewModel->setData( viewModel->index( row, 0, projectIndex ), projectModel->GetTaskGroup().at(i)->getName() );
+            viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeSummary );
+            //viewModel->setData( viewModel->index( row, 2, projectIndex ), startdt, KDGantt::StartTimeRole );
+            //viewModel->setData( viewModel->index( row, 3, projectIndex ), enddt, KDGantt::EndTimeRole );
+            viewModel->setData( viewModel->index( row, 4, projectIndex ), 10 );
             const QString legend( "" );
             if ( ! legend.isEmpty() )
-                viewModel->setData( viewModel->index( row, 5, parent ), legend );
+                viewModel->setData( viewModel->index( row, 5, projectIndex ), legend );
         }
         else if(projectModel->GetTaskGroup().at(i)->isChanged())
         {
             // TODO : da utilizzare!
-            /*const QModelIndex parent = viewModel->index(0,0);
-            int row = i;
-            viewModel->setData( viewModel->index( row, 0, parent ), projectModel->GetTaskGroup().at(i)->getName() );
-            viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeSummary );
-            //viewModel->setData( viewModel->index( row, 2, parent ), startdt, KDGantt::StartTimeRole );
-            //viewModel->setData( viewModel->index( row, 3, parent ), enddt, KDGantt::EndTimeRole );
-            viewModel->setData( viewModel->index( row, 4, parent ), 10 );
-            const QString legend( "" );
-            if ( ! legend.isEmpty() )
-                viewModel->setData( viewModel->index( row, 5, parent ), legend );*/
+
+            // Se ho aggiunto un task a una lista:
+            for (int j = 0; j < projectModel->GetTaskGroup().at(i)->GetEntitiesList().length(); j++)
+            {
+                if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->IsNew())
+                {
+                    // TODO : non va!!
+                    QModelIndex parent = viewModel->index(i,0,projectIndex);
+
+                    if ( !viewModel->insertRow( j, parent ) )
+                        return;
+
+                    int row = j;
+                    if ( row == 0 && projectIndex.isValid() )
+                        viewModel->insertColumns( viewModel->columnCount( projectIndex ), 5, projectIndex );
+
+                    if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == TASK_CODE)
+                    {
+                        viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Task *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getName() );
+                        viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeTask );
+                        viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Task *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getStart(), KDGantt::StartTimeRole );
+                        viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Task *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getEnd(), KDGantt::EndTimeRole );
+                        viewModel->setData( viewModel->index( row, 4, parent ), static_cast<Task *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getCompletition() );
+                        const QString legend( "" );
+                        if ( ! legend.isEmpty() )
+                            viewModel->setData( viewModel->index( row, 5, parent ), legend );
+                    }
+                    else if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == MILESTONE_CODE)
+                    {
+                        /*
+                        viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Milestone *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getName() );
+                        viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeEvent );
+                        viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Milestone *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getStart(), KDGantt::StartTimeRole );
+                        viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Milestone *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getEnd(), KDGantt::EndTimeRole );
+                        viewModel->setData( viewModel->index( row, 4, parent ), static_cast<Milestone *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getCompletition() );
+                        const QString legend( "" );
+                        if ( ! legend.isEmpty() )
+                            viewModel->setData( viewModel->index( row, 5, parent ), legend );*/
+                    }
+                    else
+                        return;
+                }
+            }
         }
     }
 }
@@ -279,7 +312,7 @@ void MainWindow::UpdateEntitiesView()
         {
             const QModelIndex parent = viewModel->index(0,0);
 
-            if ( !viewModel->insertRow( i, parent ) )
+            if ( !viewModel->insertRow( projectModel->GetTaskGroup().length(), parent ) )
                 return;
 
             int row = i;
@@ -326,11 +359,6 @@ void MainWindow::UpdateEntitiesView()
                 viewModel->setData( viewModel->index( row, 5, parent ), legend );*/
         }
     }
-}
-
-void MainWindow::on_action_Quit_triggered()
-{
-    QApplication::quit();
 }
 
 void MainWindow::on_actionAdd_Project_triggered()
@@ -395,13 +423,6 @@ void MainWindow::on_actionAdd_Task_triggered()
     QList<QString> taskPeople = dialog->GetPeople();
     int completition = dialog->GetCompletition();
 
-    /********************************************************
-    // Usare una cosa simile ma con la treeView per ritrovare la posizione del group parent??
-    QComboBox* combo = new QComboBox();
-    combo->addItem("True", "True");
-    combo->addItem("False", "False");
-    combo->setCurrentIndex(combo->findData("False"));
-    *************************************************/
     if(selectedParent > 0)
         ganttController->AddTask(this, taskName, start, end, taskPeople, completition, selectedParent);
     else
@@ -505,4 +526,9 @@ void MainWindow::closeEvent(QCloseEvent *eventArgs)
     settings.endGroup();
 
     eventArgs->accept();
+}
+
+void MainWindow::on_action_Quit_triggered()
+{
+    QApplication::quit();
 }

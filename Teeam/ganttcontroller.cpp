@@ -28,7 +28,7 @@ void GanttController::AddTask(AbstractView *view, QString taskName, QDateTime st
     Task *task = new Task(taskName, start, end, taskPeople, completition);
     task->attach(view);
     if(selectedParent != -1)    
-        project->GetTaskGroup().at(selectedParent-1)->AddTask(task);
+        project->AddTaskOrMilestoneToGroup(task, selectedParent);
     else
         project->AddTaskOrMilestone(task);
 }

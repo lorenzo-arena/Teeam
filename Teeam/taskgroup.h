@@ -20,6 +20,7 @@ public:
     QString getName();
     bool IsNew();
     void AddTask(GenericTask* task);
+    QList<GenericTask*> GetEntitiesList() { return taskList; }
 
 private:
     QDateTime end;

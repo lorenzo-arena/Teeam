@@ -8,13 +8,13 @@
 
 #include <QList>
 
-class TaskGroup;
 class GenericTask;
+class TaskGroup;
 
 class TeeamProject: public GanttEntity
 {
-    friend class TaskGroup;
     friend class GenericTask;
+    friend class TaskGroup;
 public:
     TeeamProject(QString projectName, QList<QString> peopleList);
 
@@ -39,6 +39,7 @@ public:
     void setName(QString projectName);
     void setPeopleList(QList<QString> peopleList);
     void Show();
+    void AddTaskOrMilestoneToGroup(GenericTask *entity, int groupIndex);
 };
 
 #endif // TEEAMPROJECT_H

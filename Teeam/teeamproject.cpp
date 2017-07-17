@@ -2,10 +2,6 @@
 
 TeeamProject::TeeamProject(QString projectName, QList<QString> peopleList)
 {
-    bChanged = false;
-    projectChanged = false;
-    taskGroupChanged = false;
-    entitiesListChanged = false;
     this->name = projectName;
     this->peopleList = peopleList;
     this->bChanged = false;
@@ -52,6 +48,17 @@ void TeeamProject::AddTaskOrMilestone(GenericTask *entity)
     bChanged = true;
     notify();
     entitiesListChanged = false;
+    bChanged = false;
+    entity->setNew(false);
+}
+
+void TeeamProject::AddTaskOrMilestoneToGroup(GenericTask *entity, int groupIndex)
+{
+    taskGroupList.at(groupIndex - 1)->AddTask(entity);
+    taskGroupChanged = true;
+    bChanged = true;
+    notify();
+    taskGroupChanged = false;
     bChanged = false;
     entity->setNew(false);
 }
