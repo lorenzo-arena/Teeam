@@ -24,3 +24,4 @@
  - add milestones
  - implement constraints
  - implement task edit using drag/extend on tasks or milestones
+ - add edit dialog on rightClick on tree view
