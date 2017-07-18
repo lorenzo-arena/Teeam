@@ -23,3 +23,4 @@
  - add entitiesEdit controls
  - add milestones
  - implement constraints
+ - implement task edit using drag/extend on tasks or milestones
