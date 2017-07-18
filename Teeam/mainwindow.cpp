@@ -173,6 +173,11 @@ void MainWindow::UpdateView()
             }
         }
     }
+
+    // TODO : sostituire con bottone dedicato o con controllo più performante?
+    QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
+    leftView->expandAll();
+
     return;
 }
 
