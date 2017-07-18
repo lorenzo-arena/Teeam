@@ -285,15 +285,13 @@ void MainWindow::UpdateTaskGroupView()
                     }
                     else if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == MILESTONE_CODE)
                     {
-                        /*
                         viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Milestone *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getName() );
                         viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeEvent );
-                        viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Milestone *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getStart(), KDGantt::StartTimeRole );
-                        viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Milestone *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getEnd(), KDGantt::EndTimeRole );
-                        viewModel->setData( viewModel->index( row, 4, parent ), static_cast<Milestone *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getCompletition() );
+                        viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Milestone *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getDateTime(), KDGantt::StartTimeRole );
+                        viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Milestone *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getDateTime(), KDGantt::EndTimeRole );
                         const QString legend( "" );
                         if ( ! legend.isEmpty() )
-                            viewModel->setData( viewModel->index( row, 5, parent ), legend );*/
+                            viewModel->setData( viewModel->index( row, 5, parent ), legend );
                     }
                     else
                         return;
@@ -332,15 +330,13 @@ void MainWindow::UpdateEntitiesView()
             }
             else if(projectModel->GetEntitiesList().at(i)->getEntityType() == MILESTONE_CODE)
             {
-                // TODO : implement!
-                /*viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Milestone *>(projectModel->GetEntitiesList().at(i))->getName()  );
+                viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Milestone *>(projectModel->GetEntitiesList().at(i))->getName() );
                 viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeEvent );
-                viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Milestone *>(projectModel->GetEntitiesList().at(i))->getStart(), KDGantt::StartTimeRole );
-                //viewModel->setData( viewModel->index( row, 3, parent ), enddt, KDGantt::EndTimeRole );
-                viewModel->setData( viewModel->index( row, 4, parent ), 0 ); // TODO : add completition
+                viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Milestone *>(projectModel->GetEntitiesList().at(i))->getDateTime(), KDGantt::StartTimeRole );
+                viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Milestone *>(projectModel->GetEntitiesList().at(i))->getDateTime(), KDGantt::EndTimeRole );
                 const QString legend( "" );
                 if ( ! legend.isEmpty() )
-                    viewModel->setData( viewModel->index( row, 5, parent ), legend );*/
+                    viewModel->setData( viewModel->index( row, 5, parent ), legend );
             }
             else
                 return;
@@ -424,7 +420,29 @@ void MainWindow::on_actionAdd_Task_triggered()
 
 void MainWindow::on_actionAdd_Milestone_triggered()
 {
+    QList<QString> groupList;
+    for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
+        groupList << projectModel->GetTaskGroup().at(i)->getName();
 
+    QList<QString> totalPeople = projectModel->GetPeopleList();
+
+    AddMilestoneDialog *dialog = new AddMilestoneDialog( groupList, totalPeople, this );
+    if ( dialog->exec() == QDialog::Rejected || !dialog ) {
+        delete dialog;
+        return;
+    }
+
+    QString milestoneName = dialog->GetTaskName();
+    int selectedParent = dialog->GetSelectedGroup();
+    QDateTime start = dialog->GetStartDateTime();
+    QList<QString> milestonePeople = dialog->GetPeople();
+
+    if(selectedParent > 0)
+        ganttController->AddMilestone(this, milestoneName, start, milestonePeople, selectedParent);
+    else
+        ganttController->AddMilestone(this, milestoneName, start, milestonePeople);
+    delete dialog;
+    return;
 }
 
 void MainWindow::on_actionZoom_In_triggered()

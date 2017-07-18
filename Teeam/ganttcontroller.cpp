@@ -33,8 +33,14 @@ void GanttController::AddTask(AbstractView *view, QString taskName, QDateTime st
         project->AddTaskOrMilestone(task);
 }
 
-void GanttController::AddMilestone()
+void GanttController::AddMilestone(AbstractView *view, QString milestoneName, QDateTime start, QList<QString> taskPeople, int selectedParent)
 {
+    Milestone *milestone = new Milestone(milestoneName, start, taskPeople);
+    milestone->attach(view);
+    if(selectedParent != -1)
+        project->AddTaskOrMilestoneToGroup(milestone, selectedParent);
+    else
+        project->AddTaskOrMilestone(milestone);
 }
 
 void GanttController::SetFreeDays(Days days)
