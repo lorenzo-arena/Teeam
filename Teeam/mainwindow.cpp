@@ -131,6 +131,13 @@ void MainWindow::initGanttView()
     leftView->setColumnHidden( 4, true );
     leftView->setColumnHidden( 5, true );
     leftView->header()->setStretchLastSection( true );
+	
+	/******************************
+	 *	TODO :: ADD	
+	 * QFont fnt;
+     * fnt.setPixelSize(9);
+     * ui.treeView->setFont(fnt);
+	 *******************************/
 
     QSettings settings;
     settings.beginGroup(KEY_DATETIMEVIEW);
