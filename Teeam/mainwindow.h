@@ -23,7 +23,7 @@ class MainWindow;
 class TeeamDateTimeScaleFormatter : public KDGantt::DateTimeScaleFormatter
 {
 public:
-    TeeamDateTimeScaleFormatter( const DateTimeScaleFormatter& other );
+    TeeamDateTimeScaleFormatter( Range range, const QString& formatString, Qt::Alignment alignment = Qt::AlignCenter );
 
 private:
     QString text( const QDateTime& datetime );

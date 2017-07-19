@@ -17,8 +17,8 @@
 #include <QSet>
 #include <QLocale>
 
-TeeamDateTimeScaleFormatter::TeeamDateTimeScaleFormatter(const KDGantt::DateTimeScaleFormatter &other)
-    : DateTimeScaleFormatter(other)
+TeeamDateTimeScaleFormatter::TeeamDateTimeScaleFormatter(KDGantt::DateTimeScaleFormatter::Range range, const QString &formatString, Qt::Alignment alignment)
+    : DateTimeScaleFormatter(range, formatString, alignment)
 {
 
 }
@@ -122,8 +122,8 @@ void MainWindow::initGanttView()
     ********************************/
 
     dateTimeGrid = new KDGantt::DateTimeGrid();
-    dateTimeGrid->setUserDefinedLowerScale(new TeeamDateTimeScaleFormatter(*(dateTimeGrid->userDefinedLowerScale())));
-    dateTimeGrid->setUserDefinedUpperScale(new TeeamDateTimeScaleFormatter(*(dateTimeGrid->userDefinedUpperScale())));
+    dateTimeGrid->setUserDefinedLowerScale(new TeeamDateTimeScaleFormatter(KDGantt::DateTimeScaleFormatter::Week, "yyyy-MM-dd"));
+    dateTimeGrid->setUserDefinedUpperScale(new TeeamDateTimeScaleFormatter(KDGantt::DateTimeScaleFormatter::Week, "yyyy-MM-dd"));
     ui->ganttView->setGrid( dateTimeGrid );
     ui->ganttView->graphicsView()->setHeaderContextMenuPolicy(Qt::ContextMenuPolicy::NoContextMenu);
 
