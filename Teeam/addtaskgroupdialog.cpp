@@ -48,7 +48,7 @@ void AddTaskGroupDialog::on_buttonOk_clicked()
 
         if(alreadyExists)
         {
-            QMessageBox::warning(this, "Error", "You must specify a new name.", QMessageBox::Ok);
+            QMessageBox::warning(this, "Error", "You must specify a different name for every taskgroup.", QMessageBox::Ok);
             return;
         }
 
