@@ -228,20 +228,18 @@ void MainWindow::UpdateFreeDaysView()
 
 void MainWindow::UpdateProjectView()
 {
-    // TODO : aggiungere codice per ripulire dal vecchio progetto eventualmente
+    viewModel = new QStandardItemModel( 0, 6, this );
+    viewModel->setHeaderData( 0, Qt::Horizontal, tr( "Project Tree View" ) );
+    ui->ganttView->setModel( viewModel );
+
     if (viewModel->rowCount() == 0)
     {
         if ( !viewModel->insertRow( 0 ) )
             return;
     }
 
-    //viewModel->insertColumns( viewModel->columnCount(), 5 );
-
     viewModel->setData( viewModel->index( 0, 0 ), projectModel->GetName() );
     viewModel->setData( viewModel->index( 0, 1 ), KDGantt::TypeSummary );
-    //viewModel->setData( viewModel->index( 0, 2 ), startdt, KDGantt::StartTimeRole );
-    //viewModel->setData( viewModel->index( 0, 3 ), enddt, KDGantt::EndTimeRole );
-    //viewModel->setData( viewModel->index( 0, 4 ), 10 );
     const QString legend( "" );
     if ( ! legend.isEmpty() )
         viewModel->setData( viewModel->index( 0, 5 ), legend );
@@ -365,7 +363,7 @@ void MainWindow::UpdateEntitiesView()
     }
 }
 
-void MainWindow::on_actionAdd_Project_triggered()
+void MainWindow::on_actionNew_Project_triggered()
 {
     AddProjectDialog *dialog = new AddProjectDialog( this );
     if ( dialog->exec() == QDialog::Rejected || !dialog ) {

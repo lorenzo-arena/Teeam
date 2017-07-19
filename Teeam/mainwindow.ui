@@ -52,7 +52,7 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
-    <addaction name="actionAdd_Project"/>
+    <addaction name="actionNew_Project"/>
     <addaction name="actionAdd_Task_Group"/>
     <addaction name="actionAdd_Task"/>
     <addaction name="actionAdd_Milestone"/>
@@ -87,9 +87,9 @@
     <string>E&amp;xit</string>
    </property>
   </action>
-  <action name="actionAdd_Project">
+  <action name="actionNew_Project">
    <property name="text">
-    <string>Add &amp;Project</string>
+    <string>New &amp;Project</string>
    </property>
   </action>
   <action name="actionAdd_Task_Group">
