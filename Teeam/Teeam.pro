@@ -71,7 +71,13 @@ FORMS += \
 INCLUDEPATH += "C:\KDAB\KDChart-2.6.0\include\KDGantt"
 INCLUDEPATH += "C:\KDAB\KDChart-2.6.0\include\KDChart"
 
+CONFIG(Debug, Debug|Release){
 LIBS += "C:\KDAB\KDChart-2.6.0\lib\kdchartd2.dll"
+}
+
+CONFIG(Release, Debug|Release){
+LIBS += "C:\KDAB\KDChart-2.6.0\lib\kdchart2.dll"
+}
 
 RESOURCES += \
     teeamres.qrc
@@ -81,3 +87,5 @@ DEFINES += APP_NAME=\\\"Teeam\\\"
 VERSION = 0.2
 
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
+
+win32: RC_ICONS = barchart.ico
