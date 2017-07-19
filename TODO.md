@@ -5,7 +5,7 @@
  - handle onClose event from exit QMenu and from 'X' button ✓
  - add resize controls for Gantt DateTimeView under a new menu ✓
  - add free days dialog management ✓
- - fix color filled button in FreeDaysDialog
+ - fix color filled button in FreeDaysDialog ✓
  - fix freeday visualization in hour scale bug
  - clean observer ✓
  - move endDate only to Task class ✓
@@ -13,7 +13,7 @@
  - setup serialization
  - add new "Save Project dialog"
  - implement all gantt dialogs
- - fix scale commands on rightclick
+ - fix scale commands on rightclick ✓
  - add File->New../Save/Save As
  - add version on bottom of page
  - change all widgets language to English/UnitedStates ✓
