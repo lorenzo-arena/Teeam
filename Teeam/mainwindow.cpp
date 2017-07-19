@@ -463,21 +463,13 @@ void MainWindow::on_actionAdd_Milestone_triggered()
 void MainWindow::on_actionZoom_In_triggered()
 {
     qreal dayWidth = dateTimeGrid->dayWidth();
+    dateTimeGrid->setScale(KDGantt::DateTimeGrid::ScaleAuto);
     if (dayWidth > 400)
-    {
-        dateTimeGrid->setScale(KDGantt::DateTimeGrid::ScaleHour);
         dateTimeGrid->setDayWidth(dayWidth + 40);
-    }
     else if (dayWidth > 60)
-    {
-        dateTimeGrid->setScale(KDGantt::DateTimeGrid::ScaleDay);
         dateTimeGrid->setDayWidth(dayWidth + 40);
-    }
     else if (dayWidth > 20)
-    {
-        dateTimeGrid->setScale(KDGantt::DateTimeGrid::ScaleWeek);
         dateTimeGrid->setDayWidth(dayWidth + 10);
-    }
     else
         dateTimeGrid->setDayWidth(dayWidth + 5);
 }
@@ -485,28 +477,20 @@ void MainWindow::on_actionZoom_In_triggered()
 void MainWindow::on_actionZoom_Out_triggered()
 {
     qreal dayWidth = dateTimeGrid->dayWidth();
+    dateTimeGrid->setScale(KDGantt::DateTimeGrid::ScaleAuto);
     if(dayWidth <= 20)
-    {
-        dateTimeGrid->setScale(KDGantt::DateTimeGrid::ScaleMonth);
+    {     
         if (dayWidth <= 5)
              dateTimeGrid->setDayWidth(5);
         else
             dateTimeGrid->setDayWidth(dayWidth - 5);
     }
     else if(dayWidth <= 60)
-    {
-        dateTimeGrid->setScale(KDGantt::DateTimeGrid::ScaleWeek);
         dateTimeGrid->setDayWidth(10);
-    }
     else if (dayWidth <= 400)
-    {
-        dateTimeGrid->setScale(KDGantt::DateTimeGrid::ScaleDay);
         dateTimeGrid->setDayWidth(dayWidth - 40);
-    }
     else
-    {
         dateTimeGrid->setDayWidth(dayWidth - 40);
-    }
 }
 
 void MainWindow::on_actionSet_Free_Days_triggered()
