@@ -38,6 +38,7 @@ public:
     ~MainWindow();
 
     void UpdateView();
+    void SetProjectModel(TeeamProject *project) { this->projectModel = project; }
 
 private slots:
     void on_action_Quit_triggered();
@@ -84,6 +85,7 @@ private:
     void UpdateFreeDaysView();
     void UpdateProjectView();
     void UpdateTaskGroupView();
+    void UpdateEntitiesView();
 };
 
 #endif // MAINWINDOW_H

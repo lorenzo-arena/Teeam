@@ -25,14 +25,20 @@ AddTaskDialog::AddTaskDialog(QList<QString> groupList, QList<QString> peopleList
     ui->totalPeoplelistView->setModel(&totalPeopleModel);
 
     ui->startdateTimeEdit->setDateTime(QDateTime::currentDateTime());
-    ui->enddateTimeEdit->setDateTime(QDateTime::currentDateTime());
+    ui->enddateTimeEdit->setDateTime(QDateTime::currentDateTime().addDays(1));
 
-    start = QDateTime::currentDateTime();
-    end = QDateTime::currentDateTime();
+    start = ui->startdateTimeEdit->dateTime();
+    end = ui->enddateTimeEdit->dateTime();
+
+    completition = ui->completitionspinBox->value();
 
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowFlags(windowFlags() | Qt::Window);
 
+    ui->lineEdit->installEventFilter(this);
+    ui->startdateTimeEdit->installEventFilter(this);
+    ui->enddateTimeEdit->installEventFilter(this);
+    ui->completitionspinBox->installEventFilter(this);
     ui->lineEdit->setFocus();
 }
 
@@ -43,14 +49,27 @@ AddTaskDialog::~AddTaskDialog()
 
 void AddTaskDialog::on_buttonOk_clicked()
 {
+    // Estraggo il nome del task per controllarlo
     QString editText = ui->lineEdit->text();
+
+    // Estraggo le date per controllarle
+    QDateTime tempStart = ui->startdateTimeEdit->dateTime();
+    QDateTime tempEnd = ui->enddateTimeEdit->dateTime();
+
     if(editText == "")
     {
-        QMessageBox::warning(this, "Error", "You must specify a name for the new project.", QMessageBox::Ok);
+        QMessageBox::warning(this, "Error", "You must specify a name for the new task.", QMessageBox::Ok);
+        return;
+    }
+    else if(tempEnd < tempStart)
+    {
+        QMessageBox::warning(this, "Error", "Start date must be before end date.", QMessageBox::Ok);
         return;
     }
     else
     {
+        start = ui->startdateTimeEdit->dateTime();
+        end = ui->enddateTimeEdit->dateTime();
         name = ui->lineEdit->text();
         QDialog::accept();
     }
@@ -61,14 +80,14 @@ void AddTaskDialog::on_buttonCancel_clicked()
     this->close();
 }
 
-void AddTaskDialog::on_taskGroupcomboBox_currentTextChanged(const QString &arg1)
-{
-    selectedGroup = arg1;
-}
-
 void AddTaskDialog::on_startdateTimeEdit_dateTimeChanged(const QDateTime &dateTime)
 {
     start = dateTime;
+    if(end < start)
+    {
+        ui->enddateTimeEdit->setDateTime(start);
+        end = start;
+    }
 }
 
 void AddTaskDialog::on_enddateTimeEdit_dateTimeChanged(const QDateTime &dateTime)
@@ -122,4 +141,14 @@ void AddTaskDialog::on_removePeoplepushButton_clicked()
         totalPeopleModel.setStringList(tempList);
         ui->totalPeoplelistView->setModel(&totalPeopleModel);
     }
+}
+
+void AddTaskDialog::on_taskGroupcomboBox_currentIndexChanged(int index)
+{
+    selectedGroup = index;
+}
+
+void AddTaskDialog::on_completitionspinBox_valueChanged(int arg1)
+{
+    completition = arg1;
 }

@@ -17,6 +17,7 @@ protected:
     QString name;
     QDateTime start;
     QList<QString> people;
+    bool isNew;
 };
 
 #endif // GANNTENTITY_H

@@ -1,10 +1,13 @@
 #include "teeamproject.h"
 
-TeeamProject::TeeamProject()
+TeeamProject::TeeamProject(QString projectName, QList<QString> peopleList)
 {
-    bChanged = false;
-    projectChanged = false;
-    taskGroupChanged = false;
+    this->name = projectName;
+    this->peopleList = peopleList;
+    this->bChanged = false;
+    this->projectChanged = false;
+    this->taskGroupChanged = false;
+	this->entitiesListChanged = false;
 }
 
 void TeeamProject::setName(QString projectName)
@@ -17,14 +20,14 @@ void TeeamProject::setName(QString projectName)
     bChanged = false;
 }
 
-bool TeeamProject::isProjectChanged()
+void TeeamProject::setPeopleList(QList<QString> peopleList)
 {
-    return projectChanged;
-}
-
-QString TeeamProject::getName()
-{
-    return name;
+    this->peopleList = peopleList;
+    projectChanged = true;
+    bChanged = true;
+    notify();
+    projectChanged = false;
+    bChanged = false;
 }
 
 void TeeamProject::AddTaskGroup(TaskGroup *taskGroup)
@@ -38,14 +41,35 @@ void TeeamProject::AddTaskGroup(TaskGroup *taskGroup)
     taskGroup->setNew(false);
 }
 
-QList<TaskGroup *> TeeamProject::GetTaskGroup()
+void TeeamProject::AddTaskOrMilestone(GenericTask *entity)
 {
-    return taskGroupList;
+    entitiesList.append(entity);
+    entitiesListChanged = true;
+    bChanged = true;
+    notify();
+    entitiesListChanged = false;
+    bChanged = false;
+    entity->setNew(false);
 }
 
-bool TeeamProject::isTaskGroupChanged()
+void TeeamProject::AddTaskOrMilestoneToGroup(GenericTask *entity, int groupIndex)
 {
-    return taskGroupChanged;
+    taskGroupList.at(groupIndex - 1)->AddTask(entity);
+    taskGroupChanged = true;
+    bChanged = true;
+    notify();
+    taskGroupChanged = false;
+    bChanged = false;
+    entity->setNew(false);
 }
 
+// TODO : trovare soluzione migliore??
+void TeeamProject::Show()
+{
+    projectChanged = true;
+    bChanged = true;
+    notify();
+    projectChanged = false;
+    bChanged = false;
+}
 

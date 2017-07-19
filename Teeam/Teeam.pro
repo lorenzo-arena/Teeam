@@ -37,7 +37,8 @@ SOURCES += \
     freedaysmodel.cpp \
     addtaskgroupdialog.cpp \
     addtaskdialog.cpp \
-    addmilestonedialog.cpp
+    addmilestonedialog.cpp \
+    addpersondialog.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -55,7 +56,8 @@ HEADERS += \
     freedaysmodel.h \
     addtaskgroupdialog.h \
     addtaskdialog.h \
-    addmilestonedialog.h
+    addmilestonedialog.h \
+    addpersondialog.h
 
 FORMS += \
         mainwindow.ui \
@@ -63,7 +65,8 @@ FORMS += \
     freedaysdialog.ui \
     addtaskgroupdialog.ui \
     addtaskdialog.ui \
-    addmilestonedialog.ui
+    addmilestonedialog.ui \
+    addpersondialog.ui
 
 INCLUDEPATH += "C:\KDAB\KDChart-2.6.0\include\KDGantt"
 INCLUDEPATH += "C:\KDAB\KDChart-2.6.0\include\KDChart"
