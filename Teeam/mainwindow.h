@@ -46,11 +46,12 @@ private slots:
     void on_actionAdd_Task_Group_triggered();
     void on_actionAdd_Task_triggered();
     void on_actionAdd_Milestone_triggered();
-    void closeEvent(QCloseEvent *eventArgs);
     void on_actionZoom_In_triggered();
     void on_actionZoom_Out_triggered();
     void on_actionSet_Free_Days_triggered();
-    void on_dblClick_TreeView();
+    void on_actionTreeView_doubleclick(const QModelIndex &index);
+    bool eventFilter(QObject *target, QEvent *event);
+    void closeEvent(QCloseEvent *eventArgs);
 
 private:
     void initGanttView();

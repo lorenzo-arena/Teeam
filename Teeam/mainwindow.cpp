@@ -16,6 +16,7 @@
 #include <QCloseEvent>
 #include <QSet>
 #include <QLocale>
+#include <QMessageBox>
 
 TeeamDateTimeScaleFormatter::TeeamDateTimeScaleFormatter(const KDGantt::DateTimeScaleFormatter &other)
     : DateTimeScaleFormatter(other)
@@ -134,9 +135,9 @@ void MainWindow::initGanttView()
     viewModel->setHeaderData( 0, Qt::Horizontal, tr( "Project Tree View" ) );
     ui->ganttView->setModel( viewModel );
 
-
     QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
-    connect(leftView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(on_dblClick_TreeView()));
+    connect(leftView, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(on_actionTreeView_doubleclick(const QModelIndex&)));
+    leftView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     leftView->setColumnHidden( 1, true );
     leftView->setColumnHidden( 2, true );
     leftView->setColumnHidden( 3, true );
@@ -510,11 +511,15 @@ void MainWindow::on_actionSet_Free_Days_triggered()
     return;
 }
 
-void MainWindow::on_dblClick_TreeView()
+void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
 {
-    int pippo = 0;
-    int paperino = 1;
-    paperino += pippo;
+    QString text = "Clicked row: " + QString::number(index.row()) + "; column: " + QString::number(index.column());
+    QMessageBox::information(this, "Double Click", text);
+}
+
+bool MainWindow::eventFilter(QObject* target, QEvent* event)
+{
+    return QMainWindow::eventFilter(target, event);
 }
 
 void MainWindow::closeEvent(QCloseEvent *eventArgs)
