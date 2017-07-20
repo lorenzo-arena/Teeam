@@ -50,6 +50,7 @@ private slots:
     void on_actionZoom_In_triggered();
     void on_actionZoom_Out_triggered();
     void on_actionSet_Free_Days_triggered();
+    void on_dblClick_TreeView();
 
 private:
     void initGanttView();

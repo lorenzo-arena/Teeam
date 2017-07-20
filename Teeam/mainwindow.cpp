@@ -136,6 +136,7 @@ void MainWindow::initGanttView()
 
 
     QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
+    connect(leftView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(on_dblClick_TreeView()));
     leftView->setColumnHidden( 1, true );
     leftView->setColumnHidden( 2, true );
     leftView->setColumnHidden( 3, true );
@@ -507,6 +508,13 @@ void MainWindow::on_actionSet_Free_Days_triggered()
     ganttController->SetFreeDaysColor(color);
     delete dialog;
     return;
+}
+
+void MainWindow::on_dblClick_TreeView()
+{
+    int pippo = 0;
+    int paperino = 1;
+    paperino += pippo;
 }
 
 void MainWindow::closeEvent(QCloseEvent *eventArgs)
