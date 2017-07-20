@@ -401,6 +401,9 @@ void MainWindow::on_actionAdd_Task_triggered()
 
     QList<QString> totalPeople = projectModel->GetPeopleList();
 
+    // TODO : creare struct da riempire con dati per il controllo dei costraint
+    // contenente nome del task/milestone e QModelIndex(row + parent)
+
     AddTaskDialog *dialog = new AddTaskDialog( groupList, totalPeople, this );
     if ( dialog->exec() == QDialog::Rejected || !dialog ) {
         delete dialog;

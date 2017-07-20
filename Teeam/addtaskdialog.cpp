@@ -11,8 +11,10 @@ AddTaskDialog::AddTaskDialog(QList<QString> groupList, QList<QString> peopleList
     ui->setupUi(this);
 
     // Setto i vari elementi della dialog
+
     ui->taskGroupcomboBox->addItem("None");
     ui->taskGroupcomboBox->setCurrentIndex(0);
+    selectedGroup = 0;
     for (int i = 0; i < groupList.length(); i++)
         ui->taskGroupcomboBox->addItem(groupList.at(i));
 
