@@ -141,6 +141,7 @@ void MainWindow::initGanttView()
 
     QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
     connect(leftView, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(on_actionTreeView_doubleclick(const QModelIndex&)));
+    leftView->setExpandsOnDoubleClick(false);
     leftView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     leftView->setColumnHidden( 1, true );
     leftView->setColumnHidden( 2, true );
@@ -202,8 +203,8 @@ void MainWindow::UpdateView()
     }
 
     // TODO : sostituire con bottone dedicato o con controllo più performante?
-    QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
-    leftView->expandAll();
+    //QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
+    //leftView->expandAll();
 
     return;
 }
@@ -234,7 +235,6 @@ void MainWindow::UpdateFreeDaysView()
 
 void MainWindow::UpdateProjectView()
 {
-    // Aggiungere beginInsertRows/endInsertRows per il refresh della TreeView
     if(projectModel->IsNew())
     {
         viewModel = new QStandardItemModel( 0, 6, this );
@@ -253,6 +253,10 @@ void MainWindow::UpdateProjectView()
     const QString legend( "" );
     if ( ! legend.isEmpty() )
         viewModel->setData( viewModel->index( 0, 5 ), legend );
+
+    // Espando questo nodo
+    //QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
+    //leftView->expand(viewModel->index( 0, 0 ));
 }
 
 void MainWindow::UpdateTaskGroupView()
@@ -279,6 +283,10 @@ void MainWindow::UpdateTaskGroupView()
             const QString legend( "" );
             if ( ! legend.isEmpty() )
                 viewModel->setData( viewModel->index( row, 5, projectIndex ), legend );
+
+            QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
+            leftView->expand(projectIndex);
+
         }
         //else if(projectModel->GetTaskGroup().at(i)->isChanged())
         else
@@ -318,10 +326,12 @@ void MainWindow::UpdateTaskGroupView()
                         if ( ! legend.isEmpty() )
                             viewModel->setData( viewModel->index( row, 5, parent ), legend );
                     }
-                    else
-                        return;
+
+                    QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
+                    leftView->expand(projectIndex);
+                    leftView->expand(parent);
                 }
-            }
+            }            
         }
     }
 }
@@ -363,8 +373,9 @@ void MainWindow::UpdateEntitiesView()
                 if ( ! legend.isEmpty() )
                     viewModel->setData( viewModel->index( row, 5, parent ), legend );
             }
-            else
-                return;
+
+            QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
+            leftView->expand(parent);
         }
         else if(projectModel->GetEntitiesList().at(i)->isChanged())
         {
