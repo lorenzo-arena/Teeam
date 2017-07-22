@@ -547,6 +547,7 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
     {
         // Ho cliccato il project
         AddProjectDialog *dialog = new AddProjectDialog( projectModel->GetName(), projectModel->GetPeopleList(), this );
+        dialog->setWindowTitle("Edit Project");
         if ( dialog->exec() == QDialog::Rejected || !dialog ) {
             delete dialog;
             return;
@@ -609,6 +610,7 @@ void MainWindow::on_action_Edit_Project_triggered()
     if(projectModel != nullptr)
     {
         AddProjectDialog *dialog = new AddProjectDialog( projectModel->GetName(), projectModel->GetPeopleList(), this );
+        dialog->setWindowTitle("Edit Project");
         if ( dialog->exec() == QDialog::Rejected || !dialog ) {
             delete dialog;
             return;
