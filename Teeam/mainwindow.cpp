@@ -268,6 +268,7 @@ void MainWindow::UpdateTaskGroupView()
 
         if(projectModel->GetTaskGroup().at(i)->IsNew())
         {
+            // Ogni nuovo
             if ( !viewModel->insertRow( i, projectIndex ) )
                 return;
 
@@ -344,7 +345,10 @@ void MainWindow::UpdateEntitiesView()
         {
             const QModelIndex parent = viewModel->index(0,0);
 
-            if ( !viewModel->insertRow( projectModel->GetTaskGroup().length(), parent ) )
+            // Ogni nuovo task/milestone lo aggiungo al suo posto dopo i task group
+            int firstFreeRow = projectModel->GetTaskGroup().length() + i;
+
+            if ( !viewModel->insertRow( firstFreeRow, parent ) )
                 return;
 
             int row = projectModel->GetTaskGroup().length() + i;
