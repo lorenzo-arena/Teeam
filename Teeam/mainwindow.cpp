@@ -97,6 +97,10 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
         ui->actionAdd_Task_Group->setEnabled(false);
         ui->actionAdd_Task->setEnabled(false);
         ui->actionAdd_Milestone->setEnabled(false);
+        ui->action_Edit_Project->setEnabled(false);
+        ui->action_Edit_Task_Group->setEnabled(false);
+        ui->action_Edit_Task->setEnabled(false);
+        ui->action_Edit_Milestone->setEnabled(false);
     }
 }
 
@@ -230,14 +234,18 @@ void MainWindow::UpdateFreeDaysView()
 
 void MainWindow::UpdateProjectView()
 {
-    viewModel = new QStandardItemModel( 0, 6, this );
-    viewModel->setHeaderData( 0, Qt::Horizontal, tr( "Project Tree View" ) );
-    ui->ganttView->setModel( viewModel );
-
-    if (viewModel->rowCount() == 0)
+    // Aggiungere beginInsertRows/endInsertRows per il refresh della TreeView
+    if(projectModel->IsNew())
     {
-        if ( !viewModel->insertRow( 0 ) )
-            return;
+        viewModel = new QStandardItemModel( 0, 6, this );
+        viewModel->setHeaderData( 0, Qt::Horizontal, tr( "Project Tree View" ) );
+        ui->ganttView->setModel( viewModel );
+
+        if (viewModel->rowCount() == 0)
+        {
+            if ( !viewModel->insertRow( 0 ) )
+                return;
+        }
     }
 
     viewModel->setData( viewModel->index( 0, 0 ), projectModel->GetName() );
@@ -383,6 +391,10 @@ void MainWindow::on_actionNew_Project_triggered()
     ui->actionAdd_Task_Group->setEnabled(true);
     ui->actionAdd_Task->setEnabled(true);
     ui->actionAdd_Milestone->setEnabled(true);
+    ui->action_Edit_Project->setEnabled(true);
+    ui->action_Edit_Task_Group->setEnabled(true);
+    ui->action_Edit_Task->setEnabled(true);
+    ui->action_Edit_Milestone->setEnabled(true);
 
     delete dialog;
     return;
@@ -513,8 +525,31 @@ void MainWindow::on_actionSet_Free_Days_triggered()
 
 void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
 {
-    QString text = "Clicked row: " + QString::number(index.row()) + "; column: " + QString::number(index.column());
-    QMessageBox::information(this, "Double Click", text);
+    //QString text = "Clicked row: " + QString::number(index.row()) + "; column: " + QString::number(index.column());
+    //QMessageBox::information(this, "Double Click", text);
+
+    if(index.row() == 0 && index.column() == 0 && !index.parent().isValid())
+    {
+        // Ho cliccato il project
+        AddProjectDialog *dialog = new AddProjectDialog( projectModel->GetName(), projectModel->GetPeopleList(), this );
+        if ( dialog->exec() == QDialog::Rejected || !dialog ) {
+            delete dialog;
+            return;
+        }
+
+        QString newName = dialog->GetProjectName();
+        QList<QString> newPeople = dialog->GetPeopleList();
+
+        if(newName != projectModel->GetName() || newPeople != projectModel->GetPeopleList())
+        {
+            // TODO : geestire la variabile IsNew del projeect
+            // implementando dei metodi set new
+            ganttController->EditProject(newName, newPeople);
+        }
+
+        delete dialog;
+        return;
+    }
 }
 
 bool MainWindow::eventFilter(QObject* target, QEvent* event)
@@ -552,4 +587,27 @@ void MainWindow::closeEvent(QCloseEvent *eventArgs)
 void MainWindow::on_action_Quit_triggered()
 {
     QApplication::quit();
+}
+
+void MainWindow::on_action_Edit_Project_triggered()
+{
+    if(projectModel != nullptr)
+    {
+        AddProjectDialog *dialog = new AddProjectDialog( projectModel->GetName(), projectModel->GetPeopleList(), this );
+        if ( dialog->exec() == QDialog::Rejected || !dialog ) {
+            delete dialog;
+            return;
+        }
+
+        QString newName = dialog->GetProjectName();
+        QList<QString> newPeople = dialog->GetPeopleList();
+
+        if(newName != projectModel->GetName() || newPeople != projectModel->GetPeopleList())
+        {
+            ganttController->EditProject(newName, newPeople);
+        }
+
+        delete dialog;
+        return;
+    }
 }

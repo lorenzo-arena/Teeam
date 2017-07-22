@@ -53,6 +53,8 @@ private slots:
     bool eventFilter(QObject *target, QEvent *event);
     void closeEvent(QCloseEvent *eventArgs);
 
+    void on_action_Edit_Project_triggered();
+
 private:
     void initGanttView();
 

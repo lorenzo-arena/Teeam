@@ -12,8 +12,16 @@ GanttController::GanttController(FreeDaysModel *freeDays, TeeamProject *project)
 
 void GanttController::NewProject(TeeamProject *newProject)
 {
-    this->project = newProject;
-    this->project->Show();
+    project = newProject;
+    project->Show();
+    project->SetNew(false);
+}
+
+void GanttController::EditProject(QString newName, QList<QString> newPeople)
+{
+    project->SetNew(false); // solo per sicurezza
+    project->setName(newName);
+    project->setPeopleList(newPeople);
 }
 
 void GanttController::AddTaskGroup(AbstractView *view, QString taskGroupName)

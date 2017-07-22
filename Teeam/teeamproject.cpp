@@ -8,6 +8,7 @@ TeeamProject::TeeamProject(QString projectName, QList<QString> peopleList)
     this->projectChanged = false;
     this->taskGroupChanged = false;
 	this->entitiesListChanged = false;
+    this->isNew = true;
 }
 
 void TeeamProject::setName(QString projectName)

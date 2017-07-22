@@ -8,6 +8,7 @@ AddProjectDialog::AddProjectDialog(QWidget *parent, Qt::WindowFlags f) :
     QDialog(parent, f),
     ui(new Ui::AddProjectDialog)
 {
+    // Costruttore utilizzato per creare un nuovo progetto
     ui->setupUi(this);
 
     QDialog::setFixedSize(this->size());
@@ -25,6 +26,33 @@ AddProjectDialog::AddProjectDialog(QWidget *parent, Qt::WindowFlags f) :
 
     ui->peoplelistView->setModel(&peopleModel);
 
+    ui->lineEdit->setFocus();
+}
+
+AddProjectDialog::AddProjectDialog(QString name, QList<QString> people, QWidget *parent, Qt::WindowFlags f) :
+    QDialog(parent, f),
+    ui(new Ui::AddProjectDialog)
+{
+    // Costruttore utilizzato per modificare il progetto esistente
+    ui->setupUi(this);
+
+    QDialog::setFixedSize(this->size());
+
+    ui->lineEdit->installEventFilter(this);
+    ui->label->installEventFilter(this);
+    ui->buttonOk->installEventFilter(this);
+    ui->buttonCancel->installEventFilter(this);
+    ui->removePersonButton->installEventFilter(this);
+    ui->addPersonButton->installEventFilter(this);
+    ui->peoplelistView->installEventFilter(this);
+
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+    setWindowFlags(windowFlags() | Qt::Window);
+
+    ui->lineEdit->setText(name);
+    peopleModel.setStringList(people);
+
+    ui->peoplelistView->setModel(&peopleModel);
     ui->lineEdit->setFocus();
 }
 

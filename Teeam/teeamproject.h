@@ -40,6 +40,8 @@ public:
     void setPeopleList(QList<QString> peopleList);
     void Show();
     void AddTaskOrMilestoneToGroup(GenericTask *entity, int groupIndex);
+    bool IsNew() { return isNew; }
+    void SetNew(bool b) { isNew = b; }
 };
 
 #endif // TEEAMPROJECT_H

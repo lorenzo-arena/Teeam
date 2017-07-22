@@ -9,6 +9,7 @@
 #include "teeamproject.h"
 
 #include <QColor>
+#include <QList>
 
 class GanttController
 {
@@ -18,6 +19,7 @@ public:
 // controller interface
 public:
     void NewProject(TeeamProject *newProject);
+    void EditProject(QString newName, QList<QString> newPeople);
     void AddTaskGroup(AbstractView *view, QString taskGroupName);
     void AddTask(AbstractView *view, QString taskName, QDateTime start, QDateTime end, QList<QString> taskPeople, int completition, int selectedParent = -1);
     void AddMilestone(AbstractView *view, QString milestoneName, QDateTime start, QList<QString> taskPeople, int selectedParent = -1);
