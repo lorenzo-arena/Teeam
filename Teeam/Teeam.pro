@@ -38,7 +38,8 @@ SOURCES += \
     addtaskgroupdialog.cpp \
     addtaskdialog.cpp \
     addmilestonedialog.cpp \
-    addpersondialog.cpp
+    addpersondialog.cpp \
+    edittaskgroupdialog.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -57,7 +58,8 @@ HEADERS += \
     addtaskgroupdialog.h \
     addtaskdialog.h \
     addmilestonedialog.h \
-    addpersondialog.h
+    addpersondialog.h \
+    edittaskgroupdialog.h
 
 FORMS += \
         mainwindow.ui \
@@ -66,7 +68,8 @@ FORMS += \
     addtaskgroupdialog.ui \
     addtaskdialog.ui \
     addmilestonedialog.ui \
-    addpersondialog.ui
+    addpersondialog.ui \
+    edittaskgroupdialog.ui
 
 INCLUDEPATH += "C:\KDAB\KDChart-2.6.0\include\KDGantt"
 INCLUDEPATH += "C:\KDAB\KDChart-2.6.0\include\KDChart"

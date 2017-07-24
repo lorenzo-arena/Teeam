@@ -546,25 +546,20 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
     if(index.row() == 0 && index.column() == 0 && !index.parent().isValid())
     {
         // Ho cliccato il project
-        AddProjectDialog *dialog = new AddProjectDialog( projectModel->GetName(), projectModel->GetPeopleList(), this );
-        dialog->setWindowTitle("Edit Project");
-        if ( dialog->exec() == QDialog::Rejected || !dialog ) {
-            delete dialog;
-            return;
-        }
-
-        QString newName = dialog->GetProjectName();
-        QList<QString> newPeople = dialog->GetPeopleList();
-
-        if(newName != projectModel->GetName() || newPeople != projectModel->GetPeopleList())
+        on_action_Edit_Project_triggered();
+    }
+    else if(index.parent().isValid() && !index.parent().parent().isValid())
+    {
+        // Controllo se ho cliccato un gruppo
+        if(index.row() < projectModel->GetTaskGroup().length())
         {
-            // TODO : geestire la variabile IsNew del projeect
-            // implementando dei metodi set new
-            ganttController->EditProject(newName, newPeople);
-        }
 
-        delete dialog;
-        return;
+        }
+        // oppure se ho cliccato un task/milestone
+        else
+        {
+
+        }
     }
 }
 
