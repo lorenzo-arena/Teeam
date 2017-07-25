@@ -42,6 +42,7 @@ public:
     void AddTaskOrMilestoneToGroup(GenericTask *entity, int groupIndex);
     bool IsNew() { return isNew; }
     void SetNew(bool b) { isNew = b; }
+    void ShowGroups();
 };
 
 #endif // TEEAMPROJECT_H

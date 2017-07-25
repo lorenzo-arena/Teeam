@@ -55,6 +55,8 @@ private slots:
 
     void on_action_Edit_Project_triggered();
 
+    void on_action_Edit_Task_Group_triggered();
+
 private:
     void initGanttView();
 

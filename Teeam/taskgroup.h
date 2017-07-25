@@ -18,6 +18,7 @@ class TaskGroup : public GanttEntity
 public:
     TaskGroup(QString taskGroupName);
     QString getName();
+    void setName(QString newName) { name = newName; }
     bool IsNew();
     void AddTask(GenericTask* task);
     QList<GenericTask*> GetEntitiesList() { return taskList; }

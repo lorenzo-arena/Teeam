@@ -5,6 +5,7 @@
 #include "addtaskgroupdialog.h"
 #include "addtaskdialog.h"
 #include "addmilestonedialog.h"
+#include "edittaskgroupdialog.h"
 #include "freedaysdialog.h"
 
 #include <QApplication>
@@ -540,9 +541,6 @@ void MainWindow::on_actionSet_Free_Days_triggered()
 
 void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
 {
-    //QString text = "Clicked row: " + QString::number(index.row()) + "; column: " + QString::number(index.column());
-    //QMessageBox::information(this, "Double Click", text);
-
     if(index.row() == 0 && index.column() == 0 && !index.parent().isValid())
     {
         // Ho cliccato il project
@@ -553,7 +551,26 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
         // Controllo se ho cliccato un gruppo
         if(index.row() < projectModel->GetTaskGroup().length())
         {
+            QList<QString> groups;
+            for (int i = 0; i < projectModel->GetTaskGroup().length(); i++)
+                groups << projectModel->GetTaskGroup().at(i)->getName();
 
+            EditTaskGroupDialog *dialog = new EditTaskGroupDialog( groups, this, index.row() );
+            if ( dialog->exec() == QDialog::Rejected || !dialog ) {
+                delete dialog;
+                return;
+            }
+
+            QString newName = dialog->GetTaskGroupName();
+
+            if(newName != projectModel->GetTaskGroup().at(index.row())->getName())
+            {
+                // TODO : sistemare, non arriva l'update!!
+                ganttController->EditTaskGroup(index.row(), newName);
+            }
+
+            delete dialog;
+            return;
         }
         // oppure se ho cliccato un task/milestone
         else
@@ -617,6 +634,33 @@ void MainWindow::on_action_Edit_Project_triggered()
         if(newName != projectModel->GetName() || newPeople != projectModel->GetPeopleList())
         {
             ganttController->EditProject(newName, newPeople);
+        }
+
+        delete dialog;
+        return;
+    }
+}
+
+void MainWindow::on_action_Edit_Task_Group_triggered()
+{
+    if(projectModel != nullptr)
+    {
+        QList<QString> groups;
+        for (int i = 0; i < projectModel->GetTaskGroup().length(); i++)
+            groups << projectModel->GetTaskGroup().at(i)->getName();
+
+        EditTaskGroupDialog *dialog = new EditTaskGroupDialog( groups, this );
+        if ( dialog->exec() == QDialog::Rejected || !dialog ) {
+            delete dialog;
+            return;
+        }
+
+        QString newName = dialog->GetTaskGroupName();
+        int selectedGroup = dialog->GetSelectedGroup();
+
+        if(newName != projectModel->GetTaskGroup().at(selectedGroup-1)->getName())
+        {
+            ganttController->EditTaskGroup(selectedGroup, newName);
         }
 
         delete dialog;

@@ -74,3 +74,12 @@ void TeeamProject::Show()
     bChanged = false;
 }
 
+void TeeamProject::ShowGroups()
+{
+    taskGroupChanged = true;
+    bChanged = true;
+    notify();
+    taskGroupChanged = false;
+    bChanged = false;
+}
+

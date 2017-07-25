@@ -21,6 +21,7 @@ public:
     void NewProject(TeeamProject *newProject);
     void EditProject(QString newName, QList<QString> newPeople);
     void AddTaskGroup(AbstractView *view, QString taskGroupName);
+    void EditTaskGroup(int index, QString newName);
     void AddTask(AbstractView *view, QString taskName, QDateTime start, QDateTime end, QList<QString> taskPeople, int completition, int selectedParent = -1);
     void AddMilestone(AbstractView *view, QString milestoneName, QDateTime start, QList<QString> taskPeople, int selectedParent = -1);
     void SetFreeDays(Days days);
