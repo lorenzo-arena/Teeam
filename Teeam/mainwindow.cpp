@@ -279,9 +279,6 @@ void MainWindow::UpdateTaskGroupView()
 
             viewModel->setData( viewModel->index( row, 0, projectIndex ), projectModel->GetTaskGroup().at(i)->getName() );
             viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeSummary );
-            //viewModel->setData( viewModel->index( row, 2, projectIndex ), startdt, KDGantt::StartTimeRole );
-            //viewModel->setData( viewModel->index( row, 3, projectIndex ), enddt, KDGantt::EndTimeRole );
-            viewModel->setData( viewModel->index( row, 4, projectIndex ), 10 );
             const QString legend( "" );
             if ( ! legend.isEmpty() )
                 viewModel->setData( viewModel->index( row, 5, projectIndex ), legend );
@@ -293,6 +290,18 @@ void MainWindow::UpdateTaskGroupView()
         //else if(projectModel->GetTaskGroup().at(i)->isChanged())
         else
         {
+            // Controllo se ho fatto modifiche al group
+            if(projectModel->GetTaskGroup().at(i)->isChanged())
+            {
+                int row = i;
+
+                viewModel->setData( viewModel->index( row, 0, projectIndex ), projectModel->GetTaskGroup().at(i)->getName() );
+                viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeSummary );
+
+                QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
+                leftView->expand(projectIndex);
+            }
+
             // Se ho aggiunto un task a una lista:
             for (int j = 0; j < projectModel->GetTaskGroup().at(i)->GetEntitiesList().length(); j++)
             {

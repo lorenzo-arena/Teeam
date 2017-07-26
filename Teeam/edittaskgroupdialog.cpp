@@ -9,6 +9,8 @@ EditTaskGroupDialog::EditTaskGroupDialog(const QList<QString>& groups, QWidget *
 {
     ui->setupUi(this);
 
+    this->existingGroups = groups;
+
     QDialog::setFixedSize(this->size());
 
     ui->lineEdit->installEventFilter(this);
@@ -25,18 +27,15 @@ EditTaskGroupDialog::EditTaskGroupDialog(const QList<QString>& groups, QWidget *
     for (int i = 0; i < groups.length(); i++)
         ui->namelistcomboBox->addItem(groups.at(i));
 
-    /*if(selectedGroup != -1)
+    if(selectedGroup != -1)
     {
-        // TODO : Sistemare!!!
         this->selectedGroup = selectedGroup+1;
         ui->namelistcomboBox->setCurrentIndex(this->selectedGroup);
         ui->namelistcomboBox->setEnabled(false);
         ui->lineEdit->setText(existingGroups.at(this->selectedGroup-1));
-    }*/
+    }
 
     ui->lineEdit->setFocus();
-
-    this->existingGroups = groups;
 }
 
 EditTaskGroupDialog::~EditTaskGroupDialog()
