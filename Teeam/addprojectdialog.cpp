@@ -54,7 +54,6 @@ AddProjectDialog::AddProjectDialog(QString name, QList<QString> people, QWidget 
 
     ui->peoplelistView->setModel(&peopleModel);
     ui->lineEdit->setFocus();
-    ui->lineEdit->setCursorPosition(ui->lineEdit->text().length());
 }
 
 void AddProjectDialog::on_buttonOk_clicked()
@@ -79,7 +78,12 @@ void AddProjectDialog::on_buttonCancel_clicked()
 
 bool AddProjectDialog::eventFilter(QObject* target, QEvent* event)
 {
-    if (event->type() == QEvent::KeyPress)
+    if(target == ui->lineEdit && event->type() == QEvent::FocusIn)
+    {
+        ui->lineEdit->setCursorPosition(ui->lineEdit->text().length()); // Sposto il cursore in fondo alla stringa
+        event->ignore();
+    }
+    else if (event->type() == QEvent::KeyPress)
     {
         QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
         if (keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return )

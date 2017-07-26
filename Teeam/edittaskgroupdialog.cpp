@@ -27,16 +27,15 @@ EditTaskGroupDialog::EditTaskGroupDialog(const QList<QString>& groups, QWidget *
     for (int i = 0; i < groups.length(); i++)
         ui->namelistcomboBox->addItem(groups.at(i));
 
-    ui->lineEdit->setFocus();
-
     if(selectedGroup != -1)
     {
         this->selectedGroup = selectedGroup+1;
         ui->namelistcomboBox->setCurrentIndex(this->selectedGroup);
         ui->namelistcomboBox->setEnabled(false);
         ui->lineEdit->setText(existingGroups.at(this->selectedGroup-1));
-        ui->lineEdit->setCursorPosition(ui->lineEdit->text().length()); // Sposto il cursore in fondo alla stringa
     }
+
+    ui->lineEdit->setFocus();
 }
 
 EditTaskGroupDialog::~EditTaskGroupDialog()
@@ -92,7 +91,12 @@ void EditTaskGroupDialog::on_buttonCancel_clicked()
 
 bool EditTaskGroupDialog::eventFilter(QObject* target, QEvent* event)
 {
-    if (event->type() == QEvent::KeyPress)
+    if(target == ui->lineEdit && event->type() == QEvent::FocusIn)
+    {
+        ui->lineEdit->setCursorPosition(ui->lineEdit->text().length()); // Sposto il cursore in fondo alla stringa
+        event->ignore();
+    }
+    else if (event->type() == QEvent::KeyPress)
     {
         QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
         if (keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return )
@@ -109,11 +113,13 @@ void EditTaskGroupDialog::on_namelistcomboBox_currentIndexChanged(int index)
     selectedGroup = index;
     if(index == 0)
     {
+        ui->lineEdit->setText("");
         ui->lineEdit->setEnabled(false);
     }
     else if(index > 0)
     {
         ui->lineEdit->setEnabled(true);
         ui->lineEdit->setText(existingGroups.at(index-1));
+        ui->lineEdit->setFocus();
     }
 }
