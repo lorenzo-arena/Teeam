@@ -54,7 +54,7 @@ AddProjectDialog::AddProjectDialog(QString name, QList<QString> people, QWidget 
 
     ui->peoplelistView->setModel(&peopleModel);
     ui->lineEdit->setFocus();
-    ui->lineEdit->setCursorPosition(0);
+    ui->lineEdit->setCursorPosition(ui->lineEdit->text().length());
 }
 
 void AddProjectDialog::on_buttonOk_clicked()

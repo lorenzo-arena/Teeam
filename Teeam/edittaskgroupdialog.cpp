@@ -27,15 +27,16 @@ EditTaskGroupDialog::EditTaskGroupDialog(const QList<QString>& groups, QWidget *
     for (int i = 0; i < groups.length(); i++)
         ui->namelistcomboBox->addItem(groups.at(i));
 
+    ui->lineEdit->setFocus();
+
     if(selectedGroup != -1)
     {
         this->selectedGroup = selectedGroup+1;
         ui->namelistcomboBox->setCurrentIndex(this->selectedGroup);
         ui->namelistcomboBox->setEnabled(false);
         ui->lineEdit->setText(existingGroups.at(this->selectedGroup-1));
+        ui->lineEdit->setCursorPosition(ui->lineEdit->text().length()); // Sposto il cursore in fondo alla stringa
     }
-
-    ui->lineEdit->setFocus();
 }
 
 EditTaskGroupDialog::~EditTaskGroupDialog()
