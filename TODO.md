@@ -25,3 +25,6 @@
  - implement constraints
  - implement task edit using drag/extend on tasks or milestones
  - add edit dialog on rightClick on tree view
+
+## TO FIX:
+ - adding a task without parent then a milestone without parent cause the task to disappear
