@@ -55,9 +55,11 @@ void TeeamProject::AddTaskOrMilestone(GenericTask *entity)
 void TeeamProject::AddTaskOrMilestoneToGroup(GenericTask *entity, int groupIndex)
 {
     taskGroupList.at(groupIndex - 1)->AddTask(entity);
+    taskGroupList.at(groupIndex - 1)->setChanged(true);
     taskGroupChanged = true;
     bChanged = true;
     notify();
+    taskGroupList.at(groupIndex - 1)->setChanged(false);
     taskGroupChanged = false;
     bChanged = false;
     entity->setNew(false);
@@ -110,10 +112,12 @@ void TeeamProject::RemoveTaskOrMilestone(int index, int parent)
         {
             taskGroupChanged = true;
             bChanged = true;
+            taskGroupList.at(parent)->setChanged(true);
             taskGroupList.at(parent)->GetEntitiesList().at(index)->setRemoved(true);
             notify();
             taskGroupChanged = false;
             bChanged = false;
+            taskGroupList.at(parent)->setChanged(false);
             taskGroupList.at(parent)->GetEntitiesList().removeAt(index);
         }
     }
