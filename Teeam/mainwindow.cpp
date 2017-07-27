@@ -7,6 +7,7 @@
 #include "addmilestonedialog.h"
 #include "freedaysdialog.h"
 
+#include <QDebug>
 #include <QApplication>
 #include <QAbstractItemView>
 #include <QList>
@@ -521,7 +522,7 @@ void MainWindow::on_actionSet_Free_Days_triggered()
 void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
 {
     QString text = "DoubleClicked row: " + QString::number(index.row()) + "; column: " + QString::number(index.column());
-    QMessageBox::information(this, "Double Click", text);
+    qDebug() << text;
 }
 
 void MainWindow::on_actionTreeView_del(const QModelIndex &index)
@@ -529,7 +530,25 @@ void MainWindow::on_actionTreeView_del(const QModelIndex &index)
     if(index.isValid())
     {
         QString text = "Deleted row: " + QString::number(index.row()) + "; column: " + QString::number(index.column());
-        QMessageBox::information(this, "Double Click", text);
+        qDebug() << text;
+
+        if(index.row() == 0 && index.column() == 0 && !index.parent().isValid())
+        {
+            // Ho cliccato il project
+        }
+        else if(index.parent().isValid() && !index.parent().parent().isValid())
+        {
+            // Controllo se ho cliccato un gruppo
+            if(index.row() < projectModel->GetTaskGroup().length())
+            {
+
+            }
+            // oppure se ho cliccato un task/milestone
+            else
+            {
+
+            }
+        }
     }
 }
 
