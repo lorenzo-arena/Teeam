@@ -50,6 +50,7 @@ private slots:
     void on_actionZoom_Out_triggered();
     void on_actionSet_Free_Days_triggered();
     void on_actionTreeView_doubleclick(const QModelIndex &index);
+    void on_actionTreeView_del(const QModelIndex &index);
     bool eventFilter(QObject *target, QEvent *event);
     void closeEvent(QCloseEvent *eventArgs);
 

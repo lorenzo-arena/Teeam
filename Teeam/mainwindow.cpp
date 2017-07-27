@@ -8,12 +8,15 @@
 #include "freedaysdialog.h"
 
 #include <QApplication>
+#include <QAbstractItemView>
 #include <QList>
 #include <QSplitter>
 #include <QStandardItemModel>
 #include <QTreeView>
 #include <QSettings>
+#include <QEvent>
 #include <QCloseEvent>
+#include <QKeyEvent>
 #include <QSet>
 #include <QLocale>
 #include <QMessageBox>
@@ -513,12 +516,34 @@ void MainWindow::on_actionSet_Free_Days_triggered()
 
 void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
 {
-    QString text = "Clicked row: " + QString::number(index.row()) + "; column: " + QString::number(index.column());
+    QString text = "DoubleClicked row: " + QString::number(index.row()) + "; column: " + QString::number(index.column());
     QMessageBox::information(this, "Double Click", text);
+}
+
+void MainWindow::on_actionTreeView_del(const QModelIndex &index)
+{
+    if(index.isValid())
+    {
+        QString text = "Deleted row: " + QString::number(index.row()) + "; column: " + QString::number(index.column());
+        QMessageBox::information(this, "Double Click", text);
+    }
 }
 
 bool MainWindow::eventFilter(QObject* target, QEvent* event)
 {
+    if(target == ui->ganttView )
+    {
+        if(event->type() == QEvent::KeyPress )
+        {
+            QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+            if(keyEvent->key() == Qt::Key_Delete )
+            {
+                QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView());
+                on_actionTreeView_del(leftView->currentIndex());
+            }
+        }
+    }
+
     return QMainWindow::eventFilter(target, event);
 }
 
