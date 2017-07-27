@@ -534,20 +534,25 @@ void MainWindow::on_actionTreeView_del(const QModelIndex &index)
 
         if(index.row() == 0 && index.column() == 0 && !index.parent().isValid())
         {
-            // Ho cliccato il project
+            // TODO : gestione eliminazione progetto?
         }
         else if(index.parent().isValid() && !index.parent().parent().isValid())
         {
-            // Controllo se ho cliccato un gruppo
+            // Controllo se ho eliminato un gruppo
             if(index.row() < projectModel->GetTaskGroup().length())
             {
-
+                ganttController->RemoveTaskGroup(index.row());
             }
-            // oppure se ho cliccato un task/milestone
+            // oppure se ho eliminato un task/milestone non dipendente da nessun altro
             else
             {
-
+                ganttController->RemoveTaskOrMilestone(index.row());
             }
+        }
+        else if(index.parent().parent().isValid() && !index.parent().parent().parent().isValid())
+        {
+            // oppure se ho eliminato un task/milestone sotto un gruppo
+            ganttController->RemoveTaskOrMilestone(index.row(), index.parent().row());
         }
     }
 }

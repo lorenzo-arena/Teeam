@@ -22,6 +22,7 @@ public:
 
 protected:
     void setNew(bool b) { isNew = b; }
+    void setRemoved(bool b) { isRemoved = b; }
     QColor color;
     QList<GenericTask*> dependecies;
     QList<QString> people;

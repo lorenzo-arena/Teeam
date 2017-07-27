@@ -30,6 +30,7 @@ private:
 
 protected:
     void setNew(bool b) { isNew = b; }
+    void setRemoved(bool b) { isRemoved = b; }
 
 };
 
