@@ -556,10 +556,10 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
         on_action_Edit_Project_triggered();
     }
     else if(index.parent().isValid() && !index.parent().parent().isValid())
-    {
-        // Controllo se ho cliccato un gruppo
+    {       
         if(index.row() < projectModel->GetTaskGroup().length())
         {
+             // Controllo se ho cliccato un gruppo
             QList<QString> groups;
             for (int i = 0; i < projectModel->GetTaskGroup().length(); i++)
                 groups << projectModel->GetTaskGroup().at(i)->getName();
@@ -581,11 +581,15 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
             delete dialog;
             return;
         }
-        // oppure se ho cliccato un task/milestone
+
         else
         {
-
+            // oppure se ho cliccato un task/milestone non dipendente da nessun gruppo
         }
+    }
+    else if(index.parent().parent().isValid() && !index.parent().parent().parent().isValid())
+    {
+        // oppure se ho cliccato un task/milestone sotto un gruppo
     }
 }
 
