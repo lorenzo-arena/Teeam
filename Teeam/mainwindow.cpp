@@ -404,7 +404,7 @@ void MainWindow::UpdateEntitiesView()
             }
 
             QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
-            leftView->expand(parent);
+            leftView->expand(projectIndex);
         }
         else if(projectModel->GetEntitiesList().at(i)->isChanged())
         {
@@ -646,7 +646,6 @@ void MainWindow::on_actionTreeView_del(const QModelIndex &index)
             ganttController->RemoveTaskOrMilestone(index.row(), index.parent().row());
         }
     }
->>>>>>> delete-event
 }
 
 bool MainWindow::eventFilter(QObject* target, QEvent* event)
