@@ -26,7 +26,7 @@ public:
 
 protected:
     bool bChanged;
-    void setChanged() { bChanged = true; }
+    void setChanged(bool b) { bChanged = b; }
 
     QList<AbstractView *> viewers;
 };
