@@ -78,11 +78,17 @@ void TeeamProject::Show()
 
 void TeeamProject::ShowGroups()
 {
-    taskGroupChanged = true;
-    bChanged = true;
-    notify();
-    taskGroupChanged = false;
-    bChanged = false;
+    // TODO : refactor!!
+    for(int i = 0; i < taskGroupList.length(); i++)
+    {
+        taskGroupChanged = true;
+        bChanged = true;
+        taskGroupList.at(i)->setChanged(true);
+        notify();
+        taskGroupChanged = false;
+        bChanged = false;
+        taskGroupList.at(i)->setChanged(false);
+    }
 }
 
 void TeeamProject::RemoveTaskGroup(int index)

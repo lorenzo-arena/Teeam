@@ -33,9 +33,11 @@ void GanttController::AddTaskGroup(AbstractView *view, QString taskGroupName)
 
 void GanttController::EditTaskGroup(int index, QString newName)
 {
-    project->GetTaskGroup().at(index)->setName(newName);
-    project->ShowGroups();
-
+    if(index-1 < project->GetTaskGroup().length())
+    {
+        project->GetTaskGroup().at(index-1)->setName(newName);
+        project->ShowGroups();
+    }
 }
 
 void GanttController::AddTask(AbstractView *view, QString taskName, QDateTime start, QDateTime end, QList<QString> taskPeople, int completition, int selectedParent)
