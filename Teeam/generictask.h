@@ -16,12 +16,13 @@ class GenericTask : public GanttEntity
 {
     friend class TeeamProject;
 public:
-    GenericTask(){ isNew = true; }
+    GenericTask(){ isNew = true; bChanged = false; isRemoved = false; }
     bool IsNew() { return isNew; }
     int getEntityType() { return entityType; }
 
 protected:
     void setNew(bool b) { isNew = b; }
+    void setRemoved(bool b) { isRemoved = b; }
     QColor color;
     QList<GenericTask*> dependecies;
     QList<QString> people;

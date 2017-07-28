@@ -8,13 +8,17 @@
 #include "edittaskgroupdialog.h"
 #include "freedaysdialog.h"
 
+#include <QDebug>
 #include <QApplication>
+#include <QAbstractItemView>
 #include <QList>
 #include <QSplitter>
 #include <QStandardItemModel>
 #include <QTreeView>
 #include <QSettings>
+#include <QEvent>
 #include <QCloseEvent>
+#include <QKeyEvent>
 #include <QSet>
 #include <QLocale>
 #include <QMessageBox>
@@ -262,7 +266,6 @@ void MainWindow::UpdateProjectView()
 
 void MainWindow::UpdateTaskGroupView()
 {
-    // Non ci arriva nemmeno in debug!!
     for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
     {
         const QModelIndex projectIndex = viewModel->index(0,0);
@@ -287,8 +290,7 @@ void MainWindow::UpdateTaskGroupView()
             leftView->expand(projectIndex);
 
         }
-        //else if(projectModel->GetTaskGroup().at(i)->isChanged())
-        else
+        else if(projectModel->GetTaskGroup().at(i)->isChanged())
         {
             // Controllo se ho fatto modifiche al group
             if(projectModel->GetTaskGroup().at(i)->isChanged())
@@ -305,10 +307,10 @@ void MainWindow::UpdateTaskGroupView()
             // Se ho aggiunto un task a una lista:
             for (int j = 0; j < projectModel->GetTaskGroup().at(i)->GetEntitiesList().length(); j++)
             {
+                const QModelIndex parent = viewModel->index(i, 0, projectIndex);
+
                 if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->IsNew())
                 {
-                    const QModelIndex parent = viewModel->index(i,0,projectIndex);
-
                     if ( !viewModel->insertRow( j, parent ) )
                         return;
 
@@ -342,7 +344,21 @@ void MainWindow::UpdateTaskGroupView()
                     leftView->expand(projectIndex);
                     leftView->expand(parent);
                 }
-            }            
+                else if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->isChanged())
+                {
+                    // TODO : da utilizzare!
+                }
+                else if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->IsRemoved())
+                {
+                    viewModel->removeRow(j, parent);
+                    qobject_cast<QTreeView*>( ui->ganttView->leftView() )->clearSelection();
+                }
+            }
+        }
+        else if(projectModel->GetTaskGroup().at(i)->IsRemoved())
+        {
+            viewModel->removeRow(i, projectIndex);
+            qobject_cast<QTreeView*>( ui->ganttView->leftView() )->clearSelection();
         }
     }
 }
@@ -351,41 +367,40 @@ void MainWindow::UpdateEntitiesView()
 {
     for(int i = 0; i < projectModel->GetEntitiesList().length(); i++)
     {
+        const QModelIndex projectIndex = viewModel->index(0,0);
+
         if(projectModel->GetEntitiesList().at(i)->IsNew())
         {
-            const QModelIndex parent = viewModel->index(0,0);
-
             // Ogni nuovo task/milestone lo aggiungo al suo posto dopo i task group
             int firstFreeRow = projectModel->GetTaskGroup().length() + i;
 
-            if ( !viewModel->insertRow( firstFreeRow, parent ) )
+            if ( !viewModel->insertRow( firstFreeRow, projectIndex ) )
                 return;
 
             int row = projectModel->GetTaskGroup().length() + i;
-            if ( row == 0 && parent.isValid() )
-                viewModel->insertColumns( viewModel->columnCount( parent ), 5, parent );
-
+            if ( row == 0 && projectIndex.isValid() )
+                viewModel->insertColumns( viewModel->columnCount( projectIndex ), 5, projectIndex );
 
             if(projectModel->GetEntitiesList().at(i)->getEntityType() == TASK_CODE)
             {
-                viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getName() );
-                viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeTask );
-                viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getStart(), KDGantt::StartTimeRole );
-                viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getEnd(), KDGantt::EndTimeRole );
-                viewModel->setData( viewModel->index( row, 4, parent ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getCompletition() );
+                viewModel->setData( viewModel->index( row, 0, projectIndex ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getName() );
+                viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeTask );
+                viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getStart(), KDGantt::StartTimeRole );
+                viewModel->setData( viewModel->index( row, 3, projectIndex ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getEnd(), KDGantt::EndTimeRole );
+                viewModel->setData( viewModel->index( row, 4, projectIndex ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getCompletition() );
                 const QString legend( "" );
                 if ( ! legend.isEmpty() )
-                    viewModel->setData( viewModel->index( row, 5, parent ), legend );
+                    viewModel->setData( viewModel->index( row, 5, projectIndex ), legend );
             }
             else if(projectModel->GetEntitiesList().at(i)->getEntityType() == MILESTONE_CODE)
             {
-                viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Milestone *>(projectModel->GetEntitiesList().at(i))->getName() );
-                viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeEvent );
-                viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Milestone *>(projectModel->GetEntitiesList().at(i))->getDateTime(), KDGantt::StartTimeRole );
-                viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Milestone *>(projectModel->GetEntitiesList().at(i))->getDateTime(), KDGantt::EndTimeRole );
+                viewModel->setData( viewModel->index( row, 0, projectIndex ), static_cast<Milestone *>(projectModel->GetEntitiesList().at(i))->getName() );
+                viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeEvent );
+                viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Milestone *>(projectModel->GetEntitiesList().at(i))->getDateTime(), KDGantt::StartTimeRole );
+                viewModel->setData( viewModel->index( row, 3, projectIndex ), static_cast<Milestone *>(projectModel->GetEntitiesList().at(i))->getDateTime(), KDGantt::EndTimeRole );
                 const QString legend( "" );
                 if ( ! legend.isEmpty() )
-                    viewModel->setData( viewModel->index( row, 5, parent ), legend );
+                    viewModel->setData( viewModel->index( row, 5, projectIndex ), legend );
             }
 
             QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
@@ -394,6 +409,11 @@ void MainWindow::UpdateEntitiesView()
         else if(projectModel->GetEntitiesList().at(i)->isChanged())
         {
             // TODO : da utilizzare!
+        }
+        else if(projectModel->GetEntitiesList().at(i)->IsRemoved())
+        {
+            viewModel->removeRow(projectModel->GetTaskGroup().length() + i, projectIndex);
+            qobject_cast<QTreeView*>( ui->ganttView->leftView() )->clearSelection();
         }
     }
 }
@@ -550,6 +570,9 @@ void MainWindow::on_actionSet_Free_Days_triggered()
 
 void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
 {
+	QString text = "DoubleClicked row: " + QString::number(index.row()) + "; column: " + QString::number(index.column());
+    qDebug() << text;
+	
     if(index.row() == 0 && index.column() == 0 && !index.parent().isValid())
     {
         // Ho cliccato il project
@@ -593,8 +616,56 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
     }
 }
 
+void MainWindow::on_actionTreeView_del(const QModelIndex &index)
+{
+    if(index.isValid())
+    {
+        QString text = "Deleted row: " + QString::number(index.row()) + "; column: " + QString::number(index.column());
+        qDebug() << text;
+
+        if(index.row() == 0 && index.column() == 0 && !index.parent().isValid())
+        {
+            // TODO : gestione eliminazione progetto?
+        }
+        else if(index.parent().isValid() && !index.parent().parent().isValid())
+        {
+            // Controllo se ho eliminato un gruppo
+            if(index.row() < projectModel->GetTaskGroup().length())
+            {
+                ganttController->RemoveTaskGroup(index.row());
+            }
+            // oppure se ho eliminato un task/milestone non dipendente da nessun altro
+            else
+            {
+                ganttController->RemoveTaskOrMilestone(index.row() - projectModel->GetTaskGroup().length());
+            }
+        }
+        else if(index.parent().parent().isValid() && !index.parent().parent().parent().isValid())
+        {
+            // oppure se ho eliminato un task/milestone sotto un gruppo
+            ganttController->RemoveTaskOrMilestone(index.row(), index.parent().row());
+        }
+    }
+>>>>>>> delete-event
+}
+
 bool MainWindow::eventFilter(QObject* target, QEvent* event)
 {
+    if(target == ui->ganttView )
+    {
+        if(event->type() == QEvent::KeyPress )
+        {
+            QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+            if(keyEvent->key() == Qt::Key_Delete )
+            {
+                QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView());
+                on_actionTreeView_del(leftView->currentIndex());
+                leftView->setCurrentIndex(viewModel->index(0,0)); // Per disabilitare la possibilità di cancellare mezzo progetto
+                leftView->clearSelection();                       // premendo "Canc" più volte
+            }
+        }
+    }
+
     return QMainWindow::eventFilter(target, event);
 }
 

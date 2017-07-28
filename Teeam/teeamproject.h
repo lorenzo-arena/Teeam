@@ -29,6 +29,7 @@ private:
 public:
     void AddTaskGroup(TaskGroup* taskGroup);
     void AddTaskOrMilestone(GenericTask *entity);
+    void AddTaskOrMilestoneToGroup(GenericTask *entity, int groupIndex);
     QList<GenericTask *> GetEntitiesList() { return entitiesList; }
     QList<TaskGroup *> GetTaskGroup() { return taskGroupList; }
     bool IsTaskGroupChanged() { return taskGroupChanged; }
@@ -39,10 +40,11 @@ public:
     void setName(QString projectName);
     void setPeopleList(QList<QString> peopleList);
     void Show();
-    void AddTaskOrMilestoneToGroup(GenericTask *entity, int groupIndex);
     bool IsNew() { return isNew; }
     void SetNew(bool b) { isNew = b; }
     void ShowGroups();
+    void RemoveTaskGroup(int index);
+    void RemoveTaskOrMilestone(int index, int parent);
 };
 
 #endif // TEEAMPROJECT_H

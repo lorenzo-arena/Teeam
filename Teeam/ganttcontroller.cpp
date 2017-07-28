@@ -58,6 +58,16 @@ void GanttController::AddMilestone(AbstractView *view, QString milestoneName, QD
         project->AddTaskOrMilestone(milestone);
 }
 
+void GanttController::RemoveTaskGroup(int index)
+{
+    project->RemoveTaskGroup(index);
+}
+
+void GanttController::RemoveTaskOrMilestone(int index, int parent)
+{
+    project->RemoveTaskOrMilestone(index, parent);
+}
+
 void GanttController::SetFreeDays(Days days)
 {
     this->freeDays->SetFreeDays(days);

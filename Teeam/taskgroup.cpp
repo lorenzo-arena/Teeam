@@ -4,6 +4,8 @@ TaskGroup::TaskGroup(QString taskGroupName)
 {
     this->name = taskGroupName;
     this->isNew = true;
+    this->bChanged = false;
+    this->isRemoved = false;
 }
 
 QString TaskGroup::getName()
