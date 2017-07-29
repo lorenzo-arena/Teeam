@@ -23,6 +23,7 @@ class EditTaskDialog : public QDialog
 
 public:
     explicit EditTaskDialog(TeeamProject *project, QWidget *parent = 0);
+    explicit EditTaskDialog(QString taskName, int group, QList<QString> taskGroups, QList<QString> taskPeople, QList<QString> totalPeople, QDateTime start, QDateTime end, int completition, QWidget *parent = 0);
     ~EditTaskDialog();
     int GetSelectedGroup() { return selectedGroup; }
     QString GetTaskName() { return name; }
@@ -57,6 +58,9 @@ private:
     //TeeamProject project; // Inserire costruttore copia!
     void DisablePanel();
     void EnablePanel();
+
+    bool singleEditMode;
+    bool multipleEditMode;
 };
 
 #endif // EDITTASKDIALOG_H

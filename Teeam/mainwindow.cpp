@@ -6,6 +6,7 @@
 #include "addtaskdialog.h"
 #include "addmilestonedialog.h"
 #include "edittaskgroupdialog.h"
+#include "edittaskdialog.h"
 #include "freedaysdialog.h"
 
 #include <QDebug>
@@ -110,7 +111,7 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
 }
 
 MainWindow::~MainWindow()
-{  
+{
     delete dateTimeGrid;
     delete ganttController;
     delete freeDaysModel;
@@ -154,7 +155,7 @@ void MainWindow::initGanttView()
     leftView->setColumnHidden( 4, true );
     leftView->setColumnHidden( 5, true );
     leftView->header()->setStretchLastSection( true );
-	
+
      QFont font;
      font.setPixelSize(15);
      leftView->setFont(font);
@@ -309,17 +310,24 @@ void MainWindow::UpdateTaskGroupView()
             {
                 const QModelIndex parent = viewModel->index(i, 0, projectIndex);
 
-                if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->IsNew())
+                bool isNew = projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->IsNew();
+                bool isChanged = projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->isChanged();
+                bool isRemoved = projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->IsRemoved();
+
+                if(isNew || isChanged)
                 {
-                    if ( !viewModel->insertRow( j, parent ) )
-                        return;
+                    if(isNew)
+                    {
+                        if ( !viewModel->insertRow( j, parent ) )
+                            return;
+                    }
 
                     int row = j;
-                    if ( row == 0 && projectIndex.isValid() )
+                    if ( row == 0 && projectIndex.isValid() && isNew)
                         viewModel->insertColumns( viewModel->columnCount( parent ), 5, parent );
 
                     if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == TASK_CODE)
-                    {                   
+                    {
                         viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Task *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getName() );
                         viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeTask );
                         viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Task *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getStart(), KDGantt::StartTimeRole );
@@ -340,15 +348,14 @@ void MainWindow::UpdateTaskGroupView()
                             viewModel->setData( viewModel->index( row, 5, parent ), legend );
                     }
 
-                    QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
-                    leftView->expand(projectIndex);
-                    leftView->expand(parent);
+                    if(isNew)
+                    {
+                        QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
+                        leftView->expand(projectIndex);
+                        leftView->expand(parent);
+                    }
                 }
-                else if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->isChanged())
-                {
-                    // TODO : da utilizzare!
-                }
-                else if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->IsRemoved())
+                else if(isRemoved)
                 {
                     viewModel->removeRow(j, parent);
                     qobject_cast<QTreeView*>( ui->ganttView->leftView() )->clearSelection();
@@ -369,16 +376,21 @@ void MainWindow::UpdateEntitiesView()
     {
         const QModelIndex projectIndex = viewModel->index(0,0);
 
-        if(projectModel->GetEntitiesList().at(i)->IsNew())
+        bool isNew = projectModel->GetEntitiesList().at(i)->IsNew();
+        bool isChanged = projectModel->GetEntitiesList().at(i)->isChanged();
+        bool isRemoved = projectModel->GetEntitiesList().at(i)->IsRemoved();
+
+        if(isNew || isChanged)
         {
             // Ogni nuovo task/milestone lo aggiungo al suo posto dopo i task group
-            int firstFreeRow = projectModel->GetTaskGroup().length() + i;
-
-            if ( !viewModel->insertRow( firstFreeRow, projectIndex ) )
-                return;
+            if(isNew)
+            {
+                if ( !viewModel->insertRow( projectModel->GetTaskGroup().length() + i, projectIndex ) )
+                    return;
+            }
 
             int row = projectModel->GetTaskGroup().length() + i;
-            if ( row == 0 && projectIndex.isValid() )
+            if ( row == 0 && projectIndex.isValid() && isNew )
                 viewModel->insertColumns( viewModel->columnCount( projectIndex ), 5, projectIndex );
 
             if(projectModel->GetEntitiesList().at(i)->getEntityType() == TASK_CODE)
@@ -403,14 +415,13 @@ void MainWindow::UpdateEntitiesView()
                     viewModel->setData( viewModel->index( row, 5, projectIndex ), legend );
             }
 
-            QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
-            leftView->expand(projectIndex);
+            if(isNew)
+            {
+                QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
+                leftView->expand(projectIndex);
+            }
         }
-        else if(projectModel->GetEntitiesList().at(i)->isChanged())
-        {
-            // TODO : da utilizzare!
-        }
-        else if(projectModel->GetEntitiesList().at(i)->IsRemoved())
+        else if(isRemoved)
         {
             viewModel->removeRow(projectModel->GetTaskGroup().length() + i, projectIndex);
             qobject_cast<QTreeView*>( ui->ganttView->leftView() )->clearSelection();
@@ -464,7 +475,7 @@ void MainWindow::on_actionAdd_Task_Group_triggered()
 }
 
 void MainWindow::on_actionAdd_Task_triggered()
-{   
+{
     QList<QString> groupList;
     for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
         groupList << projectModel->GetTaskGroup().at(i)->getName();
@@ -538,7 +549,7 @@ void MainWindow::on_actionZoom_Out_triggered()
     qreal dayWidth = dateTimeGrid->dayWidth();
     dateTimeGrid->setScale(KDGantt::DateTimeGrid::ScaleAuto);
     if(dayWidth <= 20)
-    {     
+    {
         if (dayWidth <= 5)
              dateTimeGrid->setDayWidth(5);
         else
@@ -572,14 +583,14 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
 {
 	QString text = "DoubleClicked row: " + QString::number(index.row()) + "; column: " + QString::number(index.column());
     qDebug() << text;
-	
+
     if(index.row() == 0 && index.column() == 0 && !index.parent().isValid())
     {
         // Ho cliccato il project
         on_action_Edit_Project_triggered();
     }
     else if(index.parent().isValid() && !index.parent().parent().isValid())
-    {       
+    {
         if(index.row() < projectModel->GetTaskGroup().length())
         {
              // Controllo se ho cliccato un gruppo
@@ -604,10 +615,30 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
             delete dialog;
             return;
         }
-
         else
         {
             // oppure se ho cliccato un task/milestone non dipendente da nessun gruppo
+            int taskIndex = index.row()-projectModel->GetTaskGroup().length();
+            QList<QString> groups;
+            for (int i = 0; i < projectModel->GetTaskGroup().length(); i++)
+                groups << projectModel->GetTaskGroup().at(i)->getName();
+
+            EditTaskDialog *dialog = new EditTaskDialog( static_cast<Task*>(projectModel->GetEntitiesList().at(taskIndex))->getName(),
+                                                         -1,
+                                                         groups,
+                                                         static_cast<Task*>(projectModel->GetEntitiesList().at(taskIndex))->getPeople(),
+                                                         projectModel->GetPeopleList(),
+                                                         static_cast<Task*>(projectModel->GetEntitiesList().at(taskIndex))->getStart(),
+                                                         static_cast<Task*>(projectModel->GetEntitiesList().at(taskIndex))->getEnd(),
+                                                         static_cast<Task*>(projectModel->GetEntitiesList().at(taskIndex))->getCompletition(),
+                                                         this);
+
+            if ( dialog->exec() == QDialog::Rejected || !dialog ) {
+                delete dialog;
+                return;
+            }
+
+            //ganttController->EditTask(taskName, start, end, taskPeople, completition, selectedParent);
         }
     }
     else if(index.parent().parent().isValid() && !index.parent().parent().parent().isValid())
@@ -677,7 +708,7 @@ void MainWindow::closeEvent(QCloseEvent *eventArgs)
     settings.setValue(KEY_MAINWINDOW_SIZE, size());
     settings.endGroup();
 
-    settings.beginGroup(KEY_DATETIMEVIEW);  
+    settings.beginGroup(KEY_DATETIMEVIEW);
     settings.beginGroup(KEY_DATETIMEVIEW_FREEDAYSGROUP);
     settings.setValue(KEY_DATETIMEVIEW_MON, dateTimeGrid->freeDays().contains(Qt::Monday));
     settings.setValue(KEY_DATETIMEVIEW_TUE, dateTimeGrid->freeDays().contains(Qt::Tuesday));

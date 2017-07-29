@@ -45,6 +45,11 @@ public:
     void ShowGroups();
     void RemoveTaskGroup(int index);
     void RemoveTaskOrMilestone(int index, int parent);
+
+    // TODO : implementare metodi edit (potrebbe essere anche il controller a modificare
+    //        i parametri), che si occupa di applicare changed; e entities con changed o new
+    //        vengono ridisegnati allo stesso modo, ma se è solo changed si evita di assegnare una
+    //        riga
 };
 
 #endif // TEEAMPROJECT_H
