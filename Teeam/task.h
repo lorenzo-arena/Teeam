@@ -10,6 +10,7 @@ class Task : public GenericTask
 {
 public:
     Task(QString taskName, QDateTime start, QDateTime end, QList<QString> taskPeople, int completition);
+    void edit(QString taskName, QDateTime start, QDateTime end, QList<QString> taskPeople, int completition);
 
 private:
     QDateTime end;

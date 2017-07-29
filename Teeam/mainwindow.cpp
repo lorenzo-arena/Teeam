@@ -623,19 +623,30 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
             for (int i = 0; i < projectModel->GetTaskGroup().length(); i++)
                 groups << projectModel->GetTaskGroup().at(i)->getName();
 
-            EditTaskDialog *dialog = new EditTaskDialog( static_cast<Task*>(projectModel->GetEntitiesList().at(taskIndex))->getName(),
-                                                         -1,
-                                                         groups,
-                                                         static_cast<Task*>(projectModel->GetEntitiesList().at(taskIndex))->getPeople(),
-                                                         projectModel->GetPeopleList(),
-                                                         static_cast<Task*>(projectModel->GetEntitiesList().at(taskIndex))->getStart(),
-                                                         static_cast<Task*>(projectModel->GetEntitiesList().at(taskIndex))->getEnd(),
-                                                         static_cast<Task*>(projectModel->GetEntitiesList().at(taskIndex))->getCompletition(),
-                                                         this);
+            if(projectModel->GetEntitiesList().at(taskIndex)->getEntityType() == TASK_CODE)
+            {
+                EditTaskDialog *dialog = new EditTaskDialog( static_cast<Task*>(projectModel->GetEntitiesList().at(taskIndex))->getName(),
+                                                             -1,
+                                                             groups,
+                                                             static_cast<Task*>(projectModel->GetEntitiesList().at(taskIndex))->getPeople(),
+                                                             projectModel->GetPeopleList(),
+                                                             static_cast<Task*>(projectModel->GetEntitiesList().at(taskIndex))->getStart(),
+                                                             static_cast<Task*>(projectModel->GetEntitiesList().at(taskIndex))->getEnd(),
+                                                             static_cast<Task*>(projectModel->GetEntitiesList().at(taskIndex))->getCompletition(),
+                                                             this);
 
-            if ( dialog->exec() == QDialog::Rejected || !dialog ) {
-                delete dialog;
-                return;
+                if ( dialog->exec() == QDialog::Rejected || !dialog ) {
+                    delete dialog;
+                    return;
+                }
+
+                ganttController->EditTaskOrMilestone(dialog->GetTaskName(),
+                                                     dialog->GetStartDateTime(),
+                                                     dialog->GetEndDateTime(),
+                                                     dialog->GetPeople(),
+                                                     dialog->GetCompletition(),
+                                                     dialog->GetSelectedGroup(),
+                                                     index.row());
             }
 
             //ganttController->EditTask(taskName, start, end, taskPeople, completition, selectedParent);

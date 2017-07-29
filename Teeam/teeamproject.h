@@ -45,6 +45,7 @@ public:
     void ShowGroups();
     void RemoveTaskGroup(int index);
     void RemoveTaskOrMilestone(int index, int parent);
+    void EditTaskOrMilestone(GenericTask *entity, int index, int parent = -1);
 
     // TODO : implementare metodi edit (potrebbe essere anche il controller a modificare
     //        i parametri), che si occupa di applicare changed; e entities con changed o new

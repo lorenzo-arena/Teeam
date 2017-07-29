@@ -139,3 +139,22 @@ void TeeamProject::RemoveTaskOrMilestone(int index, int parent)
     }
 }
 
+void TeeamProject::EditTaskOrMilestone(GenericTask *entity, int index, int parent)
+{
+    if(parent == -1)
+    {
+        if(index < entitiesList.length())
+        {
+            entitiesList.replace(index, entity);
+            entity->setNew(false);
+            entity->setChanged(true);
+            entitiesListChanged = true;
+            bChanged = true;
+            notify();
+            entitiesListChanged = false;
+            bChanged = false;
+            entity->setChanged(false);
+        }
+    }
+}
+
