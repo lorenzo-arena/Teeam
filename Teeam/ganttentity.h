@@ -12,12 +12,14 @@ class GanttEntity : public AbstractModel
 public:
     GanttEntity(){}
     virtual ~GanttEntity(){}
+    bool IsRemoved() { return isRemoved; }
 
 protected:
     QString name;
     QDateTime start;
     QList<QString> people;
     bool isNew;
+    bool isRemoved;
 };
 
 #endif // GANNTENTITY_H
