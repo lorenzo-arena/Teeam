@@ -42,21 +42,33 @@ void GanttController::EditTaskGroup(int index, QString newName)
 
 void GanttController::EditTaskOrMilestone(QString entityName, QDateTime start, QDateTime end, QList<QString> taskPeople, int completition, int selectedParent, int index, int parent)
 {
+    Task *task = new Task(entityName, start, end, taskPeople, completition);
+
     if(parent == -1)
     {
         // è un task che non appartiene a nessun gruppo
-        Task *task = new Task(entityName, start, end, taskPeople, completition);
         project->EditTaskOrMilestone(task, index);
+    }
+    else
+    {
+        // è un task che appartiene a un gruppo
+        project->EditTaskOrMilestone(task, index, parent);
     }
 }
 
 void GanttController::EditTaskOrMilestone(QString entityName, QDateTime start, QList<QString> milestonePeople, int selectedParent, int index, int parent)
 {
+    Milestone *milestone = new Milestone(entityName, start, milestonePeople);
+
     if(parent == -1)
     {
         // è una milestone che non appartiene a nessun gruppo
-        Milestone *milestone = new Milestone(entityName, start, milestonePeople);
         project->EditTaskOrMilestone(milestone, index);
+    }
+    else
+    {
+        // è una milestone che appartiene a un gruppo
+        project->EditTaskOrMilestone(milestone, index, parent);
     }
 }
 

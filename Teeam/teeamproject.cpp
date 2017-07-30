@@ -84,10 +84,12 @@ void TeeamProject::ShowGroups()
         taskGroupChanged = true;
         bChanged = true;
         taskGroupList.at(i)->setChanged(true);
+        taskGroupList.at(i)->setGroupChanged(true);
         notify();
         taskGroupChanged = false;
         bChanged = false;
         taskGroupList.at(i)->setChanged(false);
+        taskGroupList.at(i)->setGroupChanged(false);
     }
 }
 
@@ -154,6 +156,26 @@ void TeeamProject::EditTaskOrMilestone(GenericTask *entity, int index, int paren
             entitiesListChanged = false;
             bChanged = false;
             entity->setChanged(false);
+        }
+    }
+    else
+    {
+        if(parent < taskGroupList.length())
+        {
+            if(index < taskGroupList.at(parent)->GetEntitiesList().length())
+            {
+                taskGroupList.at(parent)->ReplaceEntity(index, entity);
+                entity->setNew(false);
+                entity->setChanged(true);
+                taskGroupList.at(parent)->setChanged(true);
+                taskGroupChanged = true;
+                bChanged = true;
+                notify();
+                taskGroupList.at(parent)->setChanged(false);
+                taskGroupChanged = false;
+                bChanged = false;
+                entity->setChanged(false);
+            }
         }
     }
 }

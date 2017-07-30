@@ -295,7 +295,7 @@ void MainWindow::UpdateTaskGroupView()
         else if(projectModel->GetTaskGroup().at(i)->isChanged())
         {
             // Controllo se ho fatto modifiche al group
-            if(projectModel->GetTaskGroup().at(i)->isChanged())
+            if(projectModel->GetTaskGroup().at(i)->IsGroupChanged())
             {
                 int row = i;
 
@@ -619,7 +619,7 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
         else
         {
             // oppure se ho cliccato un task/milestone non dipendente da nessun gruppo
-            int entityIndex = index.row()-projectModel->GetTaskGroup().length();
+            int entityIndex = index.row() - projectModel->GetTaskGroup().length();
             QList<QString> groups;
             for (int i = 0; i < projectModel->GetTaskGroup().length(); i++)
                 groups << projectModel->GetTaskGroup().at(i)->getName();
@@ -675,6 +675,60 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
     else if(index.parent().parent().isValid() && !index.parent().parent().parent().isValid())
     {
         // oppure se ho cliccato un task/milestone sotto un gruppo
+        int entityIndex = index.row();
+        int parentIndex = index.parent().row();
+        QList<QString> groups;
+        for (int i = 0; i < projectModel->GetTaskGroup().length(); i++)
+            groups << projectModel->GetTaskGroup().at(i)->getName();
+
+        if(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex)->getEntityType() == TASK_CODE)
+        {
+            EditTaskDialog *dialog = new EditTaskDialog( static_cast<Task*>(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex))->getName(),
+                                                         parentIndex,
+                                                         groups,
+                                                         static_cast<Task*>(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex))->getPeople(),
+                                                         projectModel->GetPeopleList(),
+                                                         static_cast<Task*>(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex))->getStart(),
+                                                         static_cast<Task*>(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex))->getEnd(),
+                                                         static_cast<Task*>(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex))->getCompletition(),
+                                                         this);
+
+            if ( dialog->exec() == QDialog::Rejected || !dialog ) {
+                delete dialog;
+                return;
+            }
+
+            ganttController->EditTaskOrMilestone(dialog->GetTaskName(),
+                                                 dialog->GetStartDateTime(),
+                                                 dialog->GetEndDateTime(),
+                                                 dialog->GetPeople(),
+                                                 dialog->GetCompletition(),
+                                                 dialog->GetSelectedGroup(),
+                                                 entityIndex,
+                                                 parentIndex);
+        }
+        else if(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex)->getEntityType() == MILESTONE_CODE)
+        {
+            EditMilestoneDialog *dialog = new EditMilestoneDialog( static_cast<Milestone*>(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex))->getName(),
+                                                                   parentIndex,
+                                                                   groups,
+                                                                   static_cast<Milestone*>(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex))->getPeople(),
+                                                                   projectModel->GetPeopleList(),
+                                                                   static_cast<Milestone*>(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex))->getDateTime(),
+                                                                   this);
+
+            if ( dialog->exec() == QDialog::Rejected || !dialog ) {
+                delete dialog;
+                return;
+            }
+
+            ganttController->EditTaskOrMilestone(dialog->GetMilestoneName(),
+                                                 dialog->GetStartDateTime(),
+                                                 dialog->GetPeople(),
+                                                 dialog->GetSelectedGroup(),
+                                                 entityIndex,
+                                                 parentIndex);
+        }
     }
 }
 
