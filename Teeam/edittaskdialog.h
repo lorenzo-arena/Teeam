@@ -56,11 +56,11 @@ private:
     QStringListModel taskPeopleModel;
     int completition;
     //TeeamProject project; // Inserire costruttore copia!
-    void DisablePanel();
-    void EnablePanel();
-
     bool singleEditMode;
     bool multipleEditMode;
+
+    void DisablePanel();
+    void EnablePanel();
 };
 
 #endif // EDITTASKDIALOG_H

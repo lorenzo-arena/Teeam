@@ -8,7 +8,6 @@ EditTaskDialog::EditTaskDialog(TeeamProject *project, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::EditTaskDialog)
 {
-
     ui->setupUi(this);
 
     singleEditMode = false;

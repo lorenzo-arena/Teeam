@@ -50,11 +50,13 @@ void GanttController::EditTaskOrMilestone(QString entityName, QDateTime start, Q
     }
 }
 
-void GanttController::EditTaskOrMilestone(QString entityName, QDateTime start, QList<QString> taskPeople, int selectedParent, int index, int parent)
+void GanttController::EditTaskOrMilestone(QString entityName, QDateTime start, QList<QString> milestonePeople, int selectedParent, int index, int parent)
 {
     if(parent == -1)
     {
         // è una milestone che non appartiene a nessun gruppo
+        Milestone *milestone = new Milestone(entityName, start, milestonePeople);
+        project->EditTaskOrMilestone(milestone, index);
     }
 }
 

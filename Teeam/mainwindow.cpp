@@ -7,6 +7,7 @@
 #include "addmilestonedialog.h"
 #include "edittaskgroupdialog.h"
 #include "edittaskdialog.h"
+#include "editmilestonedialog.h"
 #include "freedaysdialog.h"
 
 #include <QDebug>
@@ -618,21 +619,21 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
         else
         {
             // oppure se ho cliccato un task/milestone non dipendente da nessun gruppo
-            int taskIndex = index.row()-projectModel->GetTaskGroup().length();
+            int entityIndex = index.row()-projectModel->GetTaskGroup().length();
             QList<QString> groups;
             for (int i = 0; i < projectModel->GetTaskGroup().length(); i++)
                 groups << projectModel->GetTaskGroup().at(i)->getName();
 
-            if(projectModel->GetEntitiesList().at(taskIndex)->getEntityType() == TASK_CODE)
+            if(projectModel->GetEntitiesList().at(entityIndex)->getEntityType() == TASK_CODE)
             {
-                EditTaskDialog *dialog = new EditTaskDialog( static_cast<Task*>(projectModel->GetEntitiesList().at(taskIndex))->getName(),
+                EditTaskDialog *dialog = new EditTaskDialog( static_cast<Task*>(projectModel->GetEntitiesList().at(entityIndex))->getName(),
                                                              -1,
                                                              groups,
-                                                             static_cast<Task*>(projectModel->GetEntitiesList().at(taskIndex))->getPeople(),
+                                                             static_cast<Task*>(projectModel->GetEntitiesList().at(entityIndex))->getPeople(),
                                                              projectModel->GetPeopleList(),
-                                                             static_cast<Task*>(projectModel->GetEntitiesList().at(taskIndex))->getStart(),
-                                                             static_cast<Task*>(projectModel->GetEntitiesList().at(taskIndex))->getEnd(),
-                                                             static_cast<Task*>(projectModel->GetEntitiesList().at(taskIndex))->getCompletition(),
+                                                             static_cast<Task*>(projectModel->GetEntitiesList().at(entityIndex))->getStart(),
+                                                             static_cast<Task*>(projectModel->GetEntitiesList().at(entityIndex))->getEnd(),
+                                                             static_cast<Task*>(projectModel->GetEntitiesList().at(entityIndex))->getCompletition(),
                                                              this);
 
                 if ( dialog->exec() == QDialog::Rejected || !dialog ) {
@@ -646,10 +647,29 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
                                                      dialog->GetPeople(),
                                                      dialog->GetCompletition(),
                                                      dialog->GetSelectedGroup(),
-                                                     index.row());
+                                                     entityIndex);
             }
+            else if(projectModel->GetEntitiesList().at(entityIndex)->getEntityType() == MILESTONE_CODE)
+            {
+                EditMilestoneDialog *dialog = new EditMilestoneDialog( static_cast<Milestone*>(projectModel->GetEntitiesList().at(entityIndex))->getName(),
+                                                                       -1,
+                                                                       groups,
+                                                                       static_cast<Milestone*>(projectModel->GetEntitiesList().at(entityIndex))->getPeople(),
+                                                                       projectModel->GetPeopleList(),
+                                                                       static_cast<Milestone*>(projectModel->GetEntitiesList().at(entityIndex))->getDateTime(),
+                                                                       this);
 
-            //ganttController->EditTask(taskName, start, end, taskPeople, completition, selectedParent);
+                if ( dialog->exec() == QDialog::Rejected || !dialog ) {
+                    delete dialog;
+                    return;
+                }
+
+                ganttController->EditTaskOrMilestone(dialog->GetMilestoneName(),
+                                                     dialog->GetStartDateTime(),
+                                                     dialog->GetPeople(),
+                                                     dialog->GetSelectedGroup(),
+                                                     entityIndex);
+            }
         }
     }
     else if(index.parent().parent().isValid() && !index.parent().parent().parent().isValid())
@@ -792,3 +812,15 @@ void MainWindow::on_action_Edit_Task_Group_triggered()
         return;
     }
 }
+
+void MainWindow::on_action_Edit_Task_triggered()
+{
+    // TODO : implementare!!
+}
+
+void MainWindow::on_action_Edit_Milestone_triggered()
+{
+    // TODO : implementare!!
+}
+
+

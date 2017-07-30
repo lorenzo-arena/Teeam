@@ -107,7 +107,7 @@
     <string>Start Date/Time:</string>
    </property>
   </widget>
-  <widget class="QListView" name="taskPeoplelistView">
+  <widget class="QListView" name="milestonePeoplelistView">
    <property name="geometry">
     <rect>
      <x>380</x>
@@ -175,7 +175,7 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QLabel" name="taskGrouplabel">
+  <widget class="QLabel" name="milestoneGrouplabel">
    <property name="geometry">
     <rect>
      <x>420</x>
@@ -188,7 +188,7 @@
     <string>Select task group:</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="taskGroupcomboBox">
+  <widget class="QComboBox" name="milestoneGroupcomboBox">
    <property name="geometry">
     <rect>
      <x>410</x>
