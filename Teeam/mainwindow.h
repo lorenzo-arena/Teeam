@@ -101,6 +101,9 @@ private:
     const QString KEY_ENTITYTYPE = "entitytype";
     const QString KEY_TASKTYPE = "task";
     const QString KEY_MILESTONETYPE = "milestone";
+    const QString KEY_STARTDATETIME = "startdatetime";
+    const QString KEY_ENDDATETIME = "enddatetime";
+    const QString KEY_COMPLETITION = "completition";
 
     void UpdateFreeDaysView();
     void UpdateProjectView();

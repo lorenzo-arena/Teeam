@@ -906,7 +906,7 @@ void MainWindow::on_action_Save_as_triggered()
 
     // Salvo l'elenco di persone
     for(int i = 0; i < projectModel->GetPeopleList().length(); i++)
-        xmlWriter.writeTextElement(KEY_PERSON, projectModel->GetPeopleList().at(i) );
+        xmlWriter.writeTextElement(KEY_PERSON, projectModel->GetPeopleList().at(i));
 
     // Salvo i gruppi
     for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
@@ -918,13 +918,25 @@ void MainWindow::on_action_Save_as_triggered()
             if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(i)->getEntityType() == TASK_CODE)
             {
                 xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_TASKTYPE);
-                // TODO : dati da salvare -> nome, persone associate, start/end, completition
-                xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getName());
+                xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(i))->getName());
+
+                for(int k = 0; k < static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(i))->getPeople().length(); k++)
+                    xmlWriter.writeTextElement(KEY_PERSON, static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(i))->getPeople().at(k));
+
+                xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(i))->getStart().toString());
+                xmlWriter.writeTextElement(KEY_ENDDATETIME, static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(i))->getEnd().toString());
+
+                xmlWriter.writeTextElement(KEY_COMPLETITION, QString::number(static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(i))->getCompletition()));
             }
             else if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(i)->getEntityType() == MILESTONE_CODE)
             {
                 xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_MILESTONETYPE);
-                xmlWriter.writeTextElement(KEY_NAME, static_cast<Milestone*>(projectModel->GetEntitiesList().at(i))->getName());
+                xmlWriter.writeTextElement(KEY_NAME, static_cast<Milestone*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(i))->getName());
+
+                for(int k = 0; k < static_cast<Milestone*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(i))->getPeople().length(); k++)
+                    xmlWriter.writeTextElement(KEY_PERSON, static_cast<Milestone*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(i))->getPeople().at(k));
+
+                xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Milestone*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(i))->getDateTime().toString());
             }
         }
         xmlWriter.writeEndElement();
@@ -938,11 +950,24 @@ void MainWindow::on_action_Save_as_triggered()
         {
             xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_TASKTYPE);
             xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getName());
+
+            for(int k = 0; k < static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getPeople().length(); k++)
+                xmlWriter.writeTextElement(KEY_PERSON, static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getPeople().at(k));
+
+            xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getStart().toString());
+            xmlWriter.writeTextElement(KEY_ENDDATETIME, static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getEnd().toString());
+
+            xmlWriter.writeTextElement(KEY_COMPLETITION, QString::number(static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getCompletition()));
         }
         else if(projectModel->GetEntitiesList().at(i)->getEntityType() == MILESTONE_CODE)
         {
             xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_MILESTONETYPE);
             xmlWriter.writeTextElement(KEY_NAME, static_cast<Milestone*>(projectModel->GetEntitiesList().at(i))->getName());
+
+            for(int k = 0; k < static_cast<Milestone*>(projectModel->GetEntitiesList().at(i))->getPeople().length(); k++)
+                xmlWriter.writeTextElement(KEY_PERSON, static_cast<Milestone*>(projectModel->GetEntitiesList().at(i))->getPeople().at(k));
+
+            xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Milestone*>(projectModel->GetEntitiesList().at(i))->getDateTime().toString());
         }
         xmlWriter.writeEndElement();
     }
@@ -950,4 +975,144 @@ void MainWindow::on_action_Save_as_triggered()
     xmlWriter.writeEndElement();
 
     file.close();
+}
+
+void MainWindow::on_actionOpen_File_triggered()
+{
+    QString filename = QFileDialog::getOpenFileName(this,
+                                       tr("Open Teeam Project"), ".",
+                                       tr("Teeam files (*.tmproj)"));
+
+    setCursor(Qt::WaitCursor);
+
+    QFile file(filename);
+    if (!file.open(QFile::ReadOnly | QFile::Text))
+    {
+        setCursor(Qt::ArrowCursor);
+        return;
+    }
+
+    QXmlStreamReader xmlReader;
+    xmlReader.setDevice(&file);
+    if(xmlReader.readNext() == QXmlStreamReader::Invalid)
+    {
+        setCursor(Qt::ArrowCursor);
+        return;
+    }
+    // Controllo che l'elemento più alto sia un project
+    if(xmlReader.isStartElement())
+    {
+        if(xmlReader.name() == KEY_PROJECT)
+        {
+            QString name;
+            QStringList people;
+            xmlReader.readNext();
+            if(xmlReader.name() == KEY_NAME)
+                name = xmlReader.readElementText();
+
+            xmlReader.readNext();
+            while(xmlReader.name() == KEY_PERSON)
+            {
+                people << xmlReader.readElementText();
+                xmlReader.readNext();
+            }
+
+            TeeamProject *tempProj = new TeeamProject(name, people);
+            ganttController->NewProject(tempProj);
+
+            while(!xmlReader.atEnd())
+            {
+                if(xmlReader.name() == KEY_GROUP)
+                {
+                   xmlReader.readNext();
+                   if(xmlReader.name() == KEY_NAME)
+                   {
+                        ganttController->AddTaskGroup(this, xmlReader.readElementText());
+                        xmlReader.readNext();
+                        if(xmlReader.name() == KEY_ENTITY)
+                        {
+                            xmlReader.readNext();
+                            // Leggo le entity appartenenti a ogni gruppo, devo differenziare tra task e milestone
+                        }
+                   }
+                }
+
+                if(xmlReader.name() == KEY_ENTITY)
+                {
+
+                }
+            }
+        }
+    }
+
+    setCursor(Qt::ArrowCursor);
+
+    /*
+
+    Rxml.setDevice(&file);
+    Rxml.readNext();
+
+    while(!Rxml.atEnd())
+    {
+        if(Rxml.isStartElement())
+        {
+            if(Rxml.name() == "LAMPS")
+            {
+                Rxml.readNext();
+            }
+            else if(Rxml.name() == "LIGHT1")
+            {
+                while(!Rxml.atEnd())
+                            {
+                             if(Rxml.isEndElement())
+                             {
+                             Rxml.readNext();
+                             break;
+                             }
+                             else if(Rxml.isCharacters())
+                             {
+                             Rxml.readNext();
+                             }
+                             else if(Rxml.isStartElement())
+                             {
+                             if(Rxml.name() == "State")
+                             {
+                              ReadStateElement();
+                             }
+                             else if(Rxml.name() == "Room")
+                             {
+                              ReadRoomElement();
+                             }
+                             else if(Rxml.name() == "Potencial")
+                             {
+                                  ReadPotencialElement();
+                             }
+                             Rxml.readNext();
+                         }
+                         else
+                         {
+                         Rxml.readNext();
+                         }
+                    }
+            }
+        }
+    else
+    {
+        Rxml.readNext();
+    }
+
+    file.close();
+
+        if (Rxml.hasError())
+    {
+       std::cerr << "Error: Failed to parse file "
+                 << qPrintable(filename) << ": "
+                 << qPrintable(Rxml.errorString()) << std::endl;
+        }
+    else if (file.error() != QFile::NoError)
+    {
+        std::cerr << "Error: Cannot read file " << qPrintable(filename)
+                  << ": " << qPrintable(file.errorString())
+                  << std::endl;
+    } */
 }
