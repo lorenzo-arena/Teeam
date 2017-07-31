@@ -8,6 +8,7 @@ TeeamProject::TeeamProject(QString projectName, QList<QString> peopleList)
     this->projectChanged = false;
     this->taskGroupChanged = false;
 	this->entitiesListChanged = false;
+    this->isNew = true;
 }
 
 void TeeamProject::setName(QString projectName)
@@ -75,6 +76,23 @@ void TeeamProject::Show()
     bChanged = false;
 }
 
+void TeeamProject::ShowGroups()
+{
+    // TODO : refactor!!
+    for(int i = 0; i < taskGroupList.length(); i++)
+    {
+        taskGroupChanged = true;
+        bChanged = true;
+        taskGroupList.at(i)->setChanged(true);
+        taskGroupList.at(i)->setGroupChanged(true);
+        notify();
+        taskGroupChanged = false;
+        bChanged = false;
+        taskGroupList.at(i)->setChanged(false);
+        taskGroupList.at(i)->setGroupChanged(false);
+    }
+}
+
 void TeeamProject::RemoveTaskGroup(int index)
 {
     if(index < taskGroupList.length())
@@ -119,6 +137,45 @@ void TeeamProject::RemoveTaskOrMilestone(int index, int parent)
             bChanged = false;
             taskGroupList.at(parent)->setChanged(false);
             taskGroupList.at(parent)->GetEntitiesList().removeAt(index);
+        }
+    }
+}
+
+void TeeamProject::EditTaskOrMilestone(GenericTask *entity, int index, int parent)
+{
+    if(parent == -1)
+    {
+        if(index < entitiesList.length())
+        {
+            entitiesList.replace(index, entity);
+            entity->setNew(false);
+            entity->setChanged(true);
+            entitiesListChanged = true;
+            bChanged = true;
+            notify();
+            entitiesListChanged = false;
+            bChanged = false;
+            entity->setChanged(false);
+        }
+    }
+    else
+    {
+        if(parent < taskGroupList.length())
+        {
+            if(index < taskGroupList.at(parent)->GetEntitiesList().length())
+            {
+                taskGroupList.at(parent)->ReplaceEntity(index, entity);
+                entity->setNew(false);
+                entity->setChanged(true);
+                taskGroupList.at(parent)->setChanged(true);
+                taskGroupChanged = true;
+                bChanged = true;
+                notify();
+                taskGroupList.at(parent)->setChanged(false);
+                taskGroupChanged = false;
+                bChanged = false;
+                entity->setChanged(false);
+            }
         }
     }
 }
