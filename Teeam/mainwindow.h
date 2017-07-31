@@ -58,6 +58,8 @@ private slots:
     bool eventFilter(QObject *target, QEvent *event);
     void closeEvent(QCloseEvent *eventArgs);
 
+    void on_action_Save_as_triggered();
+
 private:
     void initGanttView();
 
@@ -72,23 +74,34 @@ private:
     KDGantt::ConstraintModel *costraintModel;
 
     // identificativi per settings MainWindow
-    const QString KEY_MAINWINDOW = "teeam_mainwindow";
-    const QString KEY_MAINWINDOW_MAXIMIZED = "maximized";
-    const QString KEY_MAINWINDOW_SIZE = "size";
+    const QString REG_KEY_MAINWINDOW = "teeam_mainwindow";
+    const QString REG_KEY_MAINWINDOW_MAXIMIZED = "maximized";
+    const QString REG_KEY_MAINWINDOW_SIZE = "size";
 
     // identificativi per settings DateTimeView
-    const QString KEY_DATETIMEVIEW = "teeam_datetimeview";
-    const QString KEY_DATETIMEVIEW_SCALE = "scale";
-    const QString KEY_DATETIMEVIEW_DAYWIDTH = "daywidth";
-    const QString KEY_DATETIMEVIEW_FREEDAYSGROUP = "freedays";
-    const QString KEY_DATETIMEVIEW_MON = "mon";
-    const QString KEY_DATETIMEVIEW_TUE = "tue";
-    const QString KEY_DATETIMEVIEW_WED = "wed";
-    const QString KEY_DATETIMEVIEW_THU = "thu";
-    const QString KEY_DATETIMEVIEW_FRI = "fri";
-    const QString KEY_DATETIMEVIEW_SAT = "sat";
-    const QString KEY_DATETIMEVIEW_SUN = "sun";
-    const QString KEY_DATETIMEVIEW_COLOR = "color";
+    const QString REG_KEY_DATETIMEVIEW = "teeam_datetimeview";
+    const QString REG_KEY_DATETIMEVIEW_SCALE = "scale";
+    const QString REG_KEY_DATETIMEVIEW_DAYWIDTH = "daywidth";
+    const QString REG_KEY_DATETIMEVIEW_FREEDAYSGROUP = "freedays";
+    const QString REG_KEY_DATETIMEVIEW_MON = "mon";
+    const QString REG_KEY_DATETIMEVIEW_TUE = "tue";
+    const QString REG_KEY_DATETIMEVIEW_WED = "wed";
+    const QString REG_KEY_DATETIMEVIEW_THU = "thu";
+    const QString REG_KEY_DATETIMEVIEW_FRI = "fri";
+    const QString REG_KEY_DATETIMEVIEW_SAT = "sat";
+    const QString REG_KEY_DATETIMEVIEW_SUN = "sun";
+    const QString REG_KEY_DATETIMEVIEW_COLOR = "color";
+
+    // identificativi per file salvataggio
+    const QString KEY_PROJECT = "teeamproject";
+    const QString KEY_NAME = "name";
+    const QString KEY_PERSON = "person";
+    const QString KEY_GROUP = "group";
+    const QString KEY_ENTITY = "entity";
+    const QString KEY_ENTITYTYPE = "entitytype";
+    const QString KEY_TASKTYPE = "task";
+    const QString KEY_MILESTONETYPE = "milestone";
+
     void UpdateFreeDaysView();
     void UpdateProjectView();
     void UpdateTaskGroupView();

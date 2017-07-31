@@ -24,6 +24,9 @@
 #include <QSet>
 #include <QLocale>
 #include <QMessageBox>
+#include <QXmlStreamWriter>
+#include <QXmlStreamReader>
+#include <QFileDialog>
 
 TeeamDateTimeScaleFormatter::TeeamDateTimeScaleFormatter(const KDGantt::DateTimeScaleFormatter &other)
     : DateTimeScaleFormatter(other)
@@ -68,31 +71,31 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
 
     // Prelevo i settings dai registri
     QSettings settings;
-    settings.beginGroup(KEY_MAINWINDOW);
-    if(settings.contains(KEY_MAINWINDOW_MAXIMIZED))    // setto la dimensione della finestra
+    settings.beginGroup(REG_KEY_MAINWINDOW);
+    if(settings.contains(REG_KEY_MAINWINDOW_MAXIMIZED))    // setto la dimensione della finestra
     {
-        if(settings.value(KEY_MAINWINDOW_MAXIMIZED).toBool())
+        if(settings.value(REG_KEY_MAINWINDOW_MAXIMIZED).toBool())
             showMaximized();
     }
-    else if (settings.contains(KEY_MAINWINDOW_SIZE))
+    else if (settings.contains(REG_KEY_MAINWINDOW_SIZE))
     {
-        resize(settings.value(KEY_MAINWINDOW_SIZE).toSize());
+        resize(settings.value(REG_KEY_MAINWINDOW_SIZE).toSize());
     }
     settings.endGroup();
 
-    settings.beginGroup(KEY_DATETIMEVIEW);
+    settings.beginGroup(REG_KEY_DATETIMEVIEW);
     // lancio un update dei freeDays
-    settings.beginGroup(KEY_DATETIMEVIEW_FREEDAYSGROUP);
+    settings.beginGroup(REG_KEY_DATETIMEVIEW_FREEDAYSGROUP);
     Days days = {
-        settings.value(KEY_DATETIMEVIEW_MON).toBool(),
-        settings.value(KEY_DATETIMEVIEW_TUE).toBool(),
-        settings.value(KEY_DATETIMEVIEW_WED).toBool(),
-        settings.value(KEY_DATETIMEVIEW_THU).toBool(),
-        settings.value(KEY_DATETIMEVIEW_FRI).toBool(),
-        settings.value(KEY_DATETIMEVIEW_SAT).toBool(),
-        settings.value(KEY_DATETIMEVIEW_SUN).toBool(),
+        settings.value(REG_KEY_DATETIMEVIEW_MON).toBool(),
+        settings.value(REG_KEY_DATETIMEVIEW_TUE).toBool(),
+        settings.value(REG_KEY_DATETIMEVIEW_WED).toBool(),
+        settings.value(REG_KEY_DATETIMEVIEW_THU).toBool(),
+        settings.value(REG_KEY_DATETIMEVIEW_FRI).toBool(),
+        settings.value(REG_KEY_DATETIMEVIEW_SAT).toBool(),
+        settings.value(REG_KEY_DATETIMEVIEW_SUN).toBool(),
     };
-    QColor color = settings.value(KEY_DATETIMEVIEW_COLOR).value<QColor>();
+    QColor color = settings.value(REG_KEY_DATETIMEVIEW_COLOR).value<QColor>();
     ganttController->SetFreeDays(days);
     ganttController->SetFreeDaysColor(color);
     settings.endGroup();
@@ -163,15 +166,15 @@ void MainWindow::initGanttView()
      leftView->setFont(font);
 
     QSettings settings;
-    settings.beginGroup(KEY_DATETIMEVIEW);
-    if(settings.contains(KEY_DATETIMEVIEW_DAYWIDTH))
+    settings.beginGroup(REG_KEY_DATETIMEVIEW);
+    if(settings.contains(REG_KEY_DATETIMEVIEW_DAYWIDTH))
     {
-        int width = settings.value(KEY_DATETIMEVIEW_DAYWIDTH).toInt();
+        int width = settings.value(REG_KEY_DATETIMEVIEW_DAYWIDTH).toInt();
         dateTimeGrid->setDayWidth(width);
     }
-    if(settings.contains(KEY_DATETIMEVIEW_SCALE))
+    if(settings.contains(REG_KEY_DATETIMEVIEW_SCALE))
     {
-        KDGantt::DateTimeGrid::Scale scale = static_cast<KDGantt::DateTimeGrid::Scale>(settings.value(KEY_DATETIMEVIEW_SCALE).toInt());
+        KDGantt::DateTimeGrid::Scale scale = static_cast<KDGantt::DateTimeGrid::Scale>(settings.value(REG_KEY_DATETIMEVIEW_SCALE).toInt());
         dateTimeGrid->setScale(scale);
     }
     settings.endGroup();
@@ -792,24 +795,24 @@ void MainWindow::closeEvent(QCloseEvent *eventArgs)
 {
     QSettings settings;
 
-    settings.beginGroup(KEY_MAINWINDOW);
-    settings.setValue(KEY_MAINWINDOW_MAXIMIZED, isMaximized());
-    settings.setValue(KEY_MAINWINDOW_SIZE, size());
+    settings.beginGroup(REG_KEY_MAINWINDOW);
+    settings.setValue(REG_KEY_MAINWINDOW_MAXIMIZED, isMaximized());
+    settings.setValue(REG_KEY_MAINWINDOW_SIZE, size());
     settings.endGroup();
 
-    settings.beginGroup(KEY_DATETIMEVIEW);
-    settings.beginGroup(KEY_DATETIMEVIEW_FREEDAYSGROUP);
-    settings.setValue(KEY_DATETIMEVIEW_MON, dateTimeGrid->freeDays().contains(Qt::Monday));
-    settings.setValue(KEY_DATETIMEVIEW_TUE, dateTimeGrid->freeDays().contains(Qt::Tuesday));
-    settings.setValue(KEY_DATETIMEVIEW_WED, dateTimeGrid->freeDays().contains(Qt::Wednesday));
-    settings.setValue(KEY_DATETIMEVIEW_THU, dateTimeGrid->freeDays().contains(Qt::Thursday));
-    settings.setValue(KEY_DATETIMEVIEW_FRI, dateTimeGrid->freeDays().contains(Qt::Friday));
-    settings.setValue(KEY_DATETIMEVIEW_SAT, dateTimeGrid->freeDays().contains(Qt::Saturday));
-    settings.setValue(KEY_DATETIMEVIEW_SUN, dateTimeGrid->freeDays().contains(Qt::Sunday));
-    settings.setValue(KEY_DATETIMEVIEW_COLOR, dateTimeGrid->freeDaysBrush().color());
+    settings.beginGroup(REG_KEY_DATETIMEVIEW);
+    settings.beginGroup(REG_KEY_DATETIMEVIEW_FREEDAYSGROUP);
+    settings.setValue(REG_KEY_DATETIMEVIEW_MON, dateTimeGrid->freeDays().contains(Qt::Monday));
+    settings.setValue(REG_KEY_DATETIMEVIEW_TUE, dateTimeGrid->freeDays().contains(Qt::Tuesday));
+    settings.setValue(REG_KEY_DATETIMEVIEW_WED, dateTimeGrid->freeDays().contains(Qt::Wednesday));
+    settings.setValue(REG_KEY_DATETIMEVIEW_THU, dateTimeGrid->freeDays().contains(Qt::Thursday));
+    settings.setValue(REG_KEY_DATETIMEVIEW_FRI, dateTimeGrid->freeDays().contains(Qt::Friday));
+    settings.setValue(REG_KEY_DATETIMEVIEW_SAT, dateTimeGrid->freeDays().contains(Qt::Saturday));
+    settings.setValue(REG_KEY_DATETIMEVIEW_SUN, dateTimeGrid->freeDays().contains(Qt::Sunday));
+    settings.setValue(REG_KEY_DATETIMEVIEW_COLOR, dateTimeGrid->freeDaysBrush().color());
     settings.endGroup();
-    settings.setValue(KEY_DATETIMEVIEW_DAYWIDTH, dateTimeGrid->dayWidth());
-    settings.setValue(KEY_DATETIMEVIEW_SCALE, dateTimeGrid->scale());
+    settings.setValue(REG_KEY_DATETIMEVIEW_DAYWIDTH, dateTimeGrid->dayWidth());
+    settings.setValue(REG_KEY_DATETIMEVIEW_SCALE, dateTimeGrid->scale());
     settings.endGroup();
 
     eventArgs->accept();
@@ -881,4 +884,70 @@ void MainWindow::on_action_Edit_Milestone_triggered()
     // TODO : implementare!!
 }
 
+void MainWindow::on_action_Save_as_triggered()
+{
+    QString filename = QFileDialog::getSaveFileName(this,
+                                       tr("Save Teeam Project"), ".",
+                                       tr("Teeam files (*.tmproj)"));
 
+
+    QFile file(filename);
+    file.open(QIODevice::WriteOnly);
+
+    QXmlStreamWriter xmlWriter(&file);
+    xmlWriter.setAutoFormatting(true);
+    xmlWriter.writeStartDocument();
+
+    // Inizio il salvataggio del progetto
+    xmlWriter.writeStartElement(KEY_PROJECT);
+
+    // Salvo il nome
+    xmlWriter.writeTextElement(KEY_NAME, projectModel->GetName() );
+
+    // Salvo l'elenco di persone
+    for(int i = 0; i < projectModel->GetPeopleList().length(); i++)
+        xmlWriter.writeTextElement(KEY_PERSON, projectModel->GetPeopleList().at(i) );
+
+    // Salvo i gruppi
+    for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
+    {
+        xmlWriter.writeStartElement(KEY_GROUP);
+        xmlWriter.writeTextElement(KEY_NAME, projectModel->GetTaskGroup().at(i)->getName() );
+        for(int j = 0; j < projectModel->GetTaskGroup().at(i)->GetEntitiesList().length(); j++)
+        {
+            if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(i)->getEntityType() == TASK_CODE)
+            {
+                xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_TASKTYPE);
+                // TODO : dati da salvare -> nome, persone associate, start/end, completition
+                xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getName());
+            }
+            else if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(i)->getEntityType() == MILESTONE_CODE)
+            {
+                xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_MILESTONETYPE);
+                xmlWriter.writeTextElement(KEY_NAME, static_cast<Milestone*>(projectModel->GetEntitiesList().at(i))->getName());
+            }
+        }
+        xmlWriter.writeEndElement();
+    }
+
+    // Salvo i task/milestone fuori dai gruppi
+    for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
+    {
+        xmlWriter.writeStartElement(KEY_ENTITY);
+        if(projectModel->GetEntitiesList().at(i)->getEntityType() == TASK_CODE)
+        {
+            xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_TASKTYPE);
+            xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getName());
+        }
+        else if(projectModel->GetEntitiesList().at(i)->getEntityType() == MILESTONE_CODE)
+        {
+            xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_MILESTONETYPE);
+            xmlWriter.writeTextElement(KEY_NAME, static_cast<Milestone*>(projectModel->GetEntitiesList().at(i))->getName());
+        }
+        xmlWriter.writeEndElement();
+    }
+
+    xmlWriter.writeEndElement();
+
+    file.close();
+}
