@@ -139,6 +139,7 @@ void MainWindow::initGanttView()
     dateTimeGrid = new KDGantt::DateTimeGrid();
     dateTimeGrid->setUserDefinedLowerScale(new TeeamDateTimeScaleFormatter(*(dateTimeGrid->userDefinedLowerScale())));
     dateTimeGrid->setUserDefinedUpperScale(new TeeamDateTimeScaleFormatter(*(dateTimeGrid->userDefinedUpperScale())));
+    ui->ganttView->graphicsView()->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     ui->ganttView->setGrid( dateTimeGrid );
     ui->ganttView->graphicsView()->setHeaderContextMenuPolicy(Qt::ContextMenuPolicy::NoContextMenu);
 
@@ -242,6 +243,9 @@ void MainWindow::UpdateFreeDaysView()
 
 void MainWindow::UpdateProjectView()
 {
+    // Abilito la scrollbar verticale
+    ui->ganttView->graphicsView()->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
+
     if(projectModel->IsNew())
     {
         viewModel = new QStandardItemModel( 0, 6, this );
