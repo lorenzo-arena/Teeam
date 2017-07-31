@@ -57,8 +57,9 @@ private slots:
     void on_action_Edit_Milestone_triggered();
     bool eventFilter(QObject *target, QEvent *event);
     void closeEvent(QCloseEvent *eventArgs);
-
     void on_action_Save_as_triggered();
+
+    void on_actionOpen_File_triggered();
 
 private:
     void initGanttView();

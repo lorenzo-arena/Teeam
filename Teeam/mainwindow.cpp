@@ -994,53 +994,59 @@ void MainWindow::on_actionOpen_File_triggered()
 
     QXmlStreamReader xmlReader;
     xmlReader.setDevice(&file);
-    if(xmlReader.readNext() == QXmlStreamReader::Invalid)
+
+    QXmlStreamReader::TokenType token = xmlReader.readNext();
+
+    if(token == QXmlStreamReader::Invalid)
     {
         setCursor(Qt::ArrowCursor);
         return;
     }
-    // Controllo che l'elemento più alto sia un project
-    if(xmlReader.isStartElement())
+    else if(token == QXmlStreamReader::StartDocument)
     {
-        if(xmlReader.name() == KEY_PROJECT)
-        {
-            QString name;
-            QStringList people;
-            xmlReader.readNext();
-            if(xmlReader.name() == KEY_NAME)
-                name = xmlReader.readElementText();
+        xmlReader.readNext();
+    }
 
+    // Controllo che l'elemento più alto sia un project
+    if(xmlReader.name() == KEY_PROJECT)
+    {
+        QString name;
+        QStringList people;
+        xmlReader.readNext();
+        if(xmlReader.name() == KEY_NAME)
+            name = xmlReader.readElementText();
+
+        xmlReader.readNext();
+        while(xmlReader.name() == KEY_PERSON)
+        {
+            people << xmlReader.readElementText();
             xmlReader.readNext();
-            while(xmlReader.name() == KEY_PERSON)
+        }
+
+        TeeamProject *tempProj = new TeeamProject(name, people);
+        this->projectModel = tempProj;
+        ganttController->NewProject(tempProj);
+
+        while(!xmlReader.atEnd())
+        {
+            if(xmlReader.name() == KEY_GROUP)
             {
-                people << xmlReader.readElementText();
-                xmlReader.readNext();
+               xmlReader.readNext();
+               if(xmlReader.name() == KEY_NAME)
+               {
+                    ganttController->AddTaskGroup(this, xmlReader.readElementText());
+                    xmlReader.readNext();
+                    if(xmlReader.name() == KEY_ENTITY)
+                    {
+                        xmlReader.readNext();
+                        // Leggo le entity appartenenti a ogni gruppo, devo differenziare tra task e milestone
+                    }
+               }
             }
 
-            TeeamProject *tempProj = new TeeamProject(name, people);
-            ganttController->NewProject(tempProj);
-
-            while(!xmlReader.atEnd())
+            if(xmlReader.name() == KEY_ENTITY)
             {
-                if(xmlReader.name() == KEY_GROUP)
-                {
-                   xmlReader.readNext();
-                   if(xmlReader.name() == KEY_NAME)
-                   {
-                        ganttController->AddTaskGroup(this, xmlReader.readElementText());
-                        xmlReader.readNext();
-                        if(xmlReader.name() == KEY_ENTITY)
-                        {
-                            xmlReader.readNext();
-                            // Leggo le entity appartenenti a ogni gruppo, devo differenziare tra task e milestone
-                        }
-                   }
-                }
 
-                if(xmlReader.name() == KEY_ENTITY)
-                {
-
-                }
             }
         }
     }
