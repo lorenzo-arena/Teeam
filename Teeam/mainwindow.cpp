@@ -890,93 +890,95 @@ void MainWindow::on_action_Save_as_triggered()
                                        tr("Save Teeam Project"), ".",
                                        tr("Teeam files (*.tmproj)"));
 
-
-    QFile file(filename);
-    file.open(QIODevice::WriteOnly);
-
-    QXmlStreamWriter xmlWriter(&file);
-    xmlWriter.setAutoFormatting(true);
-    xmlWriter.writeStartDocument();
-
-    // Inizio il salvataggio del progetto
-    xmlWriter.writeStartElement(KEY_PROJECT);
-
-    // Salvo il nome
-    xmlWriter.writeTextElement(KEY_NAME, projectModel->GetName() );
-
-    // Salvo l'elenco di persone
-    for(int i = 0; i < projectModel->GetPeopleList().length(); i++)
-        xmlWriter.writeTextElement(KEY_PERSON, projectModel->GetPeopleList().at(i));
-
-    // Salvo i gruppi
-    for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
+    if(projectModel != nullptr)
     {
-        xmlWriter.writeStartElement(KEY_GROUP);
-        xmlWriter.writeTextElement(KEY_NAME, projectModel->GetTaskGroup().at(i)->getName() );
-        for(int j = 0; j < projectModel->GetTaskGroup().at(i)->GetEntitiesList().length(); j++)
+        QFile file(filename);
+        file.open(QIODevice::WriteOnly);
+
+        QXmlStreamWriter xmlWriter(&file);
+        xmlWriter.setAutoFormatting(true);
+        xmlWriter.writeStartDocument();
+
+        // Inizio il salvataggio del progetto
+        xmlWriter.writeStartElement(KEY_PROJECT);
+
+        // Salvo il nome
+        xmlWriter.writeTextElement(KEY_NAME, projectModel->GetName() );
+
+        // Salvo l'elenco di persone
+        for(int i = 0; i < projectModel->GetPeopleList().length(); i++)
+            xmlWriter.writeTextElement(KEY_PERSON, projectModel->GetPeopleList().at(i));
+
+        // Salvo i gruppi
+        for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
+        {
+            xmlWriter.writeStartElement(KEY_GROUP);
+            xmlWriter.writeTextElement(KEY_NAME, projectModel->GetTaskGroup().at(i)->getName() );
+            for(int j = 0; j < projectModel->GetTaskGroup().at(i)->GetEntitiesList().length(); j++)
+            {
+                xmlWriter.writeStartElement(KEY_ENTITY);
+                if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == TASK_CODE)
+                {
+                    xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_TASKTYPE);
+                    xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getName());
+
+                    for(int k = 0; k < static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(i))->getPeople().length(); k++)
+                        xmlWriter.writeTextElement(KEY_PERSON, static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getPeople().at(k));
+
+                    xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getStart().toString());
+                    xmlWriter.writeTextElement(KEY_ENDDATETIME, static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getEnd().toString());
+
+                    xmlWriter.writeTextElement(KEY_COMPLETITION, QString::number(static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getCompletition()));
+                }
+                else if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == MILESTONE_CODE)
+                {
+                    xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_MILESTONETYPE);
+                    xmlWriter.writeTextElement(KEY_NAME, static_cast<Milestone*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getName());
+
+                    for(int k = 0; k < static_cast<Milestone*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getPeople().length(); k++)
+                        xmlWriter.writeTextElement(KEY_PERSON, static_cast<Milestone*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getPeople().at(k));
+
+                    xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Milestone*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getDateTime().toString());
+                }
+                 xmlWriter.writeEndElement();
+            }
+            xmlWriter.writeEndElement();
+        }
+
+        // Salvo i task/milestone fuori dai gruppi
+        for(int i = 0; i < projectModel->GetEntitiesList().length(); i++)
         {
             xmlWriter.writeStartElement(KEY_ENTITY);
-            if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == TASK_CODE)
+            if(projectModel->GetEntitiesList().at(i)->getEntityType() == TASK_CODE)
             {
                 xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_TASKTYPE);
-                xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getName());
+                xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getName());
 
-                for(int k = 0; k < static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(i))->getPeople().length(); k++)
-                    xmlWriter.writeTextElement(KEY_PERSON, static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getPeople().at(k));
+                for(int k = 0; k < static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getPeople().length(); k++)
+                    xmlWriter.writeTextElement(KEY_PERSON, static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getPeople().at(k));
 
-                xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getStart().toString());
-                xmlWriter.writeTextElement(KEY_ENDDATETIME, static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getEnd().toString());
+                xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getStart().toString());
+                xmlWriter.writeTextElement(KEY_ENDDATETIME, static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getEnd().toString());
 
-                xmlWriter.writeTextElement(KEY_COMPLETITION, QString::number(static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getCompletition()));
+                xmlWriter.writeTextElement(KEY_COMPLETITION, QString::number(static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getCompletition()));
             }
-            else if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == MILESTONE_CODE)
+            else if(projectModel->GetEntitiesList().at(i)->getEntityType() == MILESTONE_CODE)
             {
                 xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_MILESTONETYPE);
-                xmlWriter.writeTextElement(KEY_NAME, static_cast<Milestone*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getName());
+                xmlWriter.writeTextElement(KEY_NAME, static_cast<Milestone*>(projectModel->GetEntitiesList().at(i))->getName());
 
-                for(int k = 0; k < static_cast<Milestone*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getPeople().length(); k++)
-                    xmlWriter.writeTextElement(KEY_PERSON, static_cast<Milestone*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getPeople().at(k));
+                for(int k = 0; k < static_cast<Milestone*>(projectModel->GetEntitiesList().at(i))->getPeople().length(); k++)
+                    xmlWriter.writeTextElement(KEY_PERSON, static_cast<Milestone*>(projectModel->GetEntitiesList().at(i))->getPeople().at(k));
 
-                xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Milestone*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getDateTime().toString());
+                xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Milestone*>(projectModel->GetEntitiesList().at(i))->getDateTime().toString());
             }
-             xmlWriter.writeEndElement();
+            xmlWriter.writeEndElement();
         }
+
         xmlWriter.writeEndElement();
+
+        file.close();
     }
-
-    // Salvo i task/milestone fuori dai gruppi
-    for(int i = 0; i < projectModel->GetEntitiesList().length(); i++)
-    {
-        xmlWriter.writeStartElement(KEY_ENTITY);
-        if(projectModel->GetEntitiesList().at(i)->getEntityType() == TASK_CODE)
-        {
-            xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_TASKTYPE);
-            xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getName());
-
-            for(int k = 0; k < static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getPeople().length(); k++)
-                xmlWriter.writeTextElement(KEY_PERSON, static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getPeople().at(k));
-
-            xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getStart().toString());
-            xmlWriter.writeTextElement(KEY_ENDDATETIME, static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getEnd().toString());
-
-            xmlWriter.writeTextElement(KEY_COMPLETITION, QString::number(static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getCompletition()));
-        }
-        else if(projectModel->GetEntitiesList().at(i)->getEntityType() == MILESTONE_CODE)
-        {
-            xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_MILESTONETYPE);
-            xmlWriter.writeTextElement(KEY_NAME, static_cast<Milestone*>(projectModel->GetEntitiesList().at(i))->getName());
-
-            for(int k = 0; k < static_cast<Milestone*>(projectModel->GetEntitiesList().at(i))->getPeople().length(); k++)
-                xmlWriter.writeTextElement(KEY_PERSON, static_cast<Milestone*>(projectModel->GetEntitiesList().at(i))->getPeople().at(k));
-
-            xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Milestone*>(projectModel->GetEntitiesList().at(i))->getDateTime().toString());
-        }
-        xmlWriter.writeEndElement();
-    }
-
-    xmlWriter.writeEndElement();
-
-    file.close();
 }
 
 void MainWindow::on_actionOpen_File_triggered()
@@ -1102,6 +1104,10 @@ void MainWindow::on_actionOpen_File_triggered()
                                 ganttController->AddMilestone(this, name, dateTime, milestonePeople, groupIndex);
                             }
                         }
+                    }
+                    else
+                    {
+                        continue;
                     }
                }
                groupIndex++;
