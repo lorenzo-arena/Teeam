@@ -1047,10 +1047,13 @@ void MainWindow::on_actionOpen_File_triggered()
                     xmlReader.readNextStartElement();
                     if(xmlReader.name() == KEY_ENTITY)
                     {
+                        // TODO : implementare il modo per poter tirare su più entity da un gruppo!!
                         xmlReader.readNextStartElement();
                         if(xmlReader.name() == KEY_ENTITYTYPE)
                         {
-                            if(xmlReader.readElementText() == KEY_TASKTYPE)
+                            QString type = xmlReader.readElementText();
+
+                            if(type == KEY_TASKTYPE)
                             {
                                 QString name;
                                 QDateTime start, end;
@@ -1081,7 +1084,7 @@ void MainWindow::on_actionOpen_File_triggered()
 
                                 ganttController->AddTask(this, name, start, end, taskPeople, completition, groupIndex);
                             }
-                            else if(xmlReader.readElementText() == KEY_MILESTONETYPE)
+                            else if(type == KEY_MILESTONETYPE)
                             {
                                 QString name;
                                 QDateTime dateTime;
@@ -1107,6 +1110,8 @@ void MainWindow::on_actionOpen_File_triggered()
                     }
                     else
                     {
+                        groupIndex++;
+                        xmlReader.readNextStartElement();
                         continue;
                     }
                }
@@ -1116,9 +1121,14 @@ void MainWindow::on_actionOpen_File_triggered()
             {
                 // TODO : non importa il task fuori!!
                 xmlReader.readNextStartElement();
+
+                QString temp = xmlReader.name().toString();
+
                 if(xmlReader.name() == KEY_ENTITYTYPE)
                 {
-                    if(xmlReader.readElementText() == KEY_TASKTYPE)
+                    QString type = xmlReader.readElementText();
+
+                    if(type == KEY_TASKTYPE)
                     {
                         QString name;
                         QDateTime start, end;
@@ -1149,7 +1159,7 @@ void MainWindow::on_actionOpen_File_triggered()
 
                         ganttController->AddTask(this, name, start, end, taskPeople, completition);
                     }
-                    else if(xmlReader.readElementText() == KEY_MILESTONETYPE)
+                    else if(type == KEY_MILESTONETYPE)
                     {
                         QString name;
                         QDateTime dateTime;
