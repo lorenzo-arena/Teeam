@@ -271,6 +271,8 @@ void MainWindow::UpdateProjectView()
     if ( ! legend.isEmpty() )
         viewModel->setData( viewModel->index( 0, 5 ), legend );
 
+    viewModel->itemFromIndex(viewModel->index(0, 0))->setEditable(false);
+
     // Espando questo nodo
     //QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
     //leftView->expand(viewModel->index( 0, 0 ));
@@ -314,6 +316,8 @@ void MainWindow::UpdateTaskGroupView()
 
                 QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
                 leftView->expand(projectIndex);
+
+                viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(false);
             }
 
             // Se ho aggiunto un task a una lista:
@@ -347,6 +351,8 @@ void MainWindow::UpdateTaskGroupView()
                         const QString legend( "" );
                         if ( ! legend.isEmpty() )
                             viewModel->setData( viewModel->index( row, 5, parent ), legend );
+
+                        viewModel->itemFromIndex(viewModel->index(row, 0, parent))->setEditable(false);
                     }
                     else if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == MILESTONE_CODE)
                     {
@@ -357,6 +363,8 @@ void MainWindow::UpdateTaskGroupView()
                         const QString legend( "" );
                         if ( ! legend.isEmpty() )
                             viewModel->setData( viewModel->index( row, 5, parent ), legend );
+
+                        viewModel->itemFromIndex(viewModel->index(row, 0, parent))->setEditable(false);
                     }
 
                     if(isNew)
@@ -414,6 +422,8 @@ void MainWindow::UpdateEntitiesView()
                 const QString legend( "" );
                 if ( ! legend.isEmpty() )
                     viewModel->setData( viewModel->index( row, 5, projectIndex ), legend );
+
+                viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(false);
             }
             else if(projectModel->GetEntitiesList().at(i)->getEntityType() == MILESTONE_CODE)
             {
@@ -424,6 +434,8 @@ void MainWindow::UpdateEntitiesView()
                 const QString legend( "" );
                 if ( ! legend.isEmpty() )
                     viewModel->setData( viewModel->index( row, 5, projectIndex ), legend );
+
+                viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(false);
             }
 
             if(isNew)
