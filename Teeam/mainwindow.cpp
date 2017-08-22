@@ -9,6 +9,7 @@
 #include "edittaskdialog.h"
 #include "editmilestonedialog.h"
 #include "freedaysdialog.h"
+#include "errors.h"
 
 #include <QDebug>
 #include <QApplication>
@@ -446,7 +447,6 @@ void MainWindow::on_actionNew_Project_triggered()
         return;
     }
 
-    // TODO : re-inizializzo il progetto, devo salvare quello vecchio e agganciarmi al nuovo
     TeeamProject *newProject = new TeeamProject(dialog->GetProjectName(), dialog->GetPeopleList());
     this->projectModel = newProject;
     newProject->attach(this);
@@ -749,12 +749,32 @@ void MainWindow::on_actionTreeView_del(const QModelIndex &index)
         qDebug() << text;
 
         if(index.row() == 0 && index.column() == 0 && !index.parent().isValid())
-        {
-            // TODO : gestione eliminazione progetto?
+        {   
+            // Controllo se ho eliminato il progetto
+            QMessageBox::StandardButton result = QMessageBox::information(this,
+                                                              "Warning",
+                                                              "Do you want to save the project?",
+                                                              QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
+                                                              QMessageBox::Cancel);
+
+            if(result == QMessageBox::Cancel)
+                return;
+            else if(result == QMessageBox::No)
+            {
+                DeleteProject();
+                return;
+            }
+            else if(result == QMessageBox::Yes)
+            {
+                on_action_Save_as_triggered();
+                DeleteProject();
+                return;
+            }
+            return;
         }
         else if(index.parent().isValid() && !index.parent().parent().isValid())
         {
-            // Controllo se ho eliminato un gruppo
+            // oppure se ho eliminato un gruppo
             if(index.row() < projectModel->GetTaskGroup().length())
             {
                 ganttController->RemoveTaskGroup(index.row());
@@ -771,6 +791,28 @@ void MainWindow::on_actionTreeView_del(const QModelIndex &index)
             ganttController->RemoveTaskOrMilestone(index.row(), index.parent().row());
         }
     }
+}
+
+void MainWindow::DeleteProject()
+{
+    QStringList list;
+    TeeamProject *newProject = new TeeamProject("", list);
+    this->projectModel = newProject;
+    newProject->attach(this);
+    ganttController->NewProject(newProject);
+
+    viewModel = new QStandardItemModel( 0, 6, this );
+    viewModel->setHeaderData( 0, Qt::Horizontal, tr( "Project Tree View" ) );
+    ui->ganttView->setModel( viewModel );
+
+    ui->action_Save_as->setEnabled(false);
+    ui->actionAdd_Task_Group->setEnabled(false);
+    ui->actionAdd_Task->setEnabled(false);
+    ui->actionAdd_Milestone->setEnabled(false);
+    ui->action_Edit_Project->setEnabled(false);
+    ui->action_Edit_Task_Group->setEnabled(false);
+    ui->action_Edit_Task->setEnabled(false);
+    ui->action_Edit_Milestone->setEnabled(false);
 }
 
 bool MainWindow::eventFilter(QObject* target, QEvent* event)
@@ -901,6 +943,8 @@ void MainWindow::on_action_Save_as_triggered()
         xmlWriter.setAutoFormatting(true);
         xmlWriter.writeStartDocument();
 
+        xmlWriter.writeComment("Do not modify!");
+
         // Inizio il salvataggio del progetto
         xmlWriter.writeStartElement(KEY_PROJECT);
 
@@ -1004,191 +1048,243 @@ void MainWindow::on_actionOpen_File_triggered()
         return;
     }
 
-    QXmlStreamReader xmlReader;
-    xmlReader.setDevice(&file);
-
-    QXmlStreamReader::TokenType token = xmlReader.readNext();
-
-    if(token == QXmlStreamReader::Invalid)
+    try
     {
-        setCursor(Qt::ArrowCursor);
-        return;
-    }
-    else if(token == QXmlStreamReader::StartDocument)
-    {
-        xmlReader.readNextStartElement();
-    }
+        QXmlStreamReader xmlReader;
+        xmlReader.setDevice(&file);
 
-    // Controllo che l'elemento più alto sia un project
-    if(xmlReader.name() == KEY_PROJECT)
-    {
-        // TODO : aggiungere gestione errori!
+        QXmlStreamReader::TokenType token = xmlReader.readNext();
 
-        QString name;
-        QStringList people;
-        xmlReader.readNextStartElement();
-
-        if(xmlReader.name() == KEY_PROJECTPARAMETERS)
+        if(token == QXmlStreamReader::Invalid)
         {
-           xmlReader.readNextStartElement();
-           if(xmlReader.name() == KEY_NAME)
-               name = xmlReader.readElementText();
-
-           xmlReader.readNextStartElement();
-           while(xmlReader.name() == KEY_PERSON)
-           {
-               people << xmlReader.readElementText();
-               xmlReader.readNextStartElement();
-           }
+            setCursor(Qt::ArrowCursor);
+            return;
+        }
+        else if(token == QXmlStreamReader::StartDocument)
+        {
+            xmlReader.readNextStartElement();
         }
 
-        TeeamProject *tempProj = new TeeamProject(name, people);
-        this->projectModel = tempProj;
-        tempProj->attach(this);
-        ganttController->NewProject(tempProj);
-
-        int groupIndex = 1;
-        while(xmlReader.readNextStartElement())
+        // Controllo che l'elemento più alto sia un project
+        if(xmlReader.name() == KEY_PROJECT)
         {
-            if(xmlReader.name() == KEY_GROUP)
+            QString name;
+            QStringList people;
+            xmlReader.readNextStartElement();
+
+            if(xmlReader.name() == KEY_PROJECTPARAMETERS)
             {
                xmlReader.readNextStartElement();
                if(xmlReader.name() == KEY_NAME)
+                   name = xmlReader.readElementText();
+               else
+                   throw INVALID_FILE;
+
+               xmlReader.readNextStartElement();
+               while(xmlReader.name() == KEY_PERSON)
                {
-                    ganttController->AddTaskGroup(this, xmlReader.readElementText());
+                   people << xmlReader.readElementText();
+                   xmlReader.readNextStartElement();
+               }
+
+               TeeamProject *tempProj = new TeeamProject(name, people);
+               this->projectModel = tempProj;
+               tempProj->attach(this);
+               ganttController->NewProject(tempProj);
+            }
+
+            int groupIndex = 1;
+            while(xmlReader.readNextStartElement())
+            {
+                if(xmlReader.name() == KEY_GROUP)
+                {
+                   xmlReader.readNextStartElement();
+                   if(xmlReader.name() == KEY_NAME)
+                   {
+                        ganttController->AddTaskGroup(this, xmlReader.readElementText());
+
+                        xmlReader.readNextStartElement();
+                        while(xmlReader.name() == KEY_ENTITY)
+                        {
+                            xmlReader.readNextStartElement();
+                            if(xmlReader.name() == KEY_ENTITYTYPE)
+                            {
+                                QString type = xmlReader.readElementText();
+
+                                if(type == KEY_TASKTYPE)
+                                {
+                                    QString name;
+                                    QDateTime start, end;
+                                    QStringList taskPeople;
+                                    int completition;
+
+                                    xmlReader.readNextStartElement();
+                                    if(xmlReader.name() == KEY_NAME)
+                                        name = xmlReader.readElementText();
+                                    else
+                                        throw INVALID_FILE;
+
+                                    xmlReader.readNextStartElement();
+                                    while(xmlReader.name() == KEY_PERSON)
+                                    {
+                                        taskPeople << xmlReader.readElementText();
+                                        xmlReader.readNextStartElement();
+                                    }
+
+                                    if(xmlReader.name() == KEY_STARTDATETIME)
+                                        start = QDateTime::fromString(xmlReader.readElementText());
+                                    else
+                                        throw INVALID_FILE;
+
+                                    xmlReader.readNextStartElement();
+                                    if(xmlReader.name() == KEY_ENDDATETIME)
+                                        end = QDateTime::fromString(xmlReader.readElementText());
+                                    else
+                                        throw INVALID_FILE;
+
+                                    xmlReader.readNextStartElement();
+                                    if(xmlReader.name() == KEY_COMPLETITION)
+                                        completition = xmlReader.readElementText().toInt();
+                                    else
+                                        throw INVALID_FILE;
+
+                                    ganttController->AddTask(this, name, start, end, taskPeople, completition, groupIndex);
+                                }
+                                else if(type == KEY_MILESTONETYPE)
+                                {
+                                    QString name;
+                                    QDateTime dateTime;
+                                    QStringList milestonePeople;
+
+                                    xmlReader.readNextStartElement();
+                                    if(xmlReader.name() == KEY_NAME)
+                                        name = xmlReader.readElementText();
+                                    else
+                                        throw INVALID_FILE;
+
+                                    xmlReader.readNextStartElement();
+                                    while(xmlReader.name() == KEY_PERSON)
+                                    {
+                                        milestonePeople << xmlReader.readElementText();
+                                        xmlReader.readNextStartElement();
+                                    }
+
+                                    if(xmlReader.name() == KEY_STARTDATETIME)
+                                        dateTime = QDateTime::fromString(xmlReader.readElementText());
+                                    else
+                                        throw INVALID_FILE;
+
+                                    ganttController->AddMilestone(this, name, dateTime, milestonePeople, groupIndex);
+                                }
+                                else
+                                    throw INVALID_FILE;
+                            }
+                            else
+                                throw INVALID_FILE;
+
+                            xmlReader.readNextStartElement();
+                            xmlReader.readNextStartElement();
+                        }
+                   }
+                   else
+                       throw INVALID_FILE;
+
+                   groupIndex++;
+                }
+                else if(xmlReader.name() == KEY_ENTITY)
+                {
+                    xmlReader.readNextStartElement();
+
+                    if(xmlReader.name() == KEY_ENTITYTYPE)
+                    {
+                        QString type = xmlReader.readElementText();
+
+                        if(type == KEY_TASKTYPE)
+                        {
+                            QString name;
+                            QDateTime start, end;
+                            QStringList taskPeople;
+                            int completition;
+
+                            xmlReader.readNextStartElement();
+                            if(xmlReader.name() == KEY_NAME)
+                                name = xmlReader.readElementText();
+                            else
+                                throw INVALID_FILE;
+
+                            xmlReader.readNextStartElement();
+                            while(xmlReader.name() == KEY_PERSON)
+                            {
+                                taskPeople << xmlReader.readElementText();
+                                xmlReader.readNextStartElement();
+                            }
+
+                            if(xmlReader.name() == KEY_STARTDATETIME)
+                                start = QDateTime::fromString(xmlReader.readElementText());
+                            else
+                                throw INVALID_FILE;
+
+                            xmlReader.readNextStartElement();
+                            if(xmlReader.name() == KEY_ENDDATETIME)
+                                end = QDateTime::fromString(xmlReader.readElementText());
+                            else
+                                throw INVALID_FILE;
+
+                            xmlReader.readNextStartElement();
+                            if(xmlReader.name() == KEY_COMPLETITION)
+                                completition = xmlReader.readElementText().toInt();
+                            else
+                                throw INVALID_FILE;
+
+                            ganttController->AddTask(this, name, start, end, taskPeople, completition);
+                        }
+                        else if(type == KEY_MILESTONETYPE)
+                        {
+                            QString name;
+                            QDateTime dateTime;
+                            QStringList milestonePeople;
+
+                            xmlReader.readNextStartElement();
+                            if(xmlReader.name() == KEY_NAME)
+                                name = xmlReader.readElementText();
+                            else
+                                throw INVALID_FILE;
+
+                            xmlReader.readNextStartElement();
+                            while(xmlReader.name() == KEY_PERSON)
+                            {
+                                milestonePeople << xmlReader.readElementText();
+                                xmlReader.readNextStartElement();
+                            }
+
+                            if(xmlReader.name() == KEY_STARTDATETIME)
+                                dateTime = QDateTime::fromString(xmlReader.readElementText());
+                            else
+                                throw INVALID_FILE;
+
+                            ganttController->AddMilestone(this, name, dateTime, milestonePeople);
+                        }
+                        else
+                            throw INVALID_FILE;
+                    }
+                    else
+                        throw INVALID_FILE;
 
                     xmlReader.readNextStartElement();
-                    while(xmlReader.name() == KEY_ENTITY)
-                    {
-                        xmlReader.readNextStartElement();
-                        if(xmlReader.name() == KEY_ENTITYTYPE)
-                        {
-                            QString type = xmlReader.readElementText();
-
-                            if(type == KEY_TASKTYPE)
-                            {
-                                QString name;
-                                QDateTime start, end;
-                                QStringList taskPeople;
-                                int completition;
-
-                                xmlReader.readNextStartElement();
-                                if(xmlReader.name() == KEY_NAME)
-                                    name = xmlReader.readElementText();
-
-                                xmlReader.readNextStartElement();
-                                while(xmlReader.name() == KEY_PERSON)
-                                {
-                                    taskPeople << xmlReader.readElementText();
-                                    xmlReader.readNextStartElement();
-                                }
-
-                                if(xmlReader.name() == KEY_STARTDATETIME)
-                                    start = QDateTime::fromString(xmlReader.readElementText());
-
-                                xmlReader.readNextStartElement();
-                                if(xmlReader.name() == KEY_ENDDATETIME)
-                                    end = QDateTime::fromString(xmlReader.readElementText());
-
-                                xmlReader.readNextStartElement();
-                                if(xmlReader.name() == KEY_COMPLETITION)
-                                    completition = xmlReader.readElementText().toInt();
-
-                                ganttController->AddTask(this, name, start, end, taskPeople, completition, groupIndex);
-                            }
-                            else if(type == KEY_MILESTONETYPE)
-                            {
-                                QString name;
-                                QDateTime dateTime;
-                                QStringList milestonePeople;
-
-                                xmlReader.readNextStartElement();
-                                if(xmlReader.name() == KEY_NAME)
-                                    name = xmlReader.readElementText();
-
-                                xmlReader.readNextStartElement();
-                                while(xmlReader.name() == KEY_PERSON)
-                                {
-                                    milestonePeople << xmlReader.readElementText();
-                                    xmlReader.readNextStartElement();
-                                }
-
-                                if(xmlReader.name() == KEY_STARTDATETIME)
-                                    dateTime = QDateTime::fromString(xmlReader.readElementText());
-
-                                ganttController->AddMilestone(this, name, dateTime, milestonePeople, groupIndex);
-                            }
-                        }
-                        xmlReader.readNextStartElement();
-                        xmlReader.readNextStartElement();
-                    }     
-               }
-               groupIndex++;
-            }
-            else if(xmlReader.name() == KEY_ENTITY)
-            {
-                xmlReader.readNextStartElement();
-
-                if(xmlReader.name() == KEY_ENTITYTYPE)
-                {
-                    QString type = xmlReader.readElementText();
-
-                    if(type == KEY_TASKTYPE)
-                    {
-                        QString name;
-                        QDateTime start, end;
-                        QStringList taskPeople;
-                        int completition;
-
-                        xmlReader.readNextStartElement();
-                        if(xmlReader.name() == KEY_NAME)
-                            name = xmlReader.readElementText();
-
-                        xmlReader.readNextStartElement();
-                        while(xmlReader.name() == KEY_PERSON)
-                        {
-                            taskPeople << xmlReader.readElementText();
-                            xmlReader.readNextStartElement();
-                        }
-
-                        if(xmlReader.name() == KEY_STARTDATETIME)
-                            start = QDateTime::fromString(xmlReader.readElementText());
-
-                        xmlReader.readNextStartElement();
-                        if(xmlReader.name() == KEY_ENDDATETIME)
-                            end = QDateTime::fromString(xmlReader.readElementText());
-
-                        xmlReader.readNextStartElement();
-                        if(xmlReader.name() == KEY_COMPLETITION)
-                            completition = xmlReader.readElementText().toInt();
-
-                        ganttController->AddTask(this, name, start, end, taskPeople, completition);
-                    }
-                    else if(type == KEY_MILESTONETYPE)
-                    {
-                        QString name;
-                        QDateTime dateTime;
-                        QStringList milestonePeople;
-
-                        xmlReader.readNextStartElement();
-                        if(xmlReader.name() == KEY_NAME)
-                            name = xmlReader.readElementText();
-
-                        xmlReader.readNextStartElement();
-                        while(xmlReader.name() == KEY_PERSON)
-                        {
-                            milestonePeople << xmlReader.readElementText();
-                            xmlReader.readNextStartElement();
-                        }
-
-                        if(xmlReader.name() == KEY_STARTDATETIME)
-                            dateTime = QDateTime::fromString(xmlReader.readElementText());
-
-                        ganttController->AddMilestone(this, name, dateTime, milestonePeople);
-                    }
                 }
-                xmlReader.readNextStartElement();
+                else
+                    throw INVALID_FILE;
             }
+        }
+        else
+            throw INVALID_FILE;
+    }
+    catch (int error)
+    {
+        if(error == INVALID_FILE)
+        {
+            DeleteProject();
+            QMessageBox::warning(this, "Warning", "File not valid.");
         }
     }
 

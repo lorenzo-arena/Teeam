@@ -63,7 +63,8 @@ HEADERS += \
     addpersondialog.h \
     edittaskgroupdialog.h \
     edittaskdialog.h \
-    editmilestonedialog.h
+    editmilestonedialog.h \
+    errors.h
 
 FORMS += \
         mainwindow.ui \

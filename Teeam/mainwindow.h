@@ -111,6 +111,7 @@ private:
     void UpdateProjectView();
     void UpdateTaskGroupView();
     void UpdateEntitiesView();
+    void DeleteProject();
 };
 
 #endif // MAINWINDOW_H
