@@ -104,6 +104,7 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
     // Disabilito alcune voci dal menu se non ho caricato un progetto
     if(this->projectModel == nullptr)
     {
+        ui->action_Save_as->setEnabled(false);
         ui->actionAdd_Task_Group->setEnabled(false);
         ui->actionAdd_Task->setEnabled(false);
         ui->actionAdd_Milestone->setEnabled(false);
@@ -452,6 +453,7 @@ void MainWindow::on_actionNew_Project_triggered()
     ganttController->NewProject(newProject);
 
     // Abilito alcune voci del menu
+    ui->action_Save_as->setEnabled(true);
     ui->actionAdd_Task_Group->setEnabled(true);
     ui->actionAdd_Task->setEnabled(true);
     ui->actionAdd_Milestone->setEnabled(true);

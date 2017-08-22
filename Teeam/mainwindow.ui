@@ -47,6 +47,7 @@
      <string>&amp;File</string>
     </property>
     <addaction name="separator"/>
+    <addaction name="actionNew_Project"/>
     <addaction name="actionOpen_File"/>
     <addaction name="action_Save_as"/>
     <addaction name="separator"/>
@@ -56,7 +57,6 @@
     <property name="title">
      <string>&amp;Add..</string>
     </property>
-    <addaction name="actionNew_Project"/>
     <addaction name="actionAdd_Task_Group"/>
     <addaction name="actionAdd_Task"/>
     <addaction name="actionAdd_Milestone"/>
@@ -94,13 +94,17 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionZoom_In"/>
-   <addaction name="actionZoom_Out"/>
-   <addaction name="separator"/>
    <addaction name="actionNew_Project"/>
+   <addaction name="actionOpen_File"/>
+   <addaction name="action_Save_as"/>
+   <addaction name="separator"/>
    <addaction name="actionAdd_Task_Group"/>
    <addaction name="actionAdd_Task"/>
    <addaction name="actionAdd_Milestone"/>
+   <addaction name="separator"/>
+   <addaction name="actionZoom_In"/>
+   <addaction name="actionZoom_Out"/>
+   <addaction name="separator"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_Quit">
@@ -210,11 +214,19 @@
    </property>
   </action>
   <action name="action_Save_as">
+   <property name="icon">
+    <iconset resource="teeamres.qrc">
+     <normaloff>:/icons/icons/file_save_as.png</normaloff>:/icons/icons/file_save_as.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Save as..</string>
    </property>
   </action>
   <action name="actionOpen_File">
+   <property name="icon">
+    <iconset resource="teeamres.qrc">
+     <normaloff>:/icons/icons/folder_vertical_open.png</normaloff>:/icons/icons/folder_vertical_open.png</iconset>
+   </property>
    <property name="text">
     <string>Open &amp;File..</string>
    </property>
