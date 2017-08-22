@@ -94,7 +94,7 @@ RESOURCES += \
 
 DEFINES += APP_NAME=\\\"Teeam\\\"
 
-VERSION = 0.3
+VERSION = 0.4
 
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
