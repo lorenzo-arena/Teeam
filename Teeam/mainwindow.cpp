@@ -904,12 +904,16 @@ void MainWindow::on_action_Save_as_triggered()
         // Inizio il salvataggio del progetto
         xmlWriter.writeStartElement(KEY_PROJECT);
 
+        xmlWriter.writeStartElement(KEY_PROJECTPARAMETERS);
+
         // Salvo il nome
         xmlWriter.writeTextElement(KEY_NAME, projectModel->GetName() );
 
         // Salvo l'elenco di persone
         for(int i = 0; i < projectModel->GetPeopleList().length(); i++)
             xmlWriter.writeTextElement(KEY_PERSON, projectModel->GetPeopleList().at(i));
+
+        xmlWriter.writeEndElement();
 
         // Salvo i gruppi
         for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
@@ -979,6 +983,8 @@ void MainWindow::on_action_Save_as_triggered()
 
         xmlWriter.writeEndElement();
 
+        xmlWriter.writeEndDocument();
+
         file.close();
     }
 }
@@ -1022,14 +1028,18 @@ void MainWindow::on_actionOpen_File_triggered()
         QStringList people;
         xmlReader.readNextStartElement();
 
-        if(xmlReader.name() == KEY_NAME)
-            name = xmlReader.readElementText();
-
-        xmlReader.readNextStartElement();
-        while(xmlReader.name() == KEY_PERSON)
+        if(xmlReader.name() == KEY_PROJECTPARAMETERS)
         {
-            people << xmlReader.readElementText();
-            xmlReader.readNextStartElement();
+           xmlReader.readNextStartElement();
+           if(xmlReader.name() == KEY_NAME)
+               name = xmlReader.readElementText();
+
+           xmlReader.readNextStartElement();
+           while(xmlReader.name() == KEY_PERSON)
+           {
+               people << xmlReader.readElementText();
+               xmlReader.readNextStartElement();
+           }
         }
 
         TeeamProject *tempProj = new TeeamProject(name, people);
@@ -1038,7 +1048,7 @@ void MainWindow::on_actionOpen_File_triggered()
         ganttController->NewProject(tempProj);
 
         int groupIndex = 1;
-        while(!xmlReader.atEnd())
+        while(xmlReader.readNextStartElement())
         {
             if(xmlReader.name() == KEY_GROUP)
             {
@@ -1046,10 +1056,10 @@ void MainWindow::on_actionOpen_File_triggered()
                if(xmlReader.name() == KEY_NAME)
                {
                     ganttController->AddTaskGroup(this, xmlReader.readElementText());
+
                     xmlReader.readNextStartElement();
-                    if(xmlReader.name() == KEY_ENTITY)
+                    while(xmlReader.name() == KEY_ENTITY)
                     {
-                        // TODO : implementare il modo per poter tirare su più entity da un gruppo!!
                         xmlReader.readNextStartElement();
                         if(xmlReader.name() == KEY_ENTITYTYPE)
                         {
@@ -1109,22 +1119,15 @@ void MainWindow::on_actionOpen_File_triggered()
                                 ganttController->AddMilestone(this, name, dateTime, milestonePeople, groupIndex);
                             }
                         }
-                    }
-                    else
-                    {
-                        groupIndex++;
                         xmlReader.readNextStartElement();
-                        continue;
-                    }
+                        xmlReader.readNextStartElement();
+                    }     
                }
                groupIndex++;
             }
             else if(xmlReader.name() == KEY_ENTITY)
             {
-                // TODO : non importa il task fuori!!
                 xmlReader.readNextStartElement();
-
-                QString temp = xmlReader.name().toString();
 
                 if(xmlReader.name() == KEY_ENTITYTYPE)
                 {
@@ -1184,8 +1187,8 @@ void MainWindow::on_actionOpen_File_triggered()
                         ganttController->AddMilestone(this, name, dateTime, milestonePeople);
                     }
                 }
+                xmlReader.readNextStartElement();
             }
-            xmlReader.readNextStartElement();
         }
     }
 

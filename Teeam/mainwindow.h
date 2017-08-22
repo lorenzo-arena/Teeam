@@ -95,6 +95,7 @@ private:
 
     // identificativi per file salvataggio
     const QString KEY_PROJECT = "teeamproject";
+    const QString KEY_PROJECTPARAMETERS = "projectparameters";
     const QString KEY_NAME = "name";
     const QString KEY_PERSON = "person";
     const QString KEY_GROUP = "group";
