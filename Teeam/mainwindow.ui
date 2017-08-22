@@ -50,6 +50,7 @@
     <addaction name="actionNew_Project"/>
     <addaction name="actionOpen_File"/>
     <addaction name="action_Save_as"/>
+    <addaction name="action_Close_Project"/>
     <addaction name="separator"/>
     <addaction name="action_Quit"/>
    </widget>
@@ -97,6 +98,7 @@
    <addaction name="actionNew_Project"/>
    <addaction name="actionOpen_File"/>
    <addaction name="action_Save_as"/>
+   <addaction name="action_Close_Project"/>
    <addaction name="separator"/>
    <addaction name="actionAdd_Task_Group"/>
    <addaction name="actionAdd_Task"/>
@@ -229,6 +231,15 @@
    </property>
    <property name="text">
     <string>Open &amp;File..</string>
+   </property>
+  </action>
+  <action name="action_Close_Project">
+   <property name="icon">
+    <iconset resource="teeamres.qrc">
+     <normaloff>:/icons/icons/bin_closed.png</normaloff>:/icons/icons/bin_closed.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Close Project</string>
    </property>
   </action>
  </widget>

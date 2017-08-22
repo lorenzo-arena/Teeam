@@ -61,6 +61,8 @@ private slots:
 
     void on_actionOpen_File_triggered();
 
+    void on_action_Close_Project_triggered();
+
 private:
     void initGanttView();
 

@@ -13,5 +13,6 @@
         <file>icons/project_edit.png</file>
         <file>icons/save_close.png</file>
         <file>icons/task.png</file>
+        <file>icons/bin_closed.png</file>
     </qresource>
 </RCC>

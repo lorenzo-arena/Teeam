@@ -106,6 +106,7 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
     if(this->projectModel == nullptr)
     {
         ui->action_Save_as->setEnabled(false);
+        ui->action_Close_Project->setEnabled(false);
         ui->actionAdd_Task_Group->setEnabled(false);
         ui->actionAdd_Task->setEnabled(false);
         ui->actionAdd_Milestone->setEnabled(false);
@@ -454,6 +455,7 @@ void MainWindow::on_actionNew_Project_triggered()
 
     // Abilito alcune voci del menu
     ui->action_Save_as->setEnabled(true);
+    ui->action_Close_Project->setEnabled(true);
     ui->actionAdd_Task_Group->setEnabled(true);
     ui->actionAdd_Task->setEnabled(true);
     ui->actionAdd_Milestone->setEnabled(true);
@@ -751,26 +753,7 @@ void MainWindow::on_actionTreeView_del(const QModelIndex &index)
         if(index.row() == 0 && index.column() == 0 && !index.parent().isValid())
         {   
             // Controllo se ho eliminato il progetto
-            QMessageBox::StandardButton result = QMessageBox::information(this,
-                                                              "Warning",
-                                                              "Do you want to save the project?",
-                                                              QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
-                                                              QMessageBox::Cancel);
-
-            if(result == QMessageBox::Cancel)
-                return;
-            else if(result == QMessageBox::No)
-            {
-                DeleteProject();
-                return;
-            }
-            else if(result == QMessageBox::Yes)
-            {
-                on_action_Save_as_triggered();
-                DeleteProject();
-                return;
-            }
-            return;
+            on_action_Close_Project_triggered();
         }
         else if(index.parent().isValid() && !index.parent().parent().isValid())
         {
@@ -806,6 +789,7 @@ void MainWindow::DeleteProject()
     ui->ganttView->setModel( viewModel );
 
     ui->action_Save_as->setEnabled(false);
+    ui->action_Close_Project->setEnabled(false);
     ui->actionAdd_Task_Group->setEnabled(false);
     ui->actionAdd_Task->setEnabled(false);
     ui->actionAdd_Milestone->setEnabled(false);
@@ -1289,5 +1273,30 @@ void MainWindow::on_actionOpen_File_triggered()
     }
 
     setCursor(Qt::ArrowCursor);
+    return;
+}
+
+void MainWindow::on_action_Close_Project_triggered()
+{
+    // Controllo se ho eliminato il progetto
+    QMessageBox::StandardButton result = QMessageBox::information(this,
+                                                      "Warning",
+                                                      "Do you want to save the project?",
+                                                      QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
+                                                      QMessageBox::Cancel);
+
+    if(result == QMessageBox::Cancel)
+        return;
+    else if(result == QMessageBox::No)
+    {
+        DeleteProject();
+        return;
+    }
+    else if(result == QMessageBox::Yes)
+    {
+        on_action_Save_as_triggered();
+        DeleteProject();
+        return;
+    }
     return;
 }
