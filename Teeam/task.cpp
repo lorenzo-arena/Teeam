@@ -3,7 +3,7 @@
 Task::Task(QString taskName, QDateTime start, QDateTime end, QList<QString> taskPeople, int completition)
     : GenericTask()
 {
-    this->entityType = TASK_CODE;
+    this->entityType = Task_type;
     this->name = taskName;
     this->start = start;
     this->end = end;

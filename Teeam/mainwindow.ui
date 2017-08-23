@@ -46,13 +46,18 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <addaction name="separator"/>
+    <addaction name="actionNew_Project"/>
+    <addaction name="actionOpen_File"/>
+    <addaction name="action_Save_as"/>
+    <addaction name="action_Close_Project"/>
+    <addaction name="separator"/>
     <addaction name="action_Quit"/>
    </widget>
    <widget class="QMenu" name="menu_Add">
     <property name="title">
      <string>&amp;Add..</string>
     </property>
-    <addaction name="actionNew_Project"/>
     <addaction name="actionAdd_Task_Group"/>
     <addaction name="actionAdd_Task"/>
     <addaction name="actionAdd_Milestone"/>
@@ -90,6 +95,15 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionNew_Project"/>
+   <addaction name="actionOpen_File"/>
+   <addaction name="action_Save_as"/>
+   <addaction name="action_Close_Project"/>
+   <addaction name="separator"/>
+   <addaction name="actionAdd_Task_Group"/>
+   <addaction name="actionAdd_Task"/>
+   <addaction name="actionAdd_Milestone"/>
+   <addaction name="separator"/>
    <addaction name="actionZoom_In"/>
    <addaction name="actionZoom_Out"/>
    <addaction name="separator"/>
@@ -101,6 +115,10 @@
    </property>
   </action>
   <action name="actionNew_Project">
+   <property name="icon">
+    <iconset resource="teeamres.qrc">
+     <normaloff>:/icons/icons/new_project.png</normaloff>:/icons/icons/new_project.png</iconset>
+   </property>
    <property name="text">
     <string>New &amp;Project</string>
    </property>
@@ -109,6 +127,10 @@
    </property>
   </action>
   <action name="actionAdd_Task_Group">
+   <property name="icon">
+    <iconset resource="teeamres.qrc">
+     <normaloff>:/icons/icons/group.png</normaloff>:/icons/icons/group.png</iconset>
+   </property>
    <property name="text">
     <string>Add Task &amp;Group</string>
    </property>
@@ -117,6 +139,10 @@
    </property>
   </action>
   <action name="actionAdd_Task">
+   <property name="icon">
+    <iconset resource="teeamres.qrc">
+     <normaloff>:/icons/icons/task.png</normaloff>:/icons/icons/task.png</iconset>
+   </property>
    <property name="text">
     <string>Add &amp;Task</string>
    </property>
@@ -125,6 +151,10 @@
    </property>
   </action>
   <action name="actionAdd_Milestone">
+   <property name="icon">
+    <iconset resource="teeamres.qrc">
+     <normaloff>:/icons/icons/milestone.png</normaloff>:/icons/icons/milestone.png</iconset>
+   </property>
    <property name="text">
     <string>Add &amp;Milestone</string>
    </property>
@@ -162,6 +192,10 @@
    </property>
   </action>
   <action name="action_Edit_Project">
+   <property name="icon">
+    <iconset resource="teeamres.qrc">
+     <normaloff>:/icons/icons/project_edit.png</normaloff>:/icons/icons/project_edit.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Edit Project</string>
    </property>
@@ -179,6 +213,33 @@
   <action name="action_Edit_Milestone">
    <property name="text">
     <string>&amp;Edit Milestone</string>
+   </property>
+  </action>
+  <action name="action_Save_as">
+   <property name="icon">
+    <iconset resource="teeamres.qrc">
+     <normaloff>:/icons/icons/file_save_as.png</normaloff>:/icons/icons/file_save_as.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Save as..</string>
+   </property>
+  </action>
+  <action name="actionOpen_File">
+   <property name="icon">
+    <iconset resource="teeamres.qrc">
+     <normaloff>:/icons/icons/folder_vertical_open.png</normaloff>:/icons/icons/folder_vertical_open.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open &amp;File..</string>
+   </property>
+  </action>
+  <action name="action_Close_Project">
+   <property name="icon">
+    <iconset resource="teeamres.qrc">
+     <normaloff>:/icons/icons/bin_closed.png</normaloff>:/icons/icons/bin_closed.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Close Project</string>
    </property>
   </action>
  </widget>

@@ -63,7 +63,8 @@ HEADERS += \
     addpersondialog.h \
     edittaskgroupdialog.h \
     edittaskdialog.h \
-    editmilestonedialog.h
+    editmilestonedialog.h \
+    errors.h
 
 FORMS += \
         mainwindow.ui \
@@ -93,7 +94,7 @@ RESOURCES += \
 
 DEFINES += APP_NAME=\\\"Teeam\\\"
 
-VERSION = 0.2
+VERSION = 0.5
 
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 

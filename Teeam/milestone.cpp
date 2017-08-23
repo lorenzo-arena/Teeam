@@ -3,7 +3,7 @@
 Milestone::Milestone(QString milestoneName, QDateTime start, QList<QString> taskPeople)
     : GenericTask()
 {
-    this->entityType = MILESTONE_CODE;
+    this->entityType = Milestone_type;
     this->name = milestoneName;
     this->start = start;
     this->people = taskPeople;

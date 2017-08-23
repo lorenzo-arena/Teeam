@@ -57,6 +57,11 @@ private slots:
     void on_action_Edit_Milestone_triggered();
     bool eventFilter(QObject *target, QEvent *event);
     void closeEvent(QCloseEvent *eventArgs);
+    void on_action_Save_as_triggered();
+
+    void on_actionOpen_File_triggered();
+
+    void on_action_Close_Project_triggered();
 
 private:
     void initGanttView();
@@ -72,27 +77,43 @@ private:
     KDGantt::ConstraintModel *costraintModel;
 
     // identificativi per settings MainWindow
-    const QString KEY_MAINWINDOW = "teeam_mainwindow";
-    const QString KEY_MAINWINDOW_MAXIMIZED = "maximized";
-    const QString KEY_MAINWINDOW_SIZE = "size";
+    const QString REG_KEY_MAINWINDOW = "teeam_mainwindow";
+    const QString REG_KEY_MAINWINDOW_MAXIMIZED = "maximized";
+    const QString REG_KEY_MAINWINDOW_SIZE = "size";
 
     // identificativi per settings DateTimeView
-    const QString KEY_DATETIMEVIEW = "teeam_datetimeview";
-    const QString KEY_DATETIMEVIEW_SCALE = "scale";
-    const QString KEY_DATETIMEVIEW_DAYWIDTH = "daywidth";
-    const QString KEY_DATETIMEVIEW_FREEDAYSGROUP = "freedays";
-    const QString KEY_DATETIMEVIEW_MON = "mon";
-    const QString KEY_DATETIMEVIEW_TUE = "tue";
-    const QString KEY_DATETIMEVIEW_WED = "wed";
-    const QString KEY_DATETIMEVIEW_THU = "thu";
-    const QString KEY_DATETIMEVIEW_FRI = "fri";
-    const QString KEY_DATETIMEVIEW_SAT = "sat";
-    const QString KEY_DATETIMEVIEW_SUN = "sun";
-    const QString KEY_DATETIMEVIEW_COLOR = "color";
+    const QString REG_KEY_DATETIMEVIEW = "teeam_datetimeview";
+    const QString REG_KEY_DATETIMEVIEW_SCALE = "scale";
+    const QString REG_KEY_DATETIMEVIEW_DAYWIDTH = "daywidth";
+    const QString REG_KEY_DATETIMEVIEW_FREEDAYSGROUP = "freedays";
+    const QString REG_KEY_DATETIMEVIEW_MON = "mon";
+    const QString REG_KEY_DATETIMEVIEW_TUE = "tue";
+    const QString REG_KEY_DATETIMEVIEW_WED = "wed";
+    const QString REG_KEY_DATETIMEVIEW_THU = "thu";
+    const QString REG_KEY_DATETIMEVIEW_FRI = "fri";
+    const QString REG_KEY_DATETIMEVIEW_SAT = "sat";
+    const QString REG_KEY_DATETIMEVIEW_SUN = "sun";
+    const QString REG_KEY_DATETIMEVIEW_COLOR = "color";
+
+    // identificativi per file salvataggio
+    const QString KEY_PROJECT = "teeamproject";
+    const QString KEY_PROJECTPARAMETERS = "projectparameters";
+    const QString KEY_NAME = "name";
+    const QString KEY_PERSON = "person";
+    const QString KEY_GROUP = "group";
+    const QString KEY_ENTITY = "entity";
+    const QString KEY_ENTITYTYPE = "entitytype";
+    const QString KEY_TASKTYPE = "task";
+    const QString KEY_MILESTONETYPE = "milestone";
+    const QString KEY_STARTDATETIME = "startdatetime";
+    const QString KEY_ENDDATETIME = "enddatetime";
+    const QString KEY_COMPLETITION = "completition";
+
     void UpdateFreeDaysView();
     void UpdateProjectView();
     void UpdateTaskGroupView();
     void UpdateEntitiesView();
+    void DeleteProject();
 };
 
 #endif // MAINWINDOW_H

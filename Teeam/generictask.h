@@ -7,8 +7,11 @@
 #include <QColor>
 #include <QList>
 
-#define TASK_CODE           0x01
-#define MILESTONE_CODE      0x02
+typedef enum
+{
+    Task_type,
+    Milestone_type
+} EntityType;
 
 class TeeamProject;
 
@@ -18,7 +21,7 @@ class GenericTask : public GanttEntity
 public:
     GenericTask(){ isNew = true; bChanged = false; isRemoved = false; }
     bool IsNew() { return isNew; }
-    int getEntityType() { return entityType; }
+    EntityType getEntityType() { return entityType; }
 
 protected:
     void setNew(bool b) { isNew = b; }
@@ -26,7 +29,7 @@ protected:
     QColor color;
     QList<GenericTask*> dependecies;
     QList<QString> people;
-    int entityType; // La uso per distinguere tra Task e Milestone
+    EntityType entityType; // La uso per distinguere tra Task e Milestone
 
 public:
     virtual void AddDependency(GenericTask* dependency) = 0;
