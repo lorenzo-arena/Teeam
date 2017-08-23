@@ -164,6 +164,13 @@ void MainWindow::initGanttView()
     leftView->setColumnHidden( 5, true );
     leftView->header()->setStretchLastSection( true );
 
+#ifdef DRAGNDROP
+    leftView->setDragEnabled(true);
+    leftView->viewport()->setAcceptDrops(true);
+    leftView->setDropIndicatorShown(true);
+    leftView->setDragDropMode(QAbstractItemView::InternalMove);
+#endif
+
      QFont font;
      font.setPixelSize(15);
      leftView->setFont(font);
@@ -270,6 +277,11 @@ void MainWindow::UpdateProjectView()
 
     viewModel->itemFromIndex(viewModel->index(0, 0))->setEditable(false);
 
+#ifdef DRAGNDROP
+    viewModel->itemFromIndex(viewModel->index(0, 0))->setDragEnabled(false);
+    viewModel->itemFromIndex(viewModel->index(0, 0))->setDropEnabled(false);
+#endif
+
     // Espando questo nodo
     //QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
     //leftView->expand(viewModel->index( 0, 0 ));
@@ -297,6 +309,13 @@ void MainWindow::UpdateTaskGroupView()
             QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
             leftView->expand(projectIndex);
 
+            viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(false);
+
+#ifdef DRAGNDROP
+            viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setDropEnabled(true);
+            viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setDragEnabled(false);
+#endif
+
         }
         else if(projectModel->GetTaskGroup().at(i)->isChanged())
         {
@@ -312,6 +331,11 @@ void MainWindow::UpdateTaskGroupView()
                 leftView->expand(projectIndex);
 
                 viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(false);
+
+#ifdef DRAGNDROP
+                viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setDropEnabled(true);
+                viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setDragEnabled(false);
+#endif
             }
 
             // Se ho aggiunto un task a una lista:
@@ -342,8 +366,6 @@ void MainWindow::UpdateTaskGroupView()
                         viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Task *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getStart(), KDGantt::StartTimeRole );
                         viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Task *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getEnd(), KDGantt::EndTimeRole );
                         viewModel->setData( viewModel->index( row, 4, parent ), static_cast<Task *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getCompletition() );
-
-                        viewModel->itemFromIndex(viewModel->index(row, 0, parent))->setEditable(false);
                     }
                     else if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == Milestone_type)
                     {
@@ -351,9 +373,14 @@ void MainWindow::UpdateTaskGroupView()
                         viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeEvent );
                         viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Milestone *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getDateTime(), KDGantt::StartTimeRole );
                         viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Milestone *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getDateTime(), KDGantt::EndTimeRole );
-
-                        viewModel->itemFromIndex(viewModel->index(row, 0, parent))->setEditable(false);
                     }
+
+                    viewModel->itemFromIndex(viewModel->index(row, 0, parent))->setEditable(false);
+
+#ifdef DRAGNDROP
+                    viewModel->itemFromIndex(viewModel->index(row, 0, parent))->setDragEnabled(true);
+                    viewModel->itemFromIndex(viewModel->index(row, 0, parent))->setDropEnabled(false);
+#endif
 
                     if(isNew)
                     {
@@ -407,8 +434,6 @@ void MainWindow::UpdateEntitiesView()
                 viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getStart(), KDGantt::StartTimeRole );
                 viewModel->setData( viewModel->index( row, 3, projectIndex ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getEnd(), KDGantt::EndTimeRole );
                 viewModel->setData( viewModel->index( row, 4, projectIndex ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getCompletition() );
-
-                viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(false);
             }
             else if(projectModel->GetEntitiesList().at(i)->getEntityType() == Milestone_type)
             {
@@ -416,9 +441,14 @@ void MainWindow::UpdateEntitiesView()
                 viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeEvent );
                 viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Milestone *>(projectModel->GetEntitiesList().at(i))->getDateTime(), KDGantt::StartTimeRole );
                 viewModel->setData( viewModel->index( row, 3, projectIndex ), static_cast<Milestone *>(projectModel->GetEntitiesList().at(i))->getDateTime(), KDGantt::EndTimeRole );
-
-                viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(false);
             }
+
+            viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(false);
+
+#ifdef DRAGNDROP
+            viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setDragEnabled(true);
+            viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setDropEnabled(false);
+#endif
 
             if(isNew)
             {
