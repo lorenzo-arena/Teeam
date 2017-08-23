@@ -341,7 +341,7 @@ void MainWindow::UpdateTaskGroupView()
                     if ( row == 0 && projectIndex.isValid() && isNew)
                         viewModel->insertColumns( viewModel->columnCount( parent ), 5, parent );
 
-                    if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == TASK_CODE)
+                    if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == Task_type)
                     {
                         viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Task *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getName() );
                         viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeTask );
@@ -354,7 +354,7 @@ void MainWindow::UpdateTaskGroupView()
 
                         viewModel->itemFromIndex(viewModel->index(row, 0, parent))->setEditable(false);
                     }
-                    else if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == MILESTONE_CODE)
+                    else if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == Milestone_type)
                     {
                         viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Milestone *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getName() );
                         viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeEvent );
@@ -412,7 +412,7 @@ void MainWindow::UpdateEntitiesView()
             if ( row == 0 && projectIndex.isValid() && isNew )
                 viewModel->insertColumns( viewModel->columnCount( projectIndex ), 5, projectIndex );
 
-            if(projectModel->GetEntitiesList().at(i)->getEntityType() == TASK_CODE)
+            if(projectModel->GetEntitiesList().at(i)->getEntityType() == Task_type)
             {
                 viewModel->setData( viewModel->index( row, 0, projectIndex ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getName() );
                 viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeTask );
@@ -425,7 +425,7 @@ void MainWindow::UpdateEntitiesView()
 
                 viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(false);
             }
-            else if(projectModel->GetEntitiesList().at(i)->getEntityType() == MILESTONE_CODE)
+            else if(projectModel->GetEntitiesList().at(i)->getEntityType() == Milestone_type)
             {
                 viewModel->setData( viewModel->index( row, 0, projectIndex ), static_cast<Milestone *>(projectModel->GetEntitiesList().at(i))->getName() );
                 viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeEvent );
@@ -647,7 +647,7 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
             for (int i = 0; i < projectModel->GetTaskGroup().length(); i++)
                 groups << projectModel->GetTaskGroup().at(i)->getName();
 
-            if(projectModel->GetEntitiesList().at(entityIndex)->getEntityType() == TASK_CODE)
+            if(projectModel->GetEntitiesList().at(entityIndex)->getEntityType() == Task_type)
             {
                 EditTaskDialog *dialog = new EditTaskDialog( static_cast<Task*>(projectModel->GetEntitiesList().at(entityIndex))->getName(),
                                                              -1,
@@ -672,7 +672,7 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
                                                      dialog->GetSelectedGroup(),
                                                      entityIndex);
             }
-            else if(projectModel->GetEntitiesList().at(entityIndex)->getEntityType() == MILESTONE_CODE)
+            else if(projectModel->GetEntitiesList().at(entityIndex)->getEntityType() == Milestone_type)
             {
                 EditMilestoneDialog *dialog = new EditMilestoneDialog( static_cast<Milestone*>(projectModel->GetEntitiesList().at(entityIndex))->getName(),
                                                                        -1,
@@ -704,7 +704,7 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
         for (int i = 0; i < projectModel->GetTaskGroup().length(); i++)
             groups << projectModel->GetTaskGroup().at(i)->getName();
 
-        if(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex)->getEntityType() == TASK_CODE)
+        if(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex)->getEntityType() == Task_type)
         {
             EditTaskDialog *dialog = new EditTaskDialog( static_cast<Task*>(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex))->getName(),
                                                          parentIndex,
@@ -730,7 +730,7 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
                                                  entityIndex,
                                                  parentIndex);
         }
-        else if(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex)->getEntityType() == MILESTONE_CODE)
+        else if(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex)->getEntityType() == Milestone_type)
         {
             EditMilestoneDialog *dialog = new EditMilestoneDialog( static_cast<Milestone*>(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex))->getName(),
                                                                    parentIndex,
@@ -963,7 +963,7 @@ void MainWindow::on_action_Save_as_triggered()
             for(int j = 0; j < projectModel->GetTaskGroup().at(i)->GetEntitiesList().length(); j++)
             {
                 xmlWriter.writeStartElement(KEY_ENTITY);
-                if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == TASK_CODE)
+                if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == Task_type)
                 {
                     xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_TASKTYPE);
                     xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getName());
@@ -976,7 +976,7 @@ void MainWindow::on_action_Save_as_triggered()
 
                     xmlWriter.writeTextElement(KEY_COMPLETITION, QString::number(static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getCompletition()));
                 }
-                else if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == MILESTONE_CODE)
+                else if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == Milestone_type)
                 {
                     xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_MILESTONETYPE);
                     xmlWriter.writeTextElement(KEY_NAME, static_cast<Milestone*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getName());
@@ -995,7 +995,7 @@ void MainWindow::on_action_Save_as_triggered()
         for(int i = 0; i < projectModel->GetEntitiesList().length(); i++)
         {
             xmlWriter.writeStartElement(KEY_ENTITY);
-            if(projectModel->GetEntitiesList().at(i)->getEntityType() == TASK_CODE)
+            if(projectModel->GetEntitiesList().at(i)->getEntityType() == Task_type)
             {
                 xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_TASKTYPE);
                 xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getName());
@@ -1008,7 +1008,7 @@ void MainWindow::on_action_Save_as_triggered()
 
                 xmlWriter.writeTextElement(KEY_COMPLETITION, QString::number(static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getCompletition()));
             }
-            else if(projectModel->GetEntitiesList().at(i)->getEntityType() == MILESTONE_CODE)
+            else if(projectModel->GetEntitiesList().at(i)->getEntityType() == Milestone_type)
             {
                 xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_MILESTONETYPE);
                 xmlWriter.writeTextElement(KEY_NAME, static_cast<Milestone*>(projectModel->GetEntitiesList().at(i))->getName());
