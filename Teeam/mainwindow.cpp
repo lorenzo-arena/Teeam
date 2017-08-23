@@ -609,7 +609,6 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
 
             if(newName != projectModel->GetTaskGroup().at(index.row())->getName())
             {
-                // TODO : sistemare, non arriva l'update!!
                 ganttController->EditTaskGroup(index.row(), newName);
             }
 
@@ -857,7 +856,7 @@ void MainWindow::on_action_Edit_Task_Group_triggered()
         QString newName = dialog->GetTaskGroupName();
         int selectedGroup = dialog->GetSelectedGroup();
 
-        if(newName != projectModel->GetTaskGroup().at(selectedGroup-1)->getName())
+        if(newName != projectModel->GetTaskGroup().at(selectedGroup)->getName())
         {
             ganttController->EditTaskGroup(selectedGroup, newName);
         }
