@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>AddMilestoneDialog</class>
- <widget class="QDialog" name="AddMilestoneDialog">
+ <class>EditTaskDialog</class>
+ <widget class="QDialog" name="EditTaskDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>487</width>
-    <height>340</height>
+    <width>728</width>
+    <height>360</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Add Milestone</string>
+   <string>Edit Task</string>
   </property>
-  <widget class="QLabel" name="milestoneNamelabel">
+  <widget class="QLabel" name="taskNamelabel">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>81</width>
+     <x>210</x>
+     <y>30</y>
+     <width>56</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>Milestone name:</string>
+    <string>Task name:</string>
    </property>
   </widget>
   <widget class="QPushButton" name="buttonOk">
    <property name="geometry">
     <rect>
-     <x>390</x>
-     <y>20</y>
+     <x>580</x>
+     <y>30</y>
      <width>80</width>
      <height>21</height>
     </rect>
@@ -45,8 +45,8 @@
   <widget class="QLineEdit" name="lineEdit">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>50</y>
+     <x>210</x>
+     <y>60</y>
      <width>171</width>
      <height>22</height>
     </rect>
@@ -55,8 +55,8 @@
   <widget class="QPushButton" name="buttonCancel">
    <property name="geometry">
     <rect>
-     <x>390</x>
-     <y>50</y>
+     <x>580</x>
+     <y>60</y>
      <width>80</width>
      <height>21</height>
     </rect>
@@ -71,8 +71,24 @@
   <widget class="QDateTimeEdit" name="startdateTimeEdit">
    <property name="geometry">
     <rect>
-     <x>340</x>
-     <y>150</y>
+     <x>530</x>
+     <y>160</y>
+     <width>130</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="locale">
+    <locale language="English" country="UnitedStates"/>
+   </property>
+   <property name="calendarPopup">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QDateTimeEdit" name="enddateTimeEdit">
+   <property name="geometry">
+    <rect>
+     <x>530</x>
+     <y>220</y>
      <width>130</width>
      <height>22</height>
     </rect>
@@ -87,8 +103,8 @@
   <widget class="QListView" name="totalPeoplelistView">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>130</y>
+     <x>210</x>
+     <y>140</y>
      <width>101</width>
      <height>192</height>
     </rect>
@@ -97,21 +113,34 @@
   <widget class="QLabel" name="startDateTimelabel">
    <property name="geometry">
     <rect>
-     <x>406</x>
-     <y>120</y>
-     <width>51</width>
+     <x>566</x>
+     <y>130</y>
+     <width>81</width>
      <height>20</height>
     </rect>
    </property>
    <property name="text">
-    <string>Date/Time:</string>
+    <string>Start Date/Time:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="endDateTimelabel">
+   <property name="geometry">
+    <rect>
+     <x>570</x>
+     <y>190</y>
+     <width>81</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string> End Date/Time:</string>
    </property>
   </widget>
   <widget class="QListView" name="taskPeoplelistView">
    <property name="geometry">
     <rect>
-     <x>190</x>
-     <y>130</y>
+     <x>380</x>
+     <y>140</y>
      <width>101</width>
      <height>192</height>
     </rect>
@@ -120,8 +149,8 @@
   <widget class="QPushButton" name="insertPeoplepushButton">
    <property name="geometry">
     <rect>
-     <x>140</x>
-     <y>170</y>
+     <x>330</x>
+     <y>180</y>
      <width>32</width>
      <height>32</height>
     </rect>
@@ -152,8 +181,8 @@
   <widget class="QPushButton" name="removePeoplepushButton">
    <property name="geometry">
     <rect>
-     <x>140</x>
-     <y>220</y>
+     <x>330</x>
+     <y>230</y>
      <width>32</width>
      <height>32</height>
     </rect>
@@ -178,8 +207,8 @@
   <widget class="QLabel" name="taskGrouplabel">
    <property name="geometry">
     <rect>
-     <x>230</x>
-     <y>20</y>
+     <x>420</x>
+     <y>30</y>
      <width>91</width>
      <height>16</height>
     </rect>
@@ -191,8 +220,8 @@
   <widget class="QComboBox" name="taskGroupcomboBox">
    <property name="geometry">
     <rect>
-     <x>220</x>
-     <y>50</y>
+     <x>410</x>
+     <y>60</y>
      <width>141</width>
      <height>22</height>
     </rect>
@@ -201,8 +230,8 @@
   <widget class="QLabel" name="selectPeoplelabel">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>90</y>
+     <x>210</x>
+     <y>100</y>
      <width>81</width>
      <height>16</height>
     </rect>
@@ -214,8 +243,8 @@
   <widget class="QLabel" name="workingPeoplelabel">
    <property name="geometry">
     <rect>
-     <x>190</x>
-     <y>90</y>
+     <x>380</x>
+     <y>100</y>
      <width>81</width>
      <height>31</height>
     </rect>
@@ -228,6 +257,91 @@
    </property>
    <property name="wordWrap">
     <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="completitionlabel">
+   <property name="geometry">
+    <rect>
+     <x>530</x>
+     <y>270</y>
+     <width>71</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Completition:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="percentlabel">
+   <property name="geometry">
+    <rect>
+     <x>577</x>
+     <y>302</y>
+     <width>20</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>%</string>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="completitionspinBox">
+   <property name="geometry">
+    <rect>
+     <x>530</x>
+     <y>300</y>
+     <width>43</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="baseGrouplabel">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>100</y>
+     <width>71</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Select Group:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="baseTaskabel">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>170</y>
+     <width>61</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Select Task:</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="baseGroupcomboBox">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>130</y>
+     <width>160</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="baseTaskcomboBox">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>200</y>
+     <width>160</width>
+     <height>22</height>
+    </rect>
    </property>
   </widget>
  </widget>

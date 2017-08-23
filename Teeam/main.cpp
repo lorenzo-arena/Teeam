@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     GanttController ganttController(&freeDays);//, nullptr);
 
     MainWindow w(&ganttController, &freeDays);//, nullptr);
-    w.setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion());
+    w.setWindowTitle(qApp->applicationName() + " v" + qApp->applicationVersion());
     w.show();
 
     return a.exec();

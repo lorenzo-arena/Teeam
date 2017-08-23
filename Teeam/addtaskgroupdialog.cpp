@@ -34,7 +34,7 @@ void AddTaskGroupDialog::on_buttonOk_clicked()
     QString editText = ui->lineEdit->text();
     if(editText == "")
     {
-        QMessageBox::warning(this, "Error", "You must specify a name for the new task group.", QMessageBox::Ok);
+        QMessageBox::warning(this, "Error", "You must specify a name for the task group.", QMessageBox::Ok);
         return;
     }
     else
@@ -48,7 +48,7 @@ void AddTaskGroupDialog::on_buttonOk_clicked()
 
         if(alreadyExists)
         {
-            QMessageBox::warning(this, "Error", "You must specify a new name.", QMessageBox::Ok);
+            QMessageBox::warning(this, "Error", "You must specify a different name for every taskgroup.", QMessageBox::Ok);
             return;
         }
 

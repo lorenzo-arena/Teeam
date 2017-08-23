@@ -38,7 +38,10 @@ SOURCES += \
     addtaskgroupdialog.cpp \
     addtaskdialog.cpp \
     addmilestonedialog.cpp \
-    addpersondialog.cpp
+    addpersondialog.cpp \
+    edittaskgroupdialog.cpp \
+    edittaskdialog.cpp \
+    editmilestonedialog.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -57,7 +60,11 @@ HEADERS += \
     addtaskgroupdialog.h \
     addtaskdialog.h \
     addmilestonedialog.h \
-    addpersondialog.h
+    addpersondialog.h \
+    edittaskgroupdialog.h \
+    edittaskdialog.h \
+    editmilestonedialog.h \
+    errors.h
 
 FORMS += \
         mainwindow.ui \
@@ -66,18 +73,29 @@ FORMS += \
     addtaskgroupdialog.ui \
     addtaskdialog.ui \
     addmilestonedialog.ui \
-    addpersondialog.ui
+    addpersondialog.ui \
+    edittaskgroupdialog.ui \
+    edittaskdialog.ui \
+    editmilestonedialog.ui
 
 INCLUDEPATH += "C:\KDAB\KDChart-2.6.0\include\KDGantt"
 INCLUDEPATH += "C:\KDAB\KDChart-2.6.0\include\KDChart"
 
+CONFIG(Debug, Debug|Release){
 LIBS += "C:\KDAB\KDChart-2.6.0\lib\kdchartd2.dll"
+}
+
+CONFIG(Release, Debug|Release){
+LIBS += "C:\KDAB\KDChart-2.6.0\lib\kdchart2.dll"
+}
 
 RESOURCES += \
     teeamres.qrc
 
 DEFINES += APP_NAME=\\\"Teeam\\\"
 
-VERSION = 1.0.1.0
+VERSION = 0.5
 
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
+
+win32: RC_ICONS = barchart.ico

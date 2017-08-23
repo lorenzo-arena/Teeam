@@ -18,6 +18,7 @@ class AddProjectDialog : public QDialog
 
 public:
     explicit AddProjectDialog(QWidget *parent = 0, Qt::WindowFlags f = 0 );
+    explicit AddProjectDialog(QString name, QList<QString> people, QWidget *parent = 0, Qt::WindowFlags f = 0 );
 
     QString GetProjectName() { return projectName; }
     QList<QString> GetPeopleList() { return peopleModel.stringList(); }

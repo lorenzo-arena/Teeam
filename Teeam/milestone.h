@@ -6,7 +6,11 @@
 class Milestone : public GenericTask
 {
 public:
-    Milestone();
+    Milestone(QString milestoneName, QDateTime start, QList<QString> taskPeople);
+    void edit(QString milestoneName, QDateTime start, QList<QString> taskPeople);
+    QString getName() { return name; }
+    QDateTime getDateTime() { return start; }
+    QList<QString> getPeople() { return people; }
 
 public:
     void AddDependency(GenericTask* dependency);

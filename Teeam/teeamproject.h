@@ -29,6 +29,7 @@ private:
 public:
     void AddTaskGroup(TaskGroup* taskGroup);
     void AddTaskOrMilestone(GenericTask *entity);
+    void AddTaskOrMilestoneToGroup(GenericTask *entity, int groupIndex);
     QList<GenericTask *> GetEntitiesList() { return entitiesList; }
     QList<TaskGroup *> GetTaskGroup() { return taskGroupList; }
     bool IsTaskGroupChanged() { return taskGroupChanged; }
@@ -39,7 +40,17 @@ public:
     void setName(QString projectName);
     void setPeopleList(QList<QString> peopleList);
     void Show();
-    void AddTaskOrMilestoneToGroup(GenericTask *entity, int groupIndex);
+    bool IsNew() { return isNew; }
+    void SetNew(bool b) { isNew = b; }
+    void ShowGroups();
+    void RemoveTaskGroup(int index);
+    void RemoveTaskOrMilestone(int index, int parent);
+    void EditTaskOrMilestone(GenericTask *entity, int index, int parent = -1);
+
+    // TODO : implementare metodi edit (potrebbe essere anche il controller a modificare
+    //        i parametri), che si occupa di applicare changed; e entities con changed o new
+    //        vengono ridisegnati allo stesso modo, ma se è solo changed si evita di assegnare una
+    //        riga
 };
 
 #endif // TEEAMPROJECT_H
