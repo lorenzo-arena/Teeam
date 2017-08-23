@@ -267,9 +267,6 @@ void MainWindow::UpdateProjectView()
 
     viewModel->setData( viewModel->index( 0, 0 ), projectModel->GetName() );
     viewModel->setData( viewModel->index( 0, 1 ), KDGantt::TypeSummary );
-    const QString legend( "" );
-    if ( ! legend.isEmpty() )
-        viewModel->setData( viewModel->index( 0, 5 ), legend );
 
     viewModel->itemFromIndex(viewModel->index(0, 0))->setEditable(false);
 
@@ -296,9 +293,6 @@ void MainWindow::UpdateTaskGroupView()
 
             viewModel->setData( viewModel->index( row, 0, projectIndex ), projectModel->GetTaskGroup().at(i)->getName() );
             viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeSummary );
-            const QString legend( "" );
-            if ( ! legend.isEmpty() )
-                viewModel->setData( viewModel->index( row, 5, projectIndex ), legend );
 
             QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
             leftView->expand(projectIndex);
@@ -348,9 +342,6 @@ void MainWindow::UpdateTaskGroupView()
                         viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Task *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getStart(), KDGantt::StartTimeRole );
                         viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Task *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getEnd(), KDGantt::EndTimeRole );
                         viewModel->setData( viewModel->index( row, 4, parent ), static_cast<Task *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getCompletition() );
-                        const QString legend( "" );
-                        if ( ! legend.isEmpty() )
-                            viewModel->setData( viewModel->index( row, 5, parent ), legend );
 
                         viewModel->itemFromIndex(viewModel->index(row, 0, parent))->setEditable(false);
                     }
@@ -360,9 +351,6 @@ void MainWindow::UpdateTaskGroupView()
                         viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeEvent );
                         viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Milestone *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getDateTime(), KDGantt::StartTimeRole );
                         viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Milestone *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getDateTime(), KDGantt::EndTimeRole );
-                        const QString legend( "" );
-                        if ( ! legend.isEmpty() )
-                            viewModel->setData( viewModel->index( row, 5, parent ), legend );
 
                         viewModel->itemFromIndex(viewModel->index(row, 0, parent))->setEditable(false);
                     }
@@ -419,9 +407,6 @@ void MainWindow::UpdateEntitiesView()
                 viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getStart(), KDGantt::StartTimeRole );
                 viewModel->setData( viewModel->index( row, 3, projectIndex ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getEnd(), KDGantt::EndTimeRole );
                 viewModel->setData( viewModel->index( row, 4, projectIndex ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getCompletition() );
-                const QString legend( "" );
-                if ( ! legend.isEmpty() )
-                    viewModel->setData( viewModel->index( row, 5, projectIndex ), legend );
 
                 viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(false);
             }
@@ -431,9 +416,6 @@ void MainWindow::UpdateEntitiesView()
                 viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeEvent );
                 viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Milestone *>(projectModel->GetEntitiesList().at(i))->getDateTime(), KDGantt::StartTimeRole );
                 viewModel->setData( viewModel->index( row, 3, projectIndex ), static_cast<Milestone *>(projectModel->GetEntitiesList().at(i))->getDateTime(), KDGantt::EndTimeRole );
-                const QString legend( "" );
-                if ( ! legend.isEmpty() )
-                    viewModel->setData( viewModel->index( row, 5, projectIndex ), legend );
 
                 viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(false);
             }
