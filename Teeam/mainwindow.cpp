@@ -675,7 +675,8 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
                     return;
                 }
 
-                ganttController->EditTaskOrMilestone(dialog->GetTaskName(),
+                ganttController->EditTaskOrMilestone(this,
+                                                     dialog->GetTaskName(),
                                                      dialog->GetStartDateTime(),
                                                      dialog->GetEndDateTime(),
                                                      dialog->GetPeople(),
@@ -698,7 +699,8 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
                     return;
                 }
 
-                ganttController->EditTaskOrMilestone(dialog->GetMilestoneName(),
+                ganttController->EditTaskOrMilestone(this,
+                                                     dialog->GetMilestoneName(),
                                                      dialog->GetStartDateTime(),
                                                      dialog->GetPeople(),
                                                      dialog->GetSelectedGroup(),
@@ -732,7 +734,8 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
                 return;
             }
 
-            ganttController->EditTaskOrMilestone(dialog->GetTaskName(),
+            ganttController->EditTaskOrMilestone(this,
+                                                 dialog->GetTaskName(),
                                                  dialog->GetStartDateTime(),
                                                  dialog->GetEndDateTime(),
                                                  dialog->GetPeople(),
@@ -756,7 +759,8 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
                 return;
             }
 
-            ganttController->EditTaskOrMilestone(dialog->GetMilestoneName(),
+            ganttController->EditTaskOrMilestone(this,
+                                                 dialog->GetMilestoneName(),
                                                  dialog->GetStartDateTime(),
                                                  dialog->GetPeople(),
                                                  dialog->GetSelectedGroup(),

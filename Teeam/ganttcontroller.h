@@ -27,8 +27,8 @@ public:
     // con parent per indivduare se contiene un gruppo e con un controllo sul tipo
     // per essere sicuro dei dati che si vanno a toccare
 
-    void EditTaskOrMilestone(QString entityName, QDateTime start, QDateTime end, QList<QString> taskPeople, int completition, int selectedParent, int index, int parent = -1);
-    void EditTaskOrMilestone(QString entityName, QDateTime start, QList<QString> milestonePeople, int selectedParent, int index, int parent = -1);
+    void EditTaskOrMilestone(AbstractView *view, QString entityName, QDateTime start, QDateTime end, QList<QString> taskPeople, int completition, int selectedParent, int index, int parent = -1);
+    void EditTaskOrMilestone(AbstractView *view, QString entityName, QDateTime start, QList<QString> milestonePeople, int selectedParent, int index, int parent = -1);
     void AddTask(AbstractView *view, QString taskName, QDateTime start, QDateTime end, QList<QString> taskPeople, int completition, int selectedParent = -1);
     void AddMilestone(AbstractView *view, QString milestoneName, QDateTime start, QList<QString> taskPeople, int selectedParent = -1);
     void RemoveTaskGroup(int index);

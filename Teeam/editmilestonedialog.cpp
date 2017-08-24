@@ -81,15 +81,14 @@ EditMilestoneDialog::EditMilestoneDialog(QString milestoneName, int group, QList
 
     ui->lineEdit->setText(milestoneName);
 
-    // TODO : fare in modo di poter cambiare gruppo!!
     ui->milestoneGroupcomboBox->addItem("None");
     for (int i = 0; i < milestoneGroups.length(); i++)
         ui->milestoneGroupcomboBox->addItem(milestoneGroups.at(i));
     if(group >= 0)
-        ui->milestoneGroupcomboBox->setCurrentIndex(this->selectedGroup+1);
+        ui->milestoneGroupcomboBox->setCurrentIndex(group + 1);
     else
         ui->milestoneGroupcomboBox->setCurrentIndex(0);
-    ui->milestoneGroupcomboBox->setEnabled(false);
+    ui->milestoneGroupcomboBox->setEnabled(true);
 
     ui->startdateTimeEdit->setDateTime(start);
 

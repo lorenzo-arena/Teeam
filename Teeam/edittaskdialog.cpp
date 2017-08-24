@@ -85,15 +85,14 @@ EditTaskDialog::EditTaskDialog(QString taskName, int group, QList<QString> taskG
 
     ui->lineEdit->setText(taskName);
 
-    // TODO : fare in modo di poter cambiare gruppo!!
     ui->taskGroupcomboBox->addItem("None");
     for (int i = 0; i < taskGroups.length(); i++)
         ui->taskGroupcomboBox->addItem(taskGroups.at(i));
     if(group >= 0)
-        ui->taskGroupcomboBox->setCurrentIndex(this->selectedGroup+1);
+        ui->taskGroupcomboBox->setCurrentIndex(group + 1);
     else
         ui->taskGroupcomboBox->setCurrentIndex(0);
-    ui->taskGroupcomboBox->setEnabled(false);
+    ui->taskGroupcomboBox->setEnabled(true);
 
     ui->startdateTimeEdit->setDateTime(start);
     ui->enddateTimeEdit->setDateTime(end);

@@ -40,35 +40,56 @@ void GanttController::EditTaskGroup(int index, QString newName)
     }
 }
 
-void GanttController::EditTaskOrMilestone(QString entityName, QDateTime start, QDateTime end, QList<QString> taskPeople, int completition, int selectedParent, int index, int parent)
+void GanttController::EditTaskOrMilestone(AbstractView *view, QString entityName, QDateTime start, QDateTime end, QList<QString> taskPeople, int completition, int selectedParent, int index, int parent)
 {
-    Task *task = new Task(entityName, start, end, taskPeople, completition);
-
-    if(parent == -1)
+    if(selectedParent == parent)
     {
-        // è un task che non appartiene a nessun gruppo
-        project->EditTaskOrMilestone(task, index);
+        Task *task = new Task(entityName, start, end, taskPeople, completition);
+        task->attach(view);
+
+        if(parent == -1)
+        {
+            // è un task che non appartiene a nessun gruppo
+            project->EditTaskOrMilestone(task, index);
+        }
+        else
+        {
+            // è un task che appartiene a un gruppo
+            project->EditTaskOrMilestone(task, index, parent);
+        }
     }
     else
     {
-        // è un task che appartiene a un gruppo
-        project->EditTaskOrMilestone(task, index, parent);
+        // entro qui se ho cambiato il gruppo del task,
+        // lo cancello e ne creo uno nuovo nel gruppo di destinazione
+        RemoveTaskOrMilestone(index, parent);
+        AddTask(view, entityName, start, end, taskPeople, completition, selectedParent + 1);
     }
 }
 
-void GanttController::EditTaskOrMilestone(QString entityName, QDateTime start, QList<QString> milestonePeople, int selectedParent, int index, int parent)
+void GanttController::EditTaskOrMilestone(AbstractView *view, QString entityName, QDateTime start, QList<QString> milestonePeople, int selectedParent, int index, int parent)
 {
-    Milestone *milestone = new Milestone(entityName, start, milestonePeople);
-
-    if(parent == -1)
+    if(selectedParent == parent)
     {
-        // è una milestone che non appartiene a nessun gruppo
-        project->EditTaskOrMilestone(milestone, index);
+        Milestone *milestone = new Milestone(entityName, start, milestonePeople);
+        milestone->attach(view);
+        if(parent == -1)
+        {
+            // è una milestone che non appartiene a nessun gruppo
+            project->EditTaskOrMilestone(milestone, index);
+        }
+        else
+        {
+            // è una milestone che appartiene a un gruppo
+            project->EditTaskOrMilestone(milestone, index, parent);
+        }
     }
     else
     {
-        // è una milestone che appartiene a un gruppo
-        project->EditTaskOrMilestone(milestone, index, parent);
+        // entro qui se ho cambiato il gruppo della milestone,
+        // la cancella e ne creo una nuova nel gruppo di destinazione
+        RemoveTaskOrMilestone(index, parent);
+        AddMilestone(view, entityName, start, milestonePeople, selectedParent + 1);
     }
 }
 
