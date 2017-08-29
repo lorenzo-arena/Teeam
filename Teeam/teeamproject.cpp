@@ -55,15 +55,18 @@ void TeeamProject::AddTaskOrMilestone(GenericTask *entity)
 
 void TeeamProject::AddTaskOrMilestoneToGroup(GenericTask *entity, int groupIndex)
 {
-    taskGroupList.at(groupIndex - 1)->AddTask(entity);
-    taskGroupList.at(groupIndex - 1)->setChanged(true);
-    taskGroupChanged = true;
-    bChanged = true;
-    notify();
-    taskGroupList.at(groupIndex - 1)->setChanged(false);
-    taskGroupChanged = false;
-    bChanged = false;
-    entity->setNew(false);
+    if(groupIndex < taskGroupList.length())
+	{
+		taskGroupList.at(groupIndex)->AddTask(entity);
+		taskGroupList.at(groupIndex)->setChanged(true);
+		taskGroupChanged = true;
+		bChanged = true;
+		notify();
+		taskGroupList.at(groupIndex)->setChanged(false);
+		taskGroupChanged = false;
+		bChanged = false;
+		entity->setNew(false);
+	}
 }
 
 // TODO : trovare soluzione migliore??

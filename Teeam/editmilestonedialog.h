@@ -25,7 +25,7 @@ public:
     explicit EditMilestoneDialog(QWidget *parent = 0);
     explicit EditMilestoneDialog(QString milestoneName, int group, QList<QString> milestoneGroups, QList<QString> milestonePeople, QList<QString> totalPeople, QDateTime start, QWidget *parent = 0);
     ~EditMilestoneDialog();
-    int GetSelectedGroup() { return selectedGroup - 1; } // Devo restituire il numero senza la voce "None"
+    int GetSelectedGroup() { return selectedGroup - 1; } // L'indice è zero-based
     QString GetMilestoneName() { return name; }
     QDateTime GetStartDateTime() { return start; }
     QList<QString> GetPeople() { return milestonePeopleModel.stringList(); }
