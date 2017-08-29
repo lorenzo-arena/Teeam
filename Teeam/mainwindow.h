@@ -40,6 +40,8 @@ public:
     void UpdateView();
     void SetProjectModel(TeeamProject *project) { this->projectModel = project; }
 
+    void DisableMenu();
+
 private slots:
     void on_action_Quit_triggered();
     void on_actionNew_Project_triggered();
@@ -114,6 +116,7 @@ private:
     void UpdateTaskGroupView();
     void UpdateEntitiesView();
     void DeleteProject();
+    void EnableMenu();
 };
 
 #endif // MAINWINDOW_H
