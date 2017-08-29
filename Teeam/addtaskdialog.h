@@ -18,7 +18,7 @@ class AddTaskDialog : public QDialog
 public:
     explicit AddTaskDialog(QList<QString> groupList, QList<QString> peopleList, QWidget *parent = 0);
     ~AddTaskDialog();
-    int GetSelectedGroup() { return selectedGroup; }
+    int GetSelectedGroup() { return selectedGroup - 1; } // L'indice è zero-based
     QString GetTaskName() { return name; }
     QDateTime GetStartDateTime() { return start; }
     QDateTime GetEndDateTime() { return end; }

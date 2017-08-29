@@ -25,7 +25,7 @@ public:
     explicit EditTaskDialog(TeeamProject *project, QWidget *parent = 0);
     explicit EditTaskDialog(QString taskName, int group, QList<QString> taskGroups, QList<QString> taskPeople, QList<QString> totalPeople, QDateTime start, QDateTime end, int completition, QWidget *parent = 0);
     ~EditTaskDialog();
-    int GetSelectedGroup() { return selectedGroup; }
+    int GetSelectedGroup() { return selectedGroup - 1; } // L'indice è zero-based
     QString GetTaskName() { return name; }
     QDateTime GetStartDateTime() { return start; }
     QDateTime GetEndDateTime() { return end; }

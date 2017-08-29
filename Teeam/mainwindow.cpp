@@ -501,11 +501,9 @@ void MainWindow::on_actionAdd_Task_triggered()
     QList<QString> taskPeople = dialog->GetPeople();
     int completition = dialog->GetCompletition();
 
-    if(selectedParent > 0)
-        ganttController->AddTask(this, taskName, start, end, taskPeople, completition, selectedParent);
-    else
-        ganttController->AddTask(this, taskName, start, end, taskPeople, completition);
-    delete dialog;
+    ganttController->AddTask(this, taskName, start, end, taskPeople, completition, selectedParent);
+    
+	delete dialog;
     return;
 }
 
@@ -528,11 +526,9 @@ void MainWindow::on_actionAdd_Milestone_triggered()
     QDateTime start = dialog->GetStartDateTime();
     QList<QString> milestonePeople = dialog->GetPeople();
 
-    if(selectedParent > 0)
-        ganttController->AddMilestone(this, milestoneName, start, milestonePeople, selectedParent);
-    else
-        ganttController->AddMilestone(this, milestoneName, start, milestonePeople);
-    delete dialog;
+    ganttController->AddMilestone(this, milestoneName, start, milestonePeople, selectedParent);
+    
+	delete dialog;
     return;
 }
 
@@ -886,7 +882,7 @@ void MainWindow::on_action_Edit_Task_Group_triggered()
         QString newName = dialog->GetTaskGroupName();
         int selectedGroup = dialog->GetSelectedGroup();
 
-        if(newName != projectModel->GetTaskGroup().at(selectedGroup-1)->getName())
+        if(newName != projectModel->GetTaskGroup().at(selectedGroup)->getName())
         {
             ganttController->EditTaskGroup(selectedGroup, newName);
         }
