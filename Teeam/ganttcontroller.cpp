@@ -63,7 +63,7 @@ void GanttController::EditTaskOrMilestone(AbstractView *view, QString entityName
         // entro qui se ho cambiato il gruppo del task,
         // lo cancello e ne creo uno nuovo nel gruppo di destinazione
         RemoveTaskOrMilestone(index, parent);
-        AddTask(view, entityName, start, end, taskPeople, completition, selectedParent + 1);
+        AddTask(view, entityName, start, end, taskPeople, completition, selectedParent);
     }
 }
 
@@ -89,7 +89,7 @@ void GanttController::EditTaskOrMilestone(AbstractView *view, QString entityName
         // entro qui se ho cambiato il gruppo della milestone,
         // la cancella e ne creo una nuova nel gruppo di destinazione
         RemoveTaskOrMilestone(index, parent);
-        AddMilestone(view, entityName, start, milestonePeople, selectedParent + 1);
+        AddMilestone(view, entityName, start, milestonePeople, selectedParent);
     }
 }
 
