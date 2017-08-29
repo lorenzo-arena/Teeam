@@ -289,11 +289,11 @@ void MainWindow::UpdateProjectView()
 
 void MainWindow::UpdateTaskGroupView()
 {
-    for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
+    for(int i = 0; i < projectModel->GetTaskGroupListSize(); i++)
     {
         const QModelIndex projectIndex = viewModel->index(0,0);
 
-        if(projectModel->GetTaskGroup().at(i)->IsNew())
+        if(projectModel->GetTaskGroupAt(i)->IsNew())
         {
             // Ogni nuovo
             if ( !viewModel->insertRow( i, projectIndex ) )
@@ -303,7 +303,7 @@ void MainWindow::UpdateTaskGroupView()
             if ( row == 0 && projectIndex.isValid() )
                 viewModel->insertColumns( viewModel->columnCount( projectIndex ), 5, projectIndex );
 
-            viewModel->setData( viewModel->index( row, 0, projectIndex ), projectModel->GetTaskGroup().at(i)->getName() );
+            viewModel->setData( viewModel->index( row, 0, projectIndex ), projectModel->GetTaskGroupAt(i)->getName() );
             viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeSummary );
 
             QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
@@ -317,14 +317,14 @@ void MainWindow::UpdateTaskGroupView()
 #endif
 
         }
-        else if(projectModel->GetTaskGroup().at(i)->isChanged())
+        else if(projectModel->GetTaskGroupAt(i)->isChanged())
         {
             // Controllo se ho fatto modifiche al group
-            if(projectModel->GetTaskGroup().at(i)->IsGroupChanged())
+            if(projectModel->GetTaskGroupAt(i)->IsGroupChanged())
             {
                 int row = i;
 
-                viewModel->setData( viewModel->index( row, 0, projectIndex ), projectModel->GetTaskGroup().at(i)->getName() );
+                viewModel->setData( viewModel->index( row, 0, projectIndex ), projectModel->GetTaskGroupAt(i)->getName() );
                 viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeSummary );
 
                 QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
@@ -339,13 +339,13 @@ void MainWindow::UpdateTaskGroupView()
             }
 
             // Se ho aggiunto un task a una lista:
-            for (int j = 0; j < projectModel->GetTaskGroup().at(i)->GetEntitiesList().length(); j++)
+            for (int j = 0; j < projectModel->GetTaskGroupAt(i)->GetEntitiesListSize(); j++)
             {
                 const QModelIndex parent = viewModel->index(i, 0, projectIndex);
 
-                bool isNew = projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->IsNew();
-                bool isChanged = projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->isChanged();
-                bool isRemoved = projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->IsRemoved();
+                bool isNew = projectModel->GetTaskGroupAt(i)->GetEntityAt(j)->IsNew();
+                bool isChanged = projectModel->GetTaskGroupAt(i)->GetEntityAt(j)->isChanged();
+                bool isRemoved = projectModel->GetTaskGroupAt(i)->GetEntityAt(j)->IsRemoved();
 
                 if(isNew || isChanged)
                 {
@@ -359,20 +359,20 @@ void MainWindow::UpdateTaskGroupView()
                     if ( row == 0 && projectIndex.isValid() && isNew)
                         viewModel->insertColumns( viewModel->columnCount( parent ), 5, parent );
 
-                    if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == Task_type)
+                    if(projectModel->GetTaskGroupAt(i)->GetEntityAt(j)->getEntityType() == Task_type)
                     {
-                        viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Task *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getName() );
+                        viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getName() );
                         viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeTask );
-                        viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Task *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getStart(), KDGantt::StartTimeRole );
-                        viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Task *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getEnd(), KDGantt::EndTimeRole );
-                        viewModel->setData( viewModel->index( row, 4, parent ), static_cast<Task *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getCompletition() );
+                        viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getStart(), KDGantt::StartTimeRole );
+                        viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getEnd(), KDGantt::EndTimeRole );
+                        viewModel->setData( viewModel->index( row, 4, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getCompletition() );
                     }
-                    else if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == Milestone_type)
+                    else if(projectModel->GetTaskGroupAt(i)->GetEntityAt(j)->getEntityType() == Milestone_type)
                     {
-                        viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Milestone *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getName() );
+                        viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Milestone *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getName() );
                         viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeEvent );
-                        viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Milestone *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getDateTime(), KDGantt::StartTimeRole );
-                        viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Milestone *>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getDateTime(), KDGantt::EndTimeRole );
+                        viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Milestone *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getDateTime(), KDGantt::StartTimeRole );
+                        viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Milestone *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getDateTime(), KDGantt::EndTimeRole );
                     }
 
                     viewModel->itemFromIndex(viewModel->index(row, 0, parent))->setEditable(false);
@@ -396,7 +396,7 @@ void MainWindow::UpdateTaskGroupView()
                 }
             }
         }
-        else if(projectModel->GetTaskGroup().at(i)->IsRemoved())
+        else if(projectModel->GetTaskGroupAt(i)->IsRemoved())
         {
             viewModel->removeRow(i, projectIndex);
             qobject_cast<QTreeView*>( ui->ganttView->leftView() )->clearSelection();
@@ -406,41 +406,41 @@ void MainWindow::UpdateTaskGroupView()
 
 void MainWindow::UpdateEntitiesView()
 {
-    for(int i = 0; i < projectModel->GetEntitiesList().length(); i++)
+    for(int i = 0; i < projectModel->GetEntitiesListSize(); i++)
     {
         const QModelIndex projectIndex = viewModel->index(0,0);
 
-        bool isNew = projectModel->GetEntitiesList().at(i)->IsNew();
-        bool isChanged = projectModel->GetEntitiesList().at(i)->isChanged();
-        bool isRemoved = projectModel->GetEntitiesList().at(i)->IsRemoved();
+        bool isNew = projectModel->GetEntityAt(i)->IsNew();
+        bool isChanged = projectModel->GetEntityAt(i)->isChanged();
+        bool isRemoved = projectModel->GetEntityAt(i)->IsRemoved();
 
         if(isNew || isChanged)
         {
             // Ogni nuovo task/milestone lo aggiungo al suo posto dopo i task group
             if(isNew)
             {
-                if ( !viewModel->insertRow( projectModel->GetTaskGroup().length() + i, projectIndex ) )
+                if ( !viewModel->insertRow( projectModel->GetTaskGroupListSize() + i, projectIndex ) )
                     return;
             }
 
-            int row = projectModel->GetTaskGroup().length() + i;
+            int row = projectModel->GetTaskGroupListSize() + i;
             if ( row == 0 && projectIndex.isValid() && isNew )
                 viewModel->insertColumns( viewModel->columnCount( projectIndex ), 5, projectIndex );
 
-            if(projectModel->GetEntitiesList().at(i)->getEntityType() == Task_type)
+            if(projectModel->GetEntityAt(i)->getEntityType() == Task_type)
             {
-                viewModel->setData( viewModel->index( row, 0, projectIndex ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getName() );
+                viewModel->setData( viewModel->index( row, 0, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getName() );
                 viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeTask );
-                viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getStart(), KDGantt::StartTimeRole );
-                viewModel->setData( viewModel->index( row, 3, projectIndex ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getEnd(), KDGantt::EndTimeRole );
-                viewModel->setData( viewModel->index( row, 4, projectIndex ), static_cast<Task *>(projectModel->GetEntitiesList().at(i))->getCompletition() );
+                viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getStart(), KDGantt::StartTimeRole );
+                viewModel->setData( viewModel->index( row, 3, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getEnd(), KDGantt::EndTimeRole );
+                viewModel->setData( viewModel->index( row, 4, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getCompletition() );
             }
-            else if(projectModel->GetEntitiesList().at(i)->getEntityType() == Milestone_type)
+            else if(projectModel->GetEntityAt(i)->getEntityType() == Milestone_type)
             {
-                viewModel->setData( viewModel->index( row, 0, projectIndex ), static_cast<Milestone *>(projectModel->GetEntitiesList().at(i))->getName() );
+                viewModel->setData( viewModel->index( row, 0, projectIndex ), static_cast<Milestone *>(projectModel->GetEntityAt(i))->getName() );
                 viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeEvent );
-                viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Milestone *>(projectModel->GetEntitiesList().at(i))->getDateTime(), KDGantt::StartTimeRole );
-                viewModel->setData( viewModel->index( row, 3, projectIndex ), static_cast<Milestone *>(projectModel->GetEntitiesList().at(i))->getDateTime(), KDGantt::EndTimeRole );
+                viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Milestone *>(projectModel->GetEntityAt(i))->getDateTime(), KDGantt::StartTimeRole );
+                viewModel->setData( viewModel->index( row, 3, projectIndex ), static_cast<Milestone *>(projectModel->GetEntityAt(i))->getDateTime(), KDGantt::EndTimeRole );
             }
 
             viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(false);
@@ -458,7 +458,7 @@ void MainWindow::UpdateEntitiesView()
         }
         else if(isRemoved)
         {
-            viewModel->removeRow(projectModel->GetTaskGroup().length() + i, projectIndex);
+            viewModel->removeRow(projectModel->GetTaskGroupListSize() + i, projectIndex);
             qobject_cast<QTreeView*>( ui->ganttView->leftView() )->clearSelection();
         }
     }
@@ -495,8 +495,8 @@ void MainWindow::on_actionNew_Project_triggered()
 void MainWindow::on_actionAdd_Task_Group_triggered()
 {
     QList<QString> existingGroups;
-    for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
-        existingGroups.append(projectModel->GetTaskGroup().at(i)->getName());
+    for(int i = 0; i < projectModel->GetTaskGroupListSize(); i++)
+        existingGroups.append(projectModel->GetTaskGroupAt(i)->getName());
 
     AddTaskGroupDialog *dialog = new AddTaskGroupDialog( existingGroups, this );
     if ( dialog->exec() == QDialog::Rejected || !dialog ) {
@@ -513,8 +513,8 @@ void MainWindow::on_actionAdd_Task_Group_triggered()
 void MainWindow::on_actionAdd_Task_triggered()
 {
     QList<QString> groupList;
-    for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
-        groupList << projectModel->GetTaskGroup().at(i)->getName();
+    for(int i = 0; i < projectModel->GetTaskGroupListSize(); i++)
+        groupList << projectModel->GetTaskGroupAt(i)->getName();
 
     QList<QString> totalPeople = projectModel->GetPeopleList();
 
@@ -540,8 +540,8 @@ void MainWindow::on_actionAdd_Task_triggered()
 void MainWindow::on_actionAdd_Milestone_triggered()
 {
     QList<QString> groupList;
-    for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
-        groupList << projectModel->GetTaskGroup().at(i)->getName();
+    for(int i = 0; i < projectModel->GetTaskGroupListSize(); i++)
+        groupList << projectModel->GetTaskGroupAt(i)->getName();
 
     QList<QString> totalPeople = projectModel->GetPeopleList();
 
@@ -623,12 +623,12 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
     }
     else if(index.parent().isValid() && !index.parent().parent().isValid())
     {
-        if(index.row() < projectModel->GetTaskGroup().length())
+        if(index.row() < projectModel->GetTaskGroupListSize())
         {
              // Controllo se ho cliccato un gruppo
             QList<QString> groups;
-            for (int i = 0; i < projectModel->GetTaskGroup().length(); i++)
-                groups << projectModel->GetTaskGroup().at(i)->getName();
+            for (int i = 0; i < projectModel->GetTaskGroupListSize(); i++)
+                groups << projectModel->GetTaskGroupAt(i)->getName();
 
             EditTaskGroupDialog *dialog = new EditTaskGroupDialog( groups, this, index.row() );
             if ( dialog->exec() == QDialog::Rejected || !dialog ) {
@@ -638,7 +638,7 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
 
             QString newName = dialog->GetTaskGroupName();
 
-            if(newName != projectModel->GetTaskGroup().at(index.row())->getName())
+            if(newName != projectModel->GetTaskGroupAt(index.row())->getName())
             {
                 ganttController->EditTaskGroup(index.row(), newName);
             }
@@ -649,21 +649,21 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
         else
         {
             // oppure se ho cliccato un task/milestone non dipendente da nessun gruppo
-            int entityIndex = index.row() - projectModel->GetTaskGroup().length();
+            int entityIndex = index.row() - projectModel->GetTaskGroupListSize();
             QList<QString> groups;
-            for (int i = 0; i < projectModel->GetTaskGroup().length(); i++)
-                groups << projectModel->GetTaskGroup().at(i)->getName();
+            for (int i = 0; i < projectModel->GetTaskGroupListSize(); i++)
+                groups << projectModel->GetTaskGroupAt(i)->getName();
 
-            if(projectModel->GetEntitiesList().at(entityIndex)->getEntityType() == Task_type)
+            if(projectModel->GetEntityAt(entityIndex)->getEntityType() == Task_type)
             {
-                EditTaskDialog *dialog = new EditTaskDialog( static_cast<Task*>(projectModel->GetEntitiesList().at(entityIndex))->getName(),
+                EditTaskDialog *dialog = new EditTaskDialog( static_cast<Task*>(projectModel->GetEntityAt(entityIndex))->getName(),
                                                              -1,
                                                              groups,
-                                                             static_cast<Task*>(projectModel->GetEntitiesList().at(entityIndex))->getPeople(),
+                                                             static_cast<Task*>(projectModel->GetEntityAt(entityIndex))->getPeople(),
                                                              projectModel->GetPeopleList(),
-                                                             static_cast<Task*>(projectModel->GetEntitiesList().at(entityIndex))->getStart(),
-                                                             static_cast<Task*>(projectModel->GetEntitiesList().at(entityIndex))->getEnd(),
-                                                             static_cast<Task*>(projectModel->GetEntitiesList().at(entityIndex))->getCompletition(),
+                                                             static_cast<Task*>(projectModel->GetEntityAt(entityIndex))->getStart(),
+                                                             static_cast<Task*>(projectModel->GetEntityAt(entityIndex))->getEnd(),
+                                                             static_cast<Task*>(projectModel->GetEntityAt(entityIndex))->getCompletition(),
                                                              this);
 
                 if ( dialog->exec() == QDialog::Rejected || !dialog ) {
@@ -680,14 +680,14 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
                                                      dialog->GetSelectedGroup(),
                                                      entityIndex);
             }
-            else if(projectModel->GetEntitiesList().at(entityIndex)->getEntityType() == Milestone_type)
+            else if(projectModel->GetEntityAt(entityIndex)->getEntityType() == Milestone_type)
             {
-                EditMilestoneDialog *dialog = new EditMilestoneDialog( static_cast<Milestone*>(projectModel->GetEntitiesList().at(entityIndex))->getName(),
+                EditMilestoneDialog *dialog = new EditMilestoneDialog( static_cast<Milestone*>(projectModel->GetEntityAt(entityIndex))->getName(),
                                                                        -1,
                                                                        groups,
-                                                                       static_cast<Milestone*>(projectModel->GetEntitiesList().at(entityIndex))->getPeople(),
+                                                                       static_cast<Milestone*>(projectModel->GetEntityAt(entityIndex))->getPeople(),
                                                                        projectModel->GetPeopleList(),
-                                                                       static_cast<Milestone*>(projectModel->GetEntitiesList().at(entityIndex))->getDateTime(),
+                                                                       static_cast<Milestone*>(projectModel->GetEntityAt(entityIndex))->getDateTime(),
                                                                        this);
 
                 if ( dialog->exec() == QDialog::Rejected || !dialog ) {
@@ -710,19 +710,19 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
         int entityIndex = index.row();
         int parentIndex = index.parent().row();
         QList<QString> groups;
-        for (int i = 0; i < projectModel->GetTaskGroup().length(); i++)
-            groups << projectModel->GetTaskGroup().at(i)->getName();
+        for (int i = 0; i < projectModel->GetTaskGroupListSize(); i++)
+            groups << projectModel->GetTaskGroupAt(i)->getName();
 
-        if(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex)->getEntityType() == Task_type)
+        if(projectModel->GetTaskGroupAt(parentIndex)->GetEntityAt(entityIndex)->getEntityType() == Task_type)
         {
-            EditTaskDialog *dialog = new EditTaskDialog( static_cast<Task*>(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex))->getName(),
+            EditTaskDialog *dialog = new EditTaskDialog( static_cast<Task*>(projectModel->GetTaskGroupAt(parentIndex)->GetEntityAt(entityIndex))->getName(),
                                                          parentIndex,
                                                          groups,
-                                                         static_cast<Task*>(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex))->getPeople(),
+                                                         static_cast<Task*>(projectModel->GetTaskGroupAt(parentIndex)->GetEntityAt(entityIndex))->getPeople(),
                                                          projectModel->GetPeopleList(),
-                                                         static_cast<Task*>(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex))->getStart(),
-                                                         static_cast<Task*>(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex))->getEnd(),
-                                                         static_cast<Task*>(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex))->getCompletition(),
+                                                         static_cast<Task*>(projectModel->GetTaskGroupAt(parentIndex)->GetEntityAt(entityIndex))->getStart(),
+                                                         static_cast<Task*>(projectModel->GetTaskGroupAt(parentIndex)->GetEntityAt(entityIndex))->getEnd(),
+                                                         static_cast<Task*>(projectModel->GetTaskGroupAt(parentIndex)->GetEntityAt(entityIndex))->getCompletition(),
                                                          this);
 
             if ( dialog->exec() == QDialog::Rejected || !dialog ) {
@@ -740,14 +740,14 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
                                                  entityIndex,
                                                  parentIndex);
         }
-        else if(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex)->getEntityType() == Milestone_type)
+        else if(projectModel->GetTaskGroupAt(parentIndex)->GetEntityAt(entityIndex)->getEntityType() == Milestone_type)
         {
-            EditMilestoneDialog *dialog = new EditMilestoneDialog( static_cast<Milestone*>(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex))->getName(),
+            EditMilestoneDialog *dialog = new EditMilestoneDialog( static_cast<Milestone*>(projectModel->GetTaskGroupAt(parentIndex)->GetEntityAt(entityIndex))->getName(),
                                                                    parentIndex,
                                                                    groups,
-                                                                   static_cast<Milestone*>(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex))->getPeople(),
+                                                                   static_cast<Milestone*>(projectModel->GetTaskGroupAt(parentIndex)->GetEntityAt(entityIndex))->getPeople(),
                                                                    projectModel->GetPeopleList(),
-                                                                   static_cast<Milestone*>(projectModel->GetTaskGroup().at(parentIndex)->GetEntitiesList().at(entityIndex))->getDateTime(),
+                                                                   static_cast<Milestone*>(projectModel->GetTaskGroupAt(parentIndex)->GetEntityAt(entityIndex))->getDateTime(),
                                                                    this);
 
             if ( dialog->exec() == QDialog::Rejected || !dialog ) {
@@ -781,14 +781,14 @@ void MainWindow::on_actionTreeView_del(const QModelIndex &index)
         else if(index.parent().isValid() && !index.parent().parent().isValid())
         {
             // oppure se ho eliminato un gruppo
-            if(index.row() < projectModel->GetTaskGroup().length())
+            if(index.row() < projectModel->GetTaskGroupListSize())
             {
                 ganttController->RemoveTaskGroup(index.row());
             }
             // oppure se ho eliminato un task/milestone non dipendente da nessun altro
             else
             {
-                ganttController->RemoveTaskOrMilestone(index.row() - projectModel->GetTaskGroup().length());
+                ganttController->RemoveTaskOrMilestone(index.row() - projectModel->GetTaskGroupListSize());
             }
         }
         else if(index.parent().parent().isValid() && !index.parent().parent().parent().isValid())
@@ -903,8 +903,8 @@ void MainWindow::on_action_Edit_Task_Group_triggered()
     if(projectModel != nullptr)
     {
         QList<QString> groups;
-        for (int i = 0; i < projectModel->GetTaskGroup().length(); i++)
-            groups << projectModel->GetTaskGroup().at(i)->getName();
+        for (int i = 0; i < projectModel->GetTaskGroupListSize(); i++)
+            groups << projectModel->GetTaskGroupAt(i)->getName();
 
         EditTaskGroupDialog *dialog = new EditTaskGroupDialog( groups, this );
         if ( dialog->exec() == QDialog::Rejected || !dialog ) {
@@ -915,7 +915,7 @@ void MainWindow::on_action_Edit_Task_Group_triggered()
         QString newName = dialog->GetTaskGroupName();
         int selectedGroup = dialog->GetSelectedGroup();
 
-        if(newName != projectModel->GetTaskGroup().at(selectedGroup)->getName())
+        if(newName != projectModel->GetTaskGroupAt(selectedGroup)->getName())
         {
             ganttController->EditTaskGroup(selectedGroup, newName);
         }
@@ -967,35 +967,35 @@ void MainWindow::on_action_Save_as_triggered()
         xmlWriter.writeEndElement();
 
         // Salvo i gruppi
-        for(int i = 0; i < projectModel->GetTaskGroup().length(); i++)
+        for(int i = 0; i < projectModel->GetTaskGroupListSize(); i++)
         {
             xmlWriter.writeStartElement(KEY_GROUP);
-            xmlWriter.writeTextElement(KEY_NAME, projectModel->GetTaskGroup().at(i)->getName() );
-            for(int j = 0; j < projectModel->GetTaskGroup().at(i)->GetEntitiesList().length(); j++)
+            xmlWriter.writeTextElement(KEY_NAME, projectModel->GetTaskGroupAt(i)->getName() );
+            for(int j = 0; j < projectModel->GetTaskGroupAt(i)->GetEntitiesListSize(); j++)
             {
                 xmlWriter.writeStartElement(KEY_ENTITY);
-                if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == Task_type)
+                if(projectModel->GetTaskGroupAt(i)->GetEntityAt(j)->getEntityType() == Task_type)
                 {
                     xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_TASKTYPE);
-                    xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getName());
+                    xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getName());
 
-                    for(int k = 0; k < static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(i))->getPeople().length(); k++)
-                        xmlWriter.writeTextElement(KEY_PERSON, static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getPeople().at(k));
+                    for(int k = 0; k < static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(i))->getPeople().length(); k++)
+                        xmlWriter.writeTextElement(KEY_PERSON, static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getPeople().at(k));
 
-                    xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getStart().toString());
-                    xmlWriter.writeTextElement(KEY_ENDDATETIME, static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getEnd().toString());
+                    xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getStart().toString());
+                    xmlWriter.writeTextElement(KEY_ENDDATETIME, static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getEnd().toString());
 
-                    xmlWriter.writeTextElement(KEY_COMPLETITION, QString::number(static_cast<Task*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getCompletition()));
+                    xmlWriter.writeTextElement(KEY_COMPLETITION, QString::number(static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getCompletition()));
                 }
-                else if(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j)->getEntityType() == Milestone_type)
+                else if(projectModel->GetTaskGroupAt(i)->GetEntityAt(j)->getEntityType() == Milestone_type)
                 {
                     xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_MILESTONETYPE);
-                    xmlWriter.writeTextElement(KEY_NAME, static_cast<Milestone*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getName());
+                    xmlWriter.writeTextElement(KEY_NAME, static_cast<Milestone*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getName());
 
-                    for(int k = 0; k < static_cast<Milestone*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getPeople().length(); k++)
-                        xmlWriter.writeTextElement(KEY_PERSON, static_cast<Milestone*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getPeople().at(k));
+                    for(int k = 0; k < static_cast<Milestone*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getPeople().length(); k++)
+                        xmlWriter.writeTextElement(KEY_PERSON, static_cast<Milestone*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getPeople().at(k));
 
-                    xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Milestone*>(projectModel->GetTaskGroup().at(i)->GetEntitiesList().at(j))->getDateTime().toString());
+                    xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Milestone*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getDateTime().toString());
                 }
                  xmlWriter.writeEndElement();
             }
@@ -1003,31 +1003,31 @@ void MainWindow::on_action_Save_as_triggered()
         }
 
         // Salvo i task/milestone fuori dai gruppi
-        for(int i = 0; i < projectModel->GetEntitiesList().length(); i++)
+        for(int i = 0; i < projectModel->GetEntitiesListSize(); i++)
         {
             xmlWriter.writeStartElement(KEY_ENTITY);
-            if(projectModel->GetEntitiesList().at(i)->getEntityType() == Task_type)
+            if(projectModel->GetEntityAt(i)->getEntityType() == Task_type)
             {
                 xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_TASKTYPE);
-                xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getName());
+                xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(projectModel->GetEntityAt(i))->getName());
 
-                for(int k = 0; k < static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getPeople().length(); k++)
-                    xmlWriter.writeTextElement(KEY_PERSON, static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getPeople().at(k));
+                for(int k = 0; k < static_cast<Task*>(projectModel->GetEntityAt(i))->getPeople().length(); k++)
+                    xmlWriter.writeTextElement(KEY_PERSON, static_cast<Task*>(projectModel->GetEntityAt(i))->getPeople().at(k));
 
-                xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getStart().toString());
-                xmlWriter.writeTextElement(KEY_ENDDATETIME, static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getEnd().toString());
+                xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Task*>(projectModel->GetEntityAt(i))->getStart().toString());
+                xmlWriter.writeTextElement(KEY_ENDDATETIME, static_cast<Task*>(projectModel->GetEntityAt(i))->getEnd().toString());
 
-                xmlWriter.writeTextElement(KEY_COMPLETITION, QString::number(static_cast<Task*>(projectModel->GetEntitiesList().at(i))->getCompletition()));
+                xmlWriter.writeTextElement(KEY_COMPLETITION, QString::number(static_cast<Task*>(projectModel->GetEntityAt(i))->getCompletition()));
             }
-            else if(projectModel->GetEntitiesList().at(i)->getEntityType() == Milestone_type)
+            else if(projectModel->GetEntityAt(i)->getEntityType() == Milestone_type)
             {
                 xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_MILESTONETYPE);
-                xmlWriter.writeTextElement(KEY_NAME, static_cast<Milestone*>(projectModel->GetEntitiesList().at(i))->getName());
+                xmlWriter.writeTextElement(KEY_NAME, static_cast<Milestone*>(projectModel->GetEntityAt(i))->getName());
 
-                for(int k = 0; k < static_cast<Milestone*>(projectModel->GetEntitiesList().at(i))->getPeople().length(); k++)
-                    xmlWriter.writeTextElement(KEY_PERSON, static_cast<Milestone*>(projectModel->GetEntitiesList().at(i))->getPeople().at(k));
+                for(int k = 0; k < static_cast<Milestone*>(projectModel->GetEntityAt(i))->getPeople().length(); k++)
+                    xmlWriter.writeTextElement(KEY_PERSON, static_cast<Milestone*>(projectModel->GetEntityAt(i))->getPeople().at(k));
 
-                xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Milestone*>(projectModel->GetEntitiesList().at(i))->getDateTime().toString());
+                xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Milestone*>(projectModel->GetEntityAt(i))->getDateTime().toString());
             }
             xmlWriter.writeEndElement();
         }

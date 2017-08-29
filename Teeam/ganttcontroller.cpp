@@ -33,9 +33,9 @@ void GanttController::AddTaskGroup(AbstractView *view, QString taskGroupName)
 
 void GanttController::EditTaskGroup(int index, QString newName)
 {
-    if(index < project->GetTaskGroup().length())
+    if(index < project->GetTaskGroupListSize())
     {
-        project->GetTaskGroup().at(index)->setName(newName);
+        project->GetTaskGroupAt(index)->setName(newName);
         project->ShowGroups();
     }
 }

@@ -23,22 +23,22 @@ EditTaskDialog::EditTaskDialog(TeeamProject *project, QWidget *parent) :
     // Setto i vari elementi della dialog
     ui->taskGroupcomboBox->addItem("None");
     ui->taskGroupcomboBox->setCurrentIndex(0);
-    for (int i = 0; i < this->project.GetTaskGroup().length(); i++)
-        ui->taskGroupcomboBox->addItem(this->project.GetTaskGroup().at(i)->getName());
+    for (int i = 0; i < this->project.GetTaskGroupListSize(); i++)
+        ui->taskGroupcomboBox->addItem(this->project.GetTaskGroupAt(i)->getName());
 
     ui->baseGroupcomboBox->addItem("None");
     ui->baseGroupcomboBox->setCurrentIndex(0);
-    for (int i = 0; i < this->project.GetTaskGroup().length(); i++)
-        ui->baseGroupcomboBox->addItem(this->project.GetTaskGroup().at(i)->getName());
+    for (int i = 0; i < this->project.GetTaskGroupListSize(); i++)
+        ui->baseGroupcomboBox->addItem(this->project.GetTaskGroupAt(i)->getName());
 
     ui->baseTaskcomboBox->addItem("None");
     ui->baseTaskcomboBox->setCurrentIndex(0);
 
-    for (int i = 0; i < this->project.GetEntitiesList().length(); i++)
+    for (int i = 0; i < this->project.GetEntitiesListSize(); i++)
     {
-        if(this->project.GetEntitiesList().at(i)->getEntityType() == TASK_CODE)
+        if(this->project.GetEntityAt(i)->getEntityType() == TASK_CODE)
         {
-            ui->baseTaskcomboBox->addItem(static_cast<Task*>(this->project.GetEntitiesList().at(i))->getName());
+            ui->baseTaskcomboBox->addItem(static_cast<Task*>(this->project.GetEntityAt(i))->getName());
         }
     }
 

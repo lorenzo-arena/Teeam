@@ -129,17 +129,17 @@ void TeeamProject::RemoveTaskOrMilestone(int index, int parent)
     else if(parent < taskGroupList.length())
     {
         // è un task/milestone che non appartiene a nessun gruppo
-        if(index < taskGroupList.at(parent)->GetEntitiesList().length())
+        if(index < taskGroupList.at(parent)->GetEntitiesListSize())
         {
             taskGroupChanged = true;
             bChanged = true;
             taskGroupList.at(parent)->setChanged(true);
-            taskGroupList.at(parent)->GetEntitiesList().at(index)->setRemoved(true);
+            taskGroupList.at(parent)->GetEntityAt(index)->setRemoved(true);
             notify();
             taskGroupChanged = false;
             bChanged = false;
             taskGroupList.at(parent)->setChanged(false);
-            taskGroupList.at(parent)->GetEntitiesList().removeAt(index);
+            taskGroupList.at(parent)->RemoveEntityAt(index);
         }
     }
 }
@@ -165,7 +165,7 @@ void TeeamProject::EditTaskOrMilestone(GenericTask *entity, int index, int paren
     {
         if(parent < taskGroupList.length())
         {
-            if(index < taskGroupList.at(parent)->GetEntitiesList().length())
+            if(index < taskGroupList.at(parent)->GetEntitiesListSize())
             {
                 taskGroupList.at(parent)->ReplaceEntity(index, entity);
                 entity->setNew(false);

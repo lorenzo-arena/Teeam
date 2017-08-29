@@ -30,8 +30,6 @@ public:
     void AddTaskGroup(TaskGroup* taskGroup);
     void AddTaskOrMilestone(GenericTask *entity);
     void AddTaskOrMilestoneToGroup(GenericTask *entity, int groupIndex);
-    QList<GenericTask *> GetEntitiesList() { return entitiesList; }
-    QList<TaskGroup *> GetTaskGroup() { return taskGroupList; }
     bool IsTaskGroupChanged() { return taskGroupChanged; }
     bool IsProjectChanged() { return projectChanged; }
 	bool IsEntitiesListChanged() { return entitiesListChanged; }
@@ -46,6 +44,10 @@ public:
     void RemoveTaskGroup(int index);
     void RemoveTaskOrMilestone(int index, int parent);
     void EditTaskOrMilestone(GenericTask *entity, int index, int parent = -1);
+    GenericTask * GetEntityAt(int index) { return entitiesList.at(index); }
+    int GetEntitiesListSize() { return entitiesList.length(); }
+    TaskGroup * GetTaskGroupAt(int index) { return taskGroupList.at(index); }
+    int GetTaskGroupListSize() { return taskGroupList.length(); }
 
     // TODO : implementare metodi edit (potrebbe essere anche il controller a modificare
     //        i parametri), che si occupa di applicare changed; e entities con changed o new
