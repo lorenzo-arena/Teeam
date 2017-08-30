@@ -988,7 +988,7 @@ void MainWindow::on_action_Save_as_triggered()
                                        tr("Save Teeam Project"), ".",
                                        tr("Teeam files (*.tmproj)"));
 
-    if(projectModel != nullptr)
+    if(projectModel != nullptr && filename != "")
     {
         QFile file(filename);
         file.open(QIODevice::WriteOnly);
@@ -1026,7 +1026,7 @@ void MainWindow::on_action_Save_as_triggered()
                     xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_TASKTYPE);
                     xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getName());
 
-                    for(int k = 0; k < static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(i))->getPeople().length(); k++)
+                    for(int k = 0; k < static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getPeople().length(); k++)
                         xmlWriter.writeTextElement(KEY_PERSON, static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getPeople().at(k));
 
                     xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getStart().toString());
