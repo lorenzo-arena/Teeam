@@ -19,10 +19,10 @@ EditMilestoneDialog::EditMilestoneDialog(QWidget *parent) :
     this->project = *project;
 
     // Setto i vari elementi della dialog
-    ui->taskGroupcomboBox->addItem("None");
-    ui->taskGroupcomboBox->setCurrentIndex(0);
+    ui->milestoneGroupcomboBox->addItem("None");
+    ui->milestoneGroupcomboBox->setCurrentIndex(0);
     for (int i = 0; i < this->project.GetTaskGroupListSize(); i++)
-        ui->taskGroupcomboBox->addItem(this->project.GetTaskGroupAt(i)->getName());
+        ui->milestoneGroupcomboBox->addItem(this->project.GetTaskGroupAt(i)->getName());
 
     ui->baseGroupcomboBox->addItem("None");
     ui->baseGroupcomboBox->setCurrentIndex(0);
@@ -34,7 +34,7 @@ EditMilestoneDialog::EditMilestoneDialog(QWidget *parent) :
 
     for (int i = 0; i < this->project.GetEntitiesListSize(); i++)
     {
-        if(this->project.GetEntityAt(i)->getEntityType() == TASK_CODE)
+        if(this->project.GetEntityAt(i)->getEntityType() == milestone_CODE)
         {
             ui->baseTaskcomboBox->addItem(static_cast<Task*>(this->project.GetEntityAt(i))->getName());
         }

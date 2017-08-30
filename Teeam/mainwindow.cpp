@@ -603,7 +603,7 @@ void MainWindow::on_actionAdd_Milestone_triggered()
         return;
     }
 
-    QString milestoneName = dialog->GetTaskName();
+    QString milestoneName = dialog->GetMilestoneName();
     int selectedParent = dialog->GetSelectedGroup();
     QDateTime start = dialog->GetStartDateTime();
     QList<QString> milestonePeople = dialog->GetPeople();

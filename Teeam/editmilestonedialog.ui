@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>728</width>
-    <height>360</height>
+    <width>804</width>
+    <height>430</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,21 +16,21 @@
   <widget class="QLabel" name="milestoneNamelabel">
    <property name="geometry">
     <rect>
-     <x>210</x>
-     <y>30</y>
-     <width>56</width>
+     <x>220</x>
+     <y>20</y>
+     <width>81</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>Task name:</string>
+    <string>Milestone name:</string>
    </property>
   </widget>
   <widget class="QPushButton" name="buttonOk">
    <property name="geometry">
     <rect>
-     <x>580</x>
-     <y>30</y>
+     <x>690</x>
+     <y>390</y>
      <width>80</width>
      <height>21</height>
     </rect>
@@ -45,9 +45,9 @@
   <widget class="QLineEdit" name="lineEdit">
    <property name="geometry">
     <rect>
-     <x>210</x>
-     <y>60</y>
-     <width>171</width>
+     <x>220</x>
+     <y>50</y>
+     <width>160</width>
      <height>22</height>
     </rect>
    </property>
@@ -56,7 +56,7 @@
    <property name="geometry">
     <rect>
      <x>580</x>
-     <y>60</y>
+     <y>390</y>
      <width>80</width>
      <height>21</height>
     </rect>
@@ -71,9 +71,9 @@
   <widget class="QDateTimeEdit" name="startdateTimeEdit">
    <property name="geometry">
     <rect>
-     <x>530</x>
-     <y>160</y>
-     <width>130</width>
+     <x>220</x>
+     <y>190</y>
+     <width>160</width>
      <height>22</height>
     </rect>
    </property>
@@ -87,41 +87,41 @@
   <widget class="QListView" name="totalPeoplelistView">
    <property name="geometry">
     <rect>
-     <x>210</x>
-     <y>140</y>
-     <width>101</width>
-     <height>192</height>
+     <x>420</x>
+     <y>50</y>
+     <width>140</width>
+     <height>305</height>
     </rect>
    </property>
   </widget>
   <widget class="QLabel" name="startDateTimelabel">
    <property name="geometry">
     <rect>
-     <x>566</x>
-     <y>130</y>
-     <width>81</width>
+     <x>220</x>
+     <y>160</y>
+     <width>51</width>
      <height>20</height>
     </rect>
    </property>
    <property name="text">
-    <string>Start Date/Time:</string>
+    <string>Date/Time:</string>
    </property>
   </widget>
   <widget class="QListView" name="milestonePeoplelistView">
    <property name="geometry">
     <rect>
-     <x>380</x>
-     <y>140</y>
-     <width>101</width>
-     <height>192</height>
+     <x>630</x>
+     <y>50</y>
+     <width>140</width>
+     <height>305</height>
     </rect>
    </property>
   </widget>
   <widget class="QPushButton" name="insertPeoplepushButton">
    <property name="geometry">
     <rect>
-     <x>330</x>
-     <y>180</y>
+     <x>580</x>
+     <y>170</y>
      <width>32</width>
      <height>32</height>
     </rect>
@@ -152,8 +152,8 @@
   <widget class="QPushButton" name="removePeoplepushButton">
    <property name="geometry">
     <rect>
-     <x>330</x>
-     <y>230</y>
+     <x>580</x>
+     <y>220</y>
      <width>32</width>
      <height>32</height>
     </rect>
@@ -178,22 +178,22 @@
   <widget class="QLabel" name="milestoneGrouplabel">
    <property name="geometry">
     <rect>
-     <x>420</x>
-     <y>30</y>
-     <width>91</width>
+     <x>220</x>
+     <y>90</y>
+     <width>121</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>Select task group:</string>
+    <string>Select milestone group:</string>
    </property>
   </widget>
   <widget class="QComboBox" name="milestoneGroupcomboBox">
    <property name="geometry">
     <rect>
-     <x>410</x>
-     <y>60</y>
-     <width>141</width>
+     <x>220</x>
+     <y>120</y>
+     <width>160</width>
      <height>22</height>
     </rect>
    </property>
@@ -201,8 +201,8 @@
   <widget class="QLabel" name="selectPeoplelabel">
    <property name="geometry">
     <rect>
-     <x>210</x>
-     <y>100</y>
+     <x>420</x>
+     <y>20</y>
      <width>81</width>
      <height>16</height>
     </rect>
@@ -214,17 +214,17 @@
   <widget class="QLabel" name="workingPeoplelabel">
    <property name="geometry">
     <rect>
-     <x>380</x>
-     <y>100</y>
-     <width>81</width>
-     <height>31</height>
+     <x>630</x>
+     <y>20</y>
+     <width>161</width>
+     <height>16</height>
     </rect>
    </property>
    <property name="lineWidth">
     <number>0</number>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;People working at this task:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;People working at this milestone:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="wordWrap">
     <bool>true</bool>
@@ -234,7 +234,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>100</y>
+     <y>90</y>
      <width>71</width>
      <height>16</height>
     </rect>
@@ -247,7 +247,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>170</y>
+     <y>160</y>
      <width>91</width>
      <height>16</height>
     </rect>
@@ -260,7 +260,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>130</y>
+     <y>120</y>
      <width>160</width>
      <height>22</height>
     </rect>
@@ -270,7 +270,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>200</y>
+     <y>190</y>
      <width>160</width>
      <height>22</height>
     </rect>
