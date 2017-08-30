@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 
     GanttController ganttController(&freeDays);//, nullptr);
 
-    MainWindow w(&ganttController, &freeDays);//, nullptr);
+    MainWindow w(&ganttController, &freeDays, "v" + qApp->applicationVersion());//, nullptr);
     w.setWindowTitle(qApp->applicationName() + " v" + qApp->applicationVersion());
     w.show();
 

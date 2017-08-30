@@ -49,7 +49,7 @@ QString TeeamDateTimeScaleFormatter::text(const QDateTime &datetime)
     return result;
 }
 
-MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, TeeamProject *projectModel, QWidget *parent) :
+MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, QString appVersion, TeeamProject *projectModel, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
@@ -107,6 +107,8 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
     {
         DisableMenu();
     }
+
+    ui->statusBar->showMessage(appVersion);
 }
 
 MainWindow::~MainWindow()
