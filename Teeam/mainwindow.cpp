@@ -156,7 +156,14 @@ void MainWindow::initGanttView()
     ui->ganttView->graphicsView()->setHeaderContextMenuPolicy(Qt::ContextMenuPolicy::NoContextMenu);
 
     viewModel = new QStandardItemModel( 0, 6, this );
-    viewModel->setHeaderData( 0, Qt::Horizontal, tr( "Project Tree View" ) );
+    QString nameHeader = "Name";
+    QString startHeader = "Start";
+    QString endHeader = "End";
+    QString completitionHeader = "Completition";
+    viewModel->setHeaderData( 0, Qt::Horizontal, nameHeader );
+    viewModel->setHeaderData( 2, Qt::Horizontal, startHeader );
+    viewModel->setHeaderData( 3, Qt::Horizontal, endHeader );
+    viewModel->setHeaderData( 4, Qt::Horizontal, completitionHeader );
     ui->ganttView->setModel( viewModel );
 
     QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
@@ -164,11 +171,15 @@ void MainWindow::initGanttView()
     leftView->setExpandsOnDoubleClick(false);
     leftView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     leftView->setColumnHidden( 1, true );
-    leftView->setColumnHidden( 2, true );
-    leftView->setColumnHidden( 3, true );
-    leftView->setColumnHidden( 4, true );
+    leftView->setColumnHidden( 2, false );
+    leftView->setColumnHidden( 3, false );
+    leftView->setColumnHidden( 4, false );
     leftView->setColumnHidden( 5, true );
     leftView->header()->setStretchLastSection( true );
+    leftView->setColumnWidth(0, 150);
+    leftView->setColumnWidth(2, 250);
+    leftView->setColumnWidth(3, 250);
+    leftView->setColumnWidth(4, 200);
 
 #ifdef DRAGNDROP
     leftView->setDragEnabled(true);
@@ -268,8 +279,21 @@ void MainWindow::UpdateProjectView()
     if(projectModel->IsNew())
     {
         viewModel = new QStandardItemModel( 0, 6, this );
-        viewModel->setHeaderData( 0, Qt::Horizontal, tr( "Project Tree View" ) );
+        QString nameHeader = "Name";
+        QString startHeader = "Start";
+        QString endHeader = "End";
+        QString completitionHeader = "Completition";
+        viewModel->setHeaderData( 0, Qt::Horizontal, nameHeader );
+        viewModel->setHeaderData( 2, Qt::Horizontal, startHeader );
+        viewModel->setHeaderData( 3, Qt::Horizontal, endHeader );
+        viewModel->setHeaderData( 4, Qt::Horizontal, completitionHeader );
         ui->ganttView->setModel( viewModel );
+
+        QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
+        leftView->setColumnWidth(0, 150);
+        leftView->setColumnWidth(2, 250);
+        leftView->setColumnWidth(3, 250);
+        leftView->setColumnWidth(4, 200);
 
         if (viewModel->rowCount() == 0)
         {
@@ -369,16 +393,20 @@ void MainWindow::UpdateTaskGroupView()
                     {
                         viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getName() );
                         viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeTask );
+						// Devo settare il modello sia per la ganttView che per la TreeView
                         viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getStart(), KDGantt::StartTimeRole );
+						viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getStart() );
                         viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getEnd(), KDGantt::EndTimeRole );
+						viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getEnd() );
                         viewModel->setData( viewModel->index( row, 4, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getCompletition() );
                     }
                     else if(projectModel->GetTaskGroupAt(i)->GetEntityAt(j)->getEntityType() == Milestone_type)
                     {
                         viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Milestone *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getName() );
                         viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeEvent );
+						// Devo settare il modello sia per la ganttView che per la TreeView
                         viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Milestone *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getDateTime(), KDGantt::StartTimeRole );
-                        viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Milestone *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getDateTime(), KDGantt::EndTimeRole );
+						viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Milestone *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getDateTime() );
                     }
 
                     viewModel->itemFromIndex(viewModel->index(row, 0, parent))->setEditable(false);
@@ -437,16 +465,20 @@ void MainWindow::UpdateEntitiesView()
             {
                 viewModel->setData( viewModel->index( row, 0, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getName() );
                 viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeTask );
+                // Devo settare il modello sia per la ganttView che per la TreeView
                 viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getStart(), KDGantt::StartTimeRole );
+                viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getStart() );
                 viewModel->setData( viewModel->index( row, 3, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getEnd(), KDGantt::EndTimeRole );
+                viewModel->setData( viewModel->index( row, 3, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getEnd() );
                 viewModel->setData( viewModel->index( row, 4, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getCompletition() );
             }
             else if(projectModel->GetEntityAt(i)->getEntityType() == Milestone_type)
             {
                 viewModel->setData( viewModel->index( row, 0, projectIndex ), static_cast<Milestone *>(projectModel->GetEntityAt(i))->getName() );
                 viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeEvent );
+                // Devo settare il modello sia per la ganttView che per la TreeView
                 viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Milestone *>(projectModel->GetEntityAt(i))->getDateTime(), KDGantt::StartTimeRole );
-                viewModel->setData( viewModel->index( row, 3, projectIndex ), static_cast<Milestone *>(projectModel->GetEntityAt(i))->getDateTime(), KDGantt::EndTimeRole );
+				viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Milestone *>(projectModel->GetEntityAt(i))->getDateTime() );
             }
 
             viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(false);
