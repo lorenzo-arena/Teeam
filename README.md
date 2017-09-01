@@ -21,13 +21,10 @@ You need to create a folder with this files:
  - libwinpthread-1.dll
  - Qt5Core.dll
  - Qt5Gui.dll
- - Qt5Help.dll
- - Qt5Positioning.dll
  - Qt5PrintSupport.dll
- - Qt5Scxml.dll
- - Qt5Sql.dll
  - Qt5Svg.dll
  - Qt5Widgets.dll
- - Qt5WinExtras.dll
  - Qt5Xml.dll
  - you also need to create a folder named "platforms" with the file qwindows.dll
+ 
+ Or you can download the bin for windows from the latest release.
