@@ -50,6 +50,7 @@ private slots:
     void on_actionZoom_Out_triggered();
     void on_actionSet_Free_Days_triggered();
     void on_actionTreeView_doubleclick(const QModelIndex &index);
+    void on_actionTreeView_rightclick(const QPoint& point);
     void on_actionTreeView_del(const QModelIndex &index);
     void on_action_Edit_Project_triggered();
     void on_action_Edit_Task_Group_triggered();

@@ -155,6 +155,7 @@ void MainWindow::initGanttView()
 
     QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
     connect(leftView, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(on_actionTreeView_doubleclick(const QModelIndex&)));
+    connect(leftView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(on_actionTreeView_rightclick(const QPoint&)));
     leftView->setExpandsOnDoubleClick(false);
     leftView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     leftView->setColumnHidden( 1, true );
@@ -764,6 +765,16 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
                                                  parentIndex);
         }
     }
+}
+
+void MainWindow::on_actionTreeView_rightclick(const QPoint &point)
+{
+    QModelIndex index = ui->ganttView->leftView()->indexAt(point);
+
+    // TODO : creare context menu
+
+    // TODO : se nel context menu premo edit, chiamate onDblClick (creare funzione in comune)
+
 }
 
 void MainWindow::on_actionTreeView_del(const QModelIndex &index)
