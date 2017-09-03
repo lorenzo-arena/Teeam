@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>330</width>
-    <height>177</height>
+    <width>270</width>
+    <height>310</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>52</y>
+     <y>50</y>
      <width>63</width>
      <height>19</height>
     </rect>
@@ -45,8 +45,8 @@
   <widget class="QCheckBox" name="checkBox_sun">
    <property name="geometry">
     <rect>
-     <x>119</x>
-     <y>107</y>
+     <x>20</x>
+     <y>230</y>
      <width>61</width>
      <height>19</height>
     </rect>
@@ -58,8 +58,8 @@
   <widget class="QCheckBox" name="checkBox_sat">
    <property name="geometry">
     <rect>
-     <x>119</x>
-     <y>80</y>
+     <x>20</x>
+     <y>200</y>
      <width>69</width>
      <height>19</height>
     </rect>
@@ -72,7 +72,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>107</y>
+     <y>110</y>
      <width>82</width>
      <height>19</height>
     </rect>
@@ -84,8 +84,8 @@
   <widget class="QCheckBox" name="checkBox_fri">
    <property name="geometry">
     <rect>
-     <x>119</x>
-     <y>52</y>
+     <x>20</x>
+     <y>170</y>
      <width>55</width>
      <height>19</height>
     </rect>
@@ -97,8 +97,8 @@
   <widget class="QPushButton" name="buttonOK">
    <property name="geometry">
     <rect>
-     <x>217</x>
-     <y>22</y>
+     <x>160</x>
+     <y>270</y>
      <width>80</width>
      <height>21</height>
     </rect>
@@ -110,8 +110,8 @@
   <widget class="QPushButton" name="buttonCancel">
    <property name="geometry">
     <rect>
-     <x>217</x>
-     <y>51</y>
+     <x>60</x>
+     <y>270</y>
      <width>80</width>
      <height>21</height>
     </rect>
@@ -124,7 +124,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>22</y>
+     <y>20</y>
      <width>82</width>
      <height>16</height>
     </rect>
@@ -137,7 +137,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>134</y>
+     <y>140</y>
      <width>70</width>
      <height>19</height>
     </rect>
@@ -149,8 +149,8 @@
   <widget class="QPushButton" name="ButtonColor">
    <property name="geometry">
     <rect>
-     <x>220</x>
-     <y>120</y>
+     <x>175</x>
+     <y>50</y>
      <width>40</width>
      <height>40</height>
     </rect>
@@ -168,8 +168,8 @@
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>220</x>
-     <y>90</y>
+     <x>160</x>
+     <y>20</y>
      <width>82</width>
      <height>16</height>
     </rect>

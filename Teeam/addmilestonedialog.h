@@ -19,9 +19,9 @@ public:
     explicit AddMilestoneDialog(QList<QString> groupList, QList<QString> peopleList, QWidget *parent = 0);
     ~AddMilestoneDialog();
     int GetSelectedGroup() { return selectedGroup - 1; } // L'indice è zero-based
-    QString GetTaskName() { return name; }
+    QString GetMilestoneName() { return name; }
     QDateTime GetStartDateTime() { return start; }
-    QList<QString> GetPeople() { return taskPeopleModel.stringList(); }
+    QList<QString> GetPeople() { return milestonePeopleModel.stringList(); }
 
 private:
     Ui::AddMilestoneDialog *ui;
@@ -29,7 +29,7 @@ private:
     int selectedGroup;
     QDateTime start;
     QStringListModel totalPeopleModel;
-    QStringListModel taskPeopleModel;
+    QStringListModel milestonePeopleModel;
 
 private slots:
     bool eventFilter(QObject *target, QEvent *event);
@@ -38,7 +38,7 @@ private slots:
     void on_startdateTimeEdit_dateTimeChanged(const QDateTime &dateTime);
     void on_insertPeoplepushButton_clicked();
     void on_removePeoplepushButton_clicked();
-    void on_taskGroupcomboBox_currentIndexChanged(int index);
+    void on_milestoneGroupcomboBox_currentIndexChanged(int index);
 };
 
 #endif // ADDMILESTONEDIALOG_H

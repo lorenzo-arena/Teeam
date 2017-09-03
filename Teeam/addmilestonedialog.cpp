@@ -11,10 +11,10 @@ AddMilestoneDialog::AddMilestoneDialog(QList<QString> groupList, QList<QString> 
     ui->setupUi(this);
 
     // Setto i vari elementi della dialog
-    ui->taskGroupcomboBox->addItem("None");
-    ui->taskGroupcomboBox->setCurrentIndex(0);
+    ui->milestoneGroupcomboBox->addItem("None");
+    ui->milestoneGroupcomboBox->setCurrentIndex(0);
     for (int i = 0; i < groupList.length(); i++)
-        ui->taskGroupcomboBox->addItem(groupList.at(i));
+        ui->milestoneGroupcomboBox->addItem(groupList.at(i));
 
     QStringList totalPeopleList;
 
@@ -42,7 +42,7 @@ AddMilestoneDialog::~AddMilestoneDialog()
 
 void AddMilestoneDialog::on_buttonOk_clicked()
 {
-    // Estraggo il nome del task per controllarlo
+    // Estraggo il nome del milestone per controllarlo
     QString editText = ui->lineEdit->text();
 
     // Estraggo la data per controllarle
@@ -50,7 +50,7 @@ void AddMilestoneDialog::on_buttonOk_clicked()
 
     if(editText == "")
     {
-        QMessageBox::warning(this, "Error", "You must specify a name for the new task.", QMessageBox::Ok);
+        QMessageBox::warning(this, "Error", "You must specify a name for the new milestone.", QMessageBox::Ok);
         return;
     }
     else
@@ -81,33 +81,28 @@ void AddMilestoneDialog::on_insertPeoplepushButton_clicked()
         // Lo rimuovo dalla prima lista
         totalPeopleModel.removeRow(selection.row());
         // Lo aggiungo alla seconda
-        QStringList tempList = taskPeopleModel.stringList();
+        QStringList tempList = milestonePeopleModel.stringList();
         tempList << person;
-        taskPeopleModel.setStringList(tempList);
-        ui->taskPeoplelistView->setModel(&taskPeopleModel);
+        milestonePeopleModel.setStringList(tempList);
+        ui->milestonePeoplelistView->setModel(&milestonePeopleModel);
     }
 }
 
 void AddMilestoneDialog::on_removePeoplepushButton_clicked()
 {
-    QModelIndex selection = ui->taskPeoplelistView->currentIndex();
+    QModelIndex selection = ui->milestonePeoplelistView->currentIndex();
     if(selection.isValid())
     {
         // Tiro su il nome della persona
-        QString person = ui->taskPeoplelistView->model()->data(selection).toString();
+        QString person = ui->milestonePeoplelistView->model()->data(selection).toString();
         // Lo rimuovo dalla prima lista
-        taskPeopleModel.removeRow(selection.row());
+        milestonePeopleModel.removeRow(selection.row());
         // Lo aggiungo alla seconda
         QStringList tempList = totalPeopleModel.stringList();
         tempList << person;
         totalPeopleModel.setStringList(tempList);
         ui->totalPeoplelistView->setModel(&totalPeopleModel);
     }
-}
-
-void AddMilestoneDialog::on_taskGroupcomboBox_currentIndexChanged(int index)
-{
-   selectedGroup = index;
 }
 
 bool AddMilestoneDialog::eventFilter(QObject* target, QEvent* event)
@@ -122,4 +117,9 @@ bool AddMilestoneDialog::eventFilter(QObject* target, QEvent* event)
         }
     }
     return QDialog::eventFilter(target, event);
+}
+
+void AddMilestoneDialog::on_milestoneGroupcomboBox_currentIndexChanged(int index)
+{
+    selectedGroup = index;
 }

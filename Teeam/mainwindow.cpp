@@ -49,7 +49,7 @@ QString TeeamDateTimeScaleFormatter::text(const QDateTime &datetime)
     return result;
 }
 
-MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, TeeamProject *projectModel, QWidget *parent) :
+MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, QString appVersion, TeeamProject *projectModel, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
@@ -105,26 +105,32 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
     // Disabilito alcune voci dal menu se non ho caricato un progetto
     if(this->projectModel == nullptr)
     {
-        ui->action_Save_as->setEnabled(false);
-        ui->action_Close_Project->setEnabled(false);
-        ui->actionAdd_Task_Group->setEnabled(false);
-        ui->actionAdd_Task->setEnabled(false);
-        ui->actionAdd_Milestone->setEnabled(false);
-        ui->action_Edit_Project->setEnabled(false);
-        ui->action_Edit_Task_Group->setEnabled(false);
-        ui->action_Edit_Task->setEnabled(false);
-        ui->action_Edit_Milestone->setEnabled(false);
+        DisableMenu();
     }
+
+    ui->statusBar->showMessage(appVersion);
 }
 
 MainWindow::~MainWindow()
 {
-    delete dateTimeGrid;
+    if(dateTimeGrid != nullptr)
+        delete dateTimeGrid;
+
+    if(ganttController != nullptr)
     delete ganttController;
+
+    if(freeDaysModel != nullptr)
     delete freeDaysModel;
-    delete projectModel;
+
+    if(viewModel != nullptr)
     delete viewModel;
+
+    if(costraintModel != nullptr)
     delete costraintModel;
+
+    if(projectModel != nullptr)
+        delete projectModel;
+
     delete ui;
 }
 
@@ -465,8 +471,62 @@ void MainWindow::UpdateEntitiesView()
     }
 }
 
+void MainWindow::EnableMenu()
+{
+    // Abilito alcune voci del menu
+    ui->action_Save_as->setEnabled(true);
+    ui->action_Close_Project->setEnabled(true);
+    ui->actionAdd_Task_Group->setEnabled(true);
+    ui->actionAdd_Task->setEnabled(true);
+    ui->actionAdd_Milestone->setEnabled(true);
+    ui->action_Edit_Project->setEnabled(true);
+    ui->action_Edit_Task_Group->setEnabled(true);
+    ui->action_Edit_Task->setEnabled(true);
+    ui->action_Edit_Milestone->setEnabled(true);
+}
+
+void MainWindow::DisableMenu()
+{
+    ui->action_Save_as->setEnabled(false);
+    ui->action_Close_Project->setEnabled(false);
+    ui->actionAdd_Task_Group->setEnabled(false);
+    ui->actionAdd_Task->setEnabled(false);
+    ui->actionAdd_Milestone->setEnabled(false);
+    ui->action_Edit_Project->setEnabled(false);
+    ui->action_Edit_Task_Group->setEnabled(false);
+    ui->action_Edit_Task->setEnabled(false);
+    ui->action_Edit_Milestone->setEnabled(false);
+}
+
 void MainWindow::on_actionNew_Project_triggered()
 {
+    if(projectModel != nullptr)
+    {
+        // Controllo se ho eliminato il progetto
+        QMessageBox::StandardButton result = QMessageBox::information(this,
+                                                          "Warning",
+                                                          "Do you want to save the project?",
+                                                          QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
+                                                          QMessageBox::Cancel);
+
+        if(result == QMessageBox::Cancel)
+        {
+            return;
+        }
+        else if(result == QMessageBox::No)
+        {
+            DeleteProject();
+        }
+        else if(result == QMessageBox::Yes)
+        {
+            // Fare in modo che se scelgo di salvare e poi premo cancel nella
+            // dialog di salvataggio si annulla tutto (adesso invece non salvo il proj
+            // e lo cancello)
+            on_action_Save_as_triggered();
+            DeleteProject();
+        }
+    }
+
     AddProjectDialog *dialog = new AddProjectDialog( this );
     if ( dialog->exec() == QDialog::Rejected || !dialog ) {
         delete dialog;
@@ -479,15 +539,7 @@ void MainWindow::on_actionNew_Project_triggered()
     ganttController->NewProject(newProject);
 
     // Abilito alcune voci del menu
-    ui->action_Save_as->setEnabled(true);
-    ui->action_Close_Project->setEnabled(true);
-    ui->actionAdd_Task_Group->setEnabled(true);
-    ui->actionAdd_Task->setEnabled(true);
-    ui->actionAdd_Milestone->setEnabled(true);
-    ui->action_Edit_Project->setEnabled(true);
-    ui->action_Edit_Task_Group->setEnabled(true);
-    ui->action_Edit_Task->setEnabled(true);
-    ui->action_Edit_Milestone->setEnabled(true);
+    EnableMenu();
 
     delete dialog;
     return;
@@ -552,7 +604,7 @@ void MainWindow::on_actionAdd_Milestone_triggered()
         return;
     }
 
-    QString milestoneName = dialog->GetTaskName();
+    QString milestoneName = dialog->GetMilestoneName();
     int selectedParent = dialog->GetSelectedGroup();
     QDateTime start = dialog->GetStartDateTime();
     QList<QString> milestonePeople = dialog->GetPeople();
@@ -812,9 +864,10 @@ void MainWindow::on_actionTreeView_del(const QModelIndex &index)
 
 void MainWindow::DeleteProject()
 {
+    // TODO : refactor
     QStringList list;
     TeeamProject *newProject = new TeeamProject("", list);
-    this->projectModel = newProject;
+    this->projectModel = nullptr;
     newProject->attach(this);
     ganttController->NewProject(newProject);
 
@@ -822,15 +875,7 @@ void MainWindow::DeleteProject()
     viewModel->setHeaderData( 0, Qt::Horizontal, tr( "Project Tree View" ) );
     ui->ganttView->setModel( viewModel );
 
-    ui->action_Save_as->setEnabled(false);
-    ui->action_Close_Project->setEnabled(false);
-    ui->actionAdd_Task_Group->setEnabled(false);
-    ui->actionAdd_Task->setEnabled(false);
-    ui->actionAdd_Milestone->setEnabled(false);
-    ui->action_Edit_Project->setEnabled(false);
-    ui->action_Edit_Task_Group->setEnabled(false);
-    ui->action_Edit_Task->setEnabled(false);
-    ui->action_Edit_Milestone->setEnabled(false);
+    DisableMenu();
 }
 
 bool MainWindow::eventFilter(QObject* target, QEvent* event)
@@ -856,6 +901,8 @@ bool MainWindow::eventFilter(QObject* target, QEvent* event)
 void MainWindow::closeEvent(QCloseEvent *eventArgs)
 {
     QSettings settings;
+
+    on_action_Close_Project_triggered();
 
     settings.beginGroup(REG_KEY_MAINWINDOW);
     settings.setValue(REG_KEY_MAINWINDOW_MAXIMIZED, isMaximized());
@@ -952,7 +999,7 @@ void MainWindow::on_action_Save_as_triggered()
                                        tr("Save Teeam Project"), ".",
                                        tr("Teeam files (*.tmproj)"));
 
-    if(projectModel != nullptr)
+    if(projectModel != nullptr && filename != "")
     {
         QFile file(filename);
         file.open(QIODevice::WriteOnly);
@@ -990,7 +1037,7 @@ void MainWindow::on_action_Save_as_triggered()
                     xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_TASKTYPE);
                     xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getName());
 
-                    for(int k = 0; k < static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(i))->getPeople().length(); k++)
+                    for(int k = 0; k < static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getPeople().length(); k++)
                         xmlWriter.writeTextElement(KEY_PERSON, static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getPeople().at(k));
 
                     xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getStart().toString());
@@ -1111,7 +1158,7 @@ void MainWindow::on_actionOpen_File_triggered()
                ganttController->NewProject(tempProj);
             }
 
-            int groupIndex = 1;
+            int groupIndex = 0;
             while(xmlReader.readNextStartElement())
             {
                 if(xmlReader.name() == KEY_GROUP)
@@ -1293,6 +1340,9 @@ void MainWindow::on_actionOpen_File_triggered()
                 else
                     throw INVALID_FILE;
             }
+
+            // È terminato il caricamento
+            EnableMenu();
         }
         else
             throw INVALID_FILE;
@@ -1312,25 +1362,28 @@ void MainWindow::on_actionOpen_File_triggered()
 
 void MainWindow::on_action_Close_Project_triggered()
 {
-    // Controllo se ho eliminato il progetto
-    QMessageBox::StandardButton result = QMessageBox::information(this,
-                                                      "Warning",
-                                                      "Do you want to save the project?",
-                                                      QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
-                                                      QMessageBox::Cancel);
+    if(projectModel != nullptr)
+    {
+        // Controllo se ho eliminato il progetto
+        QMessageBox::StandardButton result = QMessageBox::information(this,
+                                                          "Warning",
+                                                          "Do you want to save the project?",
+                                                          QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
+                                                          QMessageBox::Cancel);
 
-    if(result == QMessageBox::Cancel)
-        return;
-    else if(result == QMessageBox::No)
-    {
-        DeleteProject();
-        return;
-    }
-    else if(result == QMessageBox::Yes)
-    {
-        on_action_Save_as_triggered();
-        DeleteProject();
-        return;
+        if(result == QMessageBox::Cancel)
+            return;
+        else if(result == QMessageBox::No)
+        {
+            DeleteProject();
+            return;
+        }
+        else if(result == QMessageBox::Yes)
+        {
+            on_action_Save_as_triggered();
+            DeleteProject();
+            return;
+        }
     }
     return;
 }
