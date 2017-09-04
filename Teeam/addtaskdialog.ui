@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>701</width>
-    <height>393</height>
+    <width>822</width>
+    <height>429</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,8 +29,8 @@
   <widget class="QPushButton" name="buttonOk">
    <property name="geometry">
     <rect>
-     <x>580</x>
-     <y>20</y>
+     <x>680</x>
+     <y>390</y>
      <width>80</width>
      <height>21</height>
     </rect>
@@ -56,7 +56,7 @@
    <property name="geometry">
     <rect>
      <x>580</x>
-     <y>50</y>
+     <y>390</y>
      <width>80</width>
      <height>21</height>
     </rect>
@@ -71,9 +71,9 @@
   <widget class="QDateTimeEdit" name="startdateTimeEdit">
    <property name="geometry">
     <rect>
-     <x>540</x>
-     <y>160</y>
-     <width>130</width>
+     <x>20</x>
+     <y>190</y>
+     <width>160</width>
      <height>22</height>
     </rect>
    </property>
@@ -87,9 +87,9 @@
   <widget class="QDateTimeEdit" name="enddateTimeEdit">
    <property name="geometry">
     <rect>
-     <x>540</x>
-     <y>220</y>
-     <width>130</width>
+     <x>20</x>
+     <y>260</y>
+     <width>160</width>
      <height>22</height>
     </rect>
    </property>
@@ -103,18 +103,18 @@
   <widget class="QListView" name="totalPeoplelistView">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>130</y>
-     <width>120</width>
-     <height>240</height>
+     <x>220</x>
+     <y>50</y>
+     <width>140</width>
+     <height>305</height>
     </rect>
    </property>
   </widget>
   <widget class="QLabel" name="startDateTimelabel">
    <property name="geometry">
     <rect>
-     <x>580</x>
-     <y>130</y>
+     <x>20</x>
+     <y>160</y>
      <width>81</width>
      <height>20</height>
     </rect>
@@ -126,9 +126,9 @@
   <widget class="QLabel" name="endDateTimelabel">
    <property name="geometry">
     <rect>
-     <x>583</x>
-     <y>190</y>
-     <width>75</width>
+     <x>20</x>
+     <y>230</y>
+     <width>81</width>
      <height>20</height>
     </rect>
    </property>
@@ -139,18 +139,18 @@
   <widget class="QListView" name="taskPeoplelistView">
    <property name="geometry">
     <rect>
-     <x>205</x>
-     <y>130</y>
-     <width>120</width>
-     <height>240</height>
+     <x>430</x>
+     <y>50</y>
+     <width>140</width>
+     <height>305</height>
     </rect>
    </property>
   </widget>
   <widget class="QPushButton" name="insertPeoplepushButton">
    <property name="geometry">
     <rect>
-     <x>156</x>
-     <y>209</y>
+     <x>380</x>
+     <y>170</y>
      <width>32</width>
      <height>32</height>
     </rect>
@@ -181,8 +181,8 @@
   <widget class="QPushButton" name="removePeoplepushButton">
    <property name="geometry">
     <rect>
-     <x>156</x>
-     <y>259</y>
+     <x>380</x>
+     <y>220</y>
      <width>32</width>
      <height>32</height>
     </rect>
@@ -220,9 +220,9 @@
   <widget class="QComboBox" name="taskGroupcomboBox">
    <property name="geometry">
     <rect>
-     <x>220</x>
-     <y>50</y>
-     <width>140</width>
+     <x>20</x>
+     <y>120</y>
+     <width>160</width>
      <height>22</height>
     </rect>
    </property>
@@ -230,26 +230,23 @@
   <widget class="QLabel" name="selectPeoplelabel">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>90</y>
-     <width>91</width>
-     <height>31</height>
+     <x>220</x>
+     <y>20</y>
+     <width>81</width>
+     <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;People not working at this task:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-   <property name="wordWrap">
-    <bool>true</bool>
+    <string>All people:</string>
    </property>
   </widget>
   <widget class="QLabel" name="workingPeoplelabel">
    <property name="geometry">
     <rect>
-     <x>205</x>
-     <y>90</y>
-     <width>81</width>
-     <height>31</height>
+     <x>430</x>
+     <y>20</y>
+     <width>141</width>
+     <height>16</height>
     </rect>
    </property>
    <property name="lineWidth">
@@ -265,9 +262,9 @@
   <widget class="QLabel" name="completitionlabel">
    <property name="geometry">
     <rect>
-     <x>545</x>
-     <y>280</y>
-     <width>63</width>
+     <x>20</x>
+     <y>299</y>
+     <width>71</width>
      <height>20</height>
     </rect>
    </property>
@@ -278,11 +275,11 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="percentlabel">
+  <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>587</x>
-     <y>312</y>
+     <x>70</x>
+     <y>332</y>
      <width>20</width>
      <height>16</height>
     </rect>
@@ -294,8 +291,8 @@
   <widget class="QSpinBox" name="completitionspinBox">
    <property name="geometry">
     <rect>
-     <x>540</x>
-     <y>310</y>
+     <x>20</x>
+     <y>330</y>
      <width>43</width>
      <height>22</height>
     </rect>
@@ -304,8 +301,8 @@
   <widget class="QLabel" name="costraintlabel">
    <property name="geometry">
     <rect>
-     <x>440</x>
-     <y>105</y>
+     <x>640</x>
+     <y>20</y>
      <width>60</width>
      <height>15</height>
     </rect>
@@ -317,10 +314,10 @@
   <widget class="QListView" name="listView">
    <property name="geometry">
     <rect>
-     <x>370</x>
-     <y>130</y>
-     <width>130</width>
-     <height>240</height>
+     <x>640</x>
+     <y>50</y>
+     <width>140</width>
+     <height>305</height>
     </rect>
    </property>
   </widget>
