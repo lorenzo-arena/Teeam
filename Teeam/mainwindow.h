@@ -118,6 +118,8 @@ private:
     void UpdateEntitiesView();
     void DeleteProject();
     void EnableMenu();
+    void EditEntityAtIndex(const QModelIndex index);
+    void RemoveEntityFromIndex(const QModelIndex index);
 };
 
 #endif // MAINWINDOW_H
