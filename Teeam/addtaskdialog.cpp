@@ -37,6 +37,7 @@ AddTaskDialog::AddTaskDialog(QList<QString> groupList, QList<QString> peopleList
 
     ui->lineEdit->installEventFilter(this);
     ui->startdateTimeEdit->installEventFilter(this);
+    ui->taskGroupcomboBox->installEventFilter(this);
     ui->enddateTimeEdit->installEventFilter(this);
     ui->completitionspinBox->installEventFilter(this);
     ui->lineEdit->setFocus();

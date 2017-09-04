@@ -168,6 +168,11 @@ void MainWindow::initGanttView()
 
     QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
     connect(leftView, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(on_actionTreeView_doubleclick(const QModelIndex&)));
+
+    // Gestione context menu
+    leftView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(leftView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(on_actionTreeView_rightclick(const QPoint&)));
+
     leftView->setExpandsOnDoubleClick(false);
     leftView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     leftView->setColumnHidden( 1, true );
@@ -700,6 +705,51 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
 	QString text = "DoubleClicked row: " + QString::number(index.row()) + "; column: " + QString::number(index.column());
     qDebug() << text;
 
+    EditEntityAtIndex(index);
+}
+
+void MainWindow::on_actionTreeView_rightclick(const QPoint &point)
+{
+    QModelIndex index = ui->ganttView->leftView()->indexAt(point);
+    if(index.isValid())
+    {
+        QMenu menu;
+        QString editText = "Edit";
+        QString removeText = "Remove";
+        menu.addAction(editText);
+        menu.addAction(removeText);
+
+        QAction* selectedVoice = menu.exec(ui->ganttView->mapToGlobal(point));
+        if(selectedVoice)
+        {
+            if( selectedVoice->text() == editText )
+            {
+                EditEntityAtIndex(index);
+            }
+            else if( selectedVoice->text() == removeText )
+            {
+                RemoveEntityFromIndex(index);
+            }
+            else
+            {
+                return;
+            }
+        }
+        else
+        {
+            return;
+        }
+    }
+}
+
+
+void MainWindow::on_actionTreeView_del(const QModelIndex &index)
+{
+    RemoveEntityFromIndex(index);
+}
+
+void MainWindow::EditEntityAtIndex(const QModelIndex index)
+{
     if(index.row() == 0 && index.column() == 0 && !index.parent().isValid())
     {
         // Ho cliccato il project
@@ -850,7 +900,7 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
     }
 }
 
-void MainWindow::on_actionTreeView_del(const QModelIndex &index)
+void MainWindow::RemoveEntityFromIndex(const QModelIndex index)
 {
     if(index.isValid())
     {
@@ -858,7 +908,7 @@ void MainWindow::on_actionTreeView_del(const QModelIndex &index)
         qDebug() << text;
 
         if(index.row() == 0 && index.column() == 0 && !index.parent().isValid())
-        {   
+        {
             // Controllo se ho eliminato il progetto
             on_action_Close_Project_triggered();
         }

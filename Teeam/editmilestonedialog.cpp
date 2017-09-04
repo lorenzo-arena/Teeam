@@ -110,6 +110,7 @@ EditMilestoneDialog::EditMilestoneDialog(QString milestoneName, int group, QList
 
     ui->lineEdit->installEventFilter(this);
     ui->startdateTimeEdit->installEventFilter(this);
+    ui->milestoneGroupcomboBox->installEventFilter(this);
     ui->lineEdit->setFocus();
 }
 

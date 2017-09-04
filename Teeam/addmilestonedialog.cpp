@@ -32,6 +32,7 @@ AddMilestoneDialog::AddMilestoneDialog(QList<QString> groupList, QList<QString> 
 
     ui->lineEdit->installEventFilter(this);
     ui->startdateTimeEdit->installEventFilter(this);
+    ui->milestoneGroupcomboBox->installEventFilter(this);
     ui->lineEdit->setFocus();
 }
 

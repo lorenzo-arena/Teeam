@@ -117,6 +117,7 @@ EditTaskDialog::EditTaskDialog(QString taskName, int group, QList<QString> taskG
 
     ui->lineEdit->installEventFilter(this);
     ui->startdateTimeEdit->installEventFilter(this);
+    ui->taskGroupcomboBox->installEventFilter(this);
     ui->enddateTimeEdit->installEventFilter(this);
     ui->completitionspinBox->installEventFilter(this);
     ui->lineEdit->setFocus();
