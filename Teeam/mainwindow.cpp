@@ -29,6 +29,7 @@
 #include <QXmlStreamReader>
 #include <QFileDialog>
 
+#ifdef DATETIMESCALE_MOD
 TeeamDateTimeScaleFormatter::TeeamDateTimeScaleFormatter(const KDGantt::DateTimeScaleFormatter &other)
     : DateTimeScaleFormatter(other)
 {
@@ -48,6 +49,7 @@ QString TeeamDateTimeScaleFormatter::text(const QDateTime &datetime)
     result = locale.toString(datetime, QLocale::ShortFormat);
     return result;
 }
+#endif
 
 MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, QString appVersion, TeeamProject *projectModel, QWidget *parent) :
     QMainWindow(parent),
@@ -114,22 +116,34 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
 MainWindow::~MainWindow()
 {
     if(dateTimeGrid != nullptr)
+    {
         delete dateTimeGrid;
+    }
 
     if(ganttController != nullptr)
-    delete ganttController;
+    {
+        delete ganttController;
+    }
 
     if(freeDaysModel != nullptr)
-    delete freeDaysModel;
+    {
+        delete freeDaysModel;
+    }
 
     if(viewModel != nullptr)
-    delete viewModel;
+    {
+        delete viewModel;
+    }
 
     if(costraintModel != nullptr)
-    delete costraintModel;
+    {
+        delete costraintModel;
+    }
 
     if(projectModel != nullptr)
+    {
         delete projectModel;
+    }
 
     delete ui;
 }
@@ -149,8 +163,12 @@ void MainWindow::initGanttView()
     ********************************/
 
     dateTimeGrid = new KDGantt::DateTimeGrid();
+
+#ifdef DATETIMESCALE_MOD
     dateTimeGrid->setUserDefinedLowerScale(new TeeamDateTimeScaleFormatter(*(dateTimeGrid->userDefinedLowerScale())));
     dateTimeGrid->setUserDefinedUpperScale(new TeeamDateTimeScaleFormatter(*(dateTimeGrid->userDefinedUpperScale())));
+#endif
+
     ui->ganttView->graphicsView()->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     ui->ganttView->setGrid( dateTimeGrid );
     ui->ganttView->graphicsView()->setHeaderContextMenuPolicy(Qt::ContextMenuPolicy::NoContextMenu);

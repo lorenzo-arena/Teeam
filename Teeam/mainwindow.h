@@ -20,14 +20,16 @@ namespace Ui {
 class MainWindow;
 }
 
+#ifdef DATETIMESCALE_MOD
 class TeeamDateTimeScaleFormatter : public KDGantt::DateTimeScaleFormatter
 {
 public:
-    TeeamDateTimeScaleFormatter( const DateTimeScaleFormatter& other );
+    explicit TeeamDateTimeScaleFormatter( const DateTimeScaleFormatter& other );
 
 private:
     QString text( const QDateTime& datetime );
 };
+#endif
 
 class MainWindow : public QMainWindow, public AbstractView
 {

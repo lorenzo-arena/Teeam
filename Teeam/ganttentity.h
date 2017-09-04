@@ -10,7 +10,7 @@
 class GanttEntity : public AbstractModel
 {
 public:
-    GanttEntity(){}
+    GanttEntity(){ isNew = true; isRemoved = false; }
     virtual ~GanttEntity(){}
     bool IsRemoved() { return isRemoved; }
 

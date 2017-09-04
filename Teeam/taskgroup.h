@@ -16,7 +16,7 @@ class TaskGroup : public GanttEntity
     friend class GenericTask;
     friend class TeeamProject;
 public:
-    TaskGroup(QString taskGroupName);
+    explicit TaskGroup(QString taskGroupName);
     QString getName();
     void setName(QString newName) { name = newName; }
     bool IsNew();
@@ -29,7 +29,6 @@ private:
     QDateTime end;
     QColor color;
     QList<GenericTask*> taskList;
-    bool isNew;
     bool isGroupChanged; // utilizzato per notificare se ho un edit del group
 
 protected:
