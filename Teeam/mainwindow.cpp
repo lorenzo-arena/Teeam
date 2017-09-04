@@ -400,9 +400,9 @@ void MainWindow::UpdateTaskGroupView()
                         viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeTask );
 						// Devo settare il modello sia per la ganttView che per la TreeView
                         viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getStart(), KDGantt::StartTimeRole );
-						viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getStart() );
+                        viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getStart().toString("dd/MM/yyyy hh:mm") );
                         viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getEnd(), KDGantt::EndTimeRole );
-						viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getEnd() );
+                        viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getEnd().toString("dd/MM/yyyy hh:mm") );
                         viewModel->setData( viewModel->index( row, 4, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getCompletition() );
                     }
                     else if(projectModel->GetTaskGroupAt(i)->GetEntityAt(j)->getEntityType() == Milestone_type)
@@ -411,7 +411,7 @@ void MainWindow::UpdateTaskGroupView()
                         viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeEvent );
 						// Devo settare il modello sia per la ganttView che per la TreeView
                         viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Milestone *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getDateTime(), KDGantt::StartTimeRole );
-						viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Milestone *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getDateTime() );
+                        viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Milestone *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getDateTime().toString("dd/MM/yyyy hh:mm") );
                     }
 
                     viewModel->itemFromIndex(viewModel->index(row, 0, parent))->setEditable(false);
@@ -472,9 +472,9 @@ void MainWindow::UpdateEntitiesView()
                 viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeTask );
                 // Devo settare il modello sia per la ganttView che per la TreeView
                 viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getStart(), KDGantt::StartTimeRole );
-                viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getStart() );
+                viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getStart().toString("dd/MM/yyyy hh:mm") );
                 viewModel->setData( viewModel->index( row, 3, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getEnd(), KDGantt::EndTimeRole );
-                viewModel->setData( viewModel->index( row, 3, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getEnd() );
+                viewModel->setData( viewModel->index( row, 3, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getEnd().toString("dd/MM/yyyy hh:mm") );
                 viewModel->setData( viewModel->index( row, 4, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getCompletition() );
             }
             else if(projectModel->GetEntityAt(i)->getEntityType() == Milestone_type)
@@ -483,7 +483,7 @@ void MainWindow::UpdateEntitiesView()
                 viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeEvent );
                 // Devo settare il modello sia per la ganttView che per la TreeView
                 viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Milestone *>(projectModel->GetEntityAt(i))->getDateTime(), KDGantt::StartTimeRole );
-				viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Milestone *>(projectModel->GetEntityAt(i))->getDateTime() );
+                viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Milestone *>(projectModel->GetEntityAt(i))->getDateTime().toString("dd/MM/yyyy hh:mm") );
             }
 
             viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(false);
