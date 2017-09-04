@@ -14,8 +14,8 @@
  - add new "Save Project dialog" ✓
  - implement all gantt dialogs ✓
  - fix scale commands on rightclick ✓
- - add File->New../Save/Save As
- - add version on bottom of page
+ - add File->New../Save/Save As ✓
+ - add version on bottom of page ✓
  - change all widgets language to English/UnitedStates ✓
  - change dataGridView locale
  - clean abstractController ✓

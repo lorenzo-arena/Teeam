@@ -19,24 +19,24 @@ EditMilestoneDialog::EditMilestoneDialog(QWidget *parent) :
     this->project = *project;
 
     // Setto i vari elementi della dialog
-    ui->taskGroupcomboBox->addItem("None");
-    ui->taskGroupcomboBox->setCurrentIndex(0);
-    for (int i = 0; i < this->project.GetTaskGroup().length(); i++)
-        ui->taskGroupcomboBox->addItem(this->project.GetTaskGroup().at(i)->getName());
+    ui->milestoneGroupcomboBox->addItem("None");
+    ui->milestoneGroupcomboBox->setCurrentIndex(0);
+    for (int i = 0; i < this->project.GetTaskGroupListSize(); i++)
+        ui->milestoneGroupcomboBox->addItem(this->project.GetTaskGroupAt(i)->getName());
 
     ui->baseGroupcomboBox->addItem("None");
     ui->baseGroupcomboBox->setCurrentIndex(0);
-    for (int i = 0; i < this->project.GetTaskGroup().length(); i++)
-        ui->baseGroupcomboBox->addItem(this->project.GetTaskGroup().at(i)->getName());
+    for (int i = 0; i < this->project.GetTaskGroupListSize(); i++)
+        ui->baseGroupcomboBox->addItem(this->project.GetTaskGroupAt(i)->getName());
 
     ui->baseTaskcomboBox->addItem("None");
     ui->baseTaskcomboBox->setCurrentIndex(0);
 
-    for (int i = 0; i < this->project.GetEntitiesList().length(); i++)
+    for (int i = 0; i < this->project.GetEntitiesListSize(); i++)
     {
-        if(this->project.GetEntitiesList().at(i)->getEntityType() == TASK_CODE)
+        if(this->project.GetEntityAt(i)->getEntityType() == milestone_CODE)
         {
-            ui->baseTaskcomboBox->addItem(static_cast<Task*>(this->project.GetEntitiesList().at(i))->getName());
+            ui->baseTaskcomboBox->addItem(static_cast<Task*>(this->project.GetEntityAt(i))->getName());
         }
     }
 
@@ -81,15 +81,14 @@ EditMilestoneDialog::EditMilestoneDialog(QString milestoneName, int group, QList
 
     ui->lineEdit->setText(milestoneName);
 
-    // TODO : fare in modo di poter cambiare gruppo!!
     ui->milestoneGroupcomboBox->addItem("None");
     for (int i = 0; i < milestoneGroups.length(); i++)
         ui->milestoneGroupcomboBox->addItem(milestoneGroups.at(i));
     if(group >= 0)
-        ui->milestoneGroupcomboBox->setCurrentIndex(this->selectedGroup+1);
+        ui->milestoneGroupcomboBox->setCurrentIndex(group + 1);
     else
         ui->milestoneGroupcomboBox->setCurrentIndex(0);
-    ui->milestoneGroupcomboBox->setEnabled(false);
+    ui->milestoneGroupcomboBox->setEnabled(true);
 
     ui->startdateTimeEdit->setDateTime(start);
 
@@ -111,6 +110,7 @@ EditMilestoneDialog::EditMilestoneDialog(QString milestoneName, int group, QList
 
     ui->lineEdit->installEventFilter(this);
     ui->startdateTimeEdit->installEventFilter(this);
+    ui->milestoneGroupcomboBox->installEventFilter(this);
     ui->lineEdit->setFocus();
 }
 

@@ -19,7 +19,7 @@ public:
     explicit EditTaskGroupDialog(const QList<QString>& groups, QWidget *parent = 0, int selectedGroup = -1, Qt::WindowFlags f = 0 );
     ~EditTaskGroupDialog();
     QString GetTaskGroupName();
-    int GetSelectedGroup() { return selectedGroup; }
+    int GetSelectedGroup() { return selectedGroup - 1; } // L'indice è zero-based
 
 private slots:
     bool eventFilter(QObject *target, QEvent *event);

@@ -55,15 +55,18 @@ void TeeamProject::AddTaskOrMilestone(GenericTask *entity)
 
 void TeeamProject::AddTaskOrMilestoneToGroup(GenericTask *entity, int groupIndex)
 {
-    taskGroupList.at(groupIndex - 1)->AddTask(entity);
-    taskGroupList.at(groupIndex - 1)->setChanged(true);
-    taskGroupChanged = true;
-    bChanged = true;
-    notify();
-    taskGroupList.at(groupIndex - 1)->setChanged(false);
-    taskGroupChanged = false;
-    bChanged = false;
-    entity->setNew(false);
+    if(groupIndex < taskGroupList.length())
+	{
+		taskGroupList.at(groupIndex)->AddTask(entity);
+		taskGroupList.at(groupIndex)->setChanged(true);
+		taskGroupChanged = true;
+		bChanged = true;
+		notify();
+		taskGroupList.at(groupIndex)->setChanged(false);
+		taskGroupChanged = false;
+		bChanged = false;
+		entity->setNew(false);
+	}
 }
 
 // TODO : trovare soluzione migliore??
@@ -126,17 +129,17 @@ void TeeamProject::RemoveTaskOrMilestone(int index, int parent)
     else if(parent < taskGroupList.length())
     {
         // è un task/milestone che non appartiene a nessun gruppo
-        if(index < taskGroupList.at(parent)->GetEntitiesList().length())
+        if(index < taskGroupList.at(parent)->GetEntitiesListSize())
         {
             taskGroupChanged = true;
             bChanged = true;
             taskGroupList.at(parent)->setChanged(true);
-            taskGroupList.at(parent)->GetEntitiesList().at(index)->setRemoved(true);
+            taskGroupList.at(parent)->GetEntityAt(index)->setRemoved(true);
             notify();
             taskGroupChanged = false;
             bChanged = false;
             taskGroupList.at(parent)->setChanged(false);
-            taskGroupList.at(parent)->GetEntitiesList().removeAt(index);
+            taskGroupList.at(parent)->RemoveEntityAt(index);
         }
     }
 }
@@ -162,7 +165,7 @@ void TeeamProject::EditTaskOrMilestone(GenericTask *entity, int index, int paren
     {
         if(parent < taskGroupList.length())
         {
-            if(index < taskGroupList.at(parent)->GetEntitiesList().length())
+            if(index < taskGroupList.at(parent)->GetEntitiesListSize())
             {
                 taskGroupList.at(parent)->ReplaceEntity(index, entity);
                 entity->setNew(false);

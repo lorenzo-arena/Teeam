@@ -21,8 +21,9 @@ public:
     void setName(QString newName) { name = newName; }
     bool IsNew();
     void AddTask(GenericTask* task);
-    QList<GenericTask*> GetEntitiesList() { return taskList; }
     bool IsGroupChanged() { return isGroupChanged; }
+    GenericTask * GetEntityAt(int index) { return taskList.at(index); }
+    int GetEntitiesListSize() { return taskList.length(); }
 
 private:
     QDateTime end;
@@ -36,6 +37,7 @@ protected:
     void setRemoved(bool b) { isRemoved = b; }
     void setGroupChanged(bool b) { isGroupChanged = b; }
     void ReplaceEntity(int index, GenericTask* entity);
+    void RemoveEntityAt(int index) { taskList.removeAt(index); }
 
 };
 
