@@ -80,6 +80,7 @@ private:
     TeeamProject *projectModel;
     QStandardItemModel *viewModel; // the model used to control the real GanttView
     KDGantt::ConstraintModel *costraintModel;
+    bool bEmptyProject;
 
     // identificativi per settings MainWindow
     const QString REG_KEY_MAINWINDOW = "teeam_mainwindow";
@@ -99,20 +100,6 @@ private:
     const QString REG_KEY_DATETIMEVIEW_SAT = "sat";
     const QString REG_KEY_DATETIMEVIEW_SUN = "sun";
     const QString REG_KEY_DATETIMEVIEW_COLOR = "color";
-
-    // identificativi per file salvataggio
-    const QString KEY_PROJECT = "teeamproject";
-    const QString KEY_PROJECTPARAMETERS = "projectparameters";
-    const QString KEY_NAME = "name";
-    const QString KEY_PERSON = "person";
-    const QString KEY_GROUP = "group";
-    const QString KEY_ENTITY = "entity";
-    const QString KEY_ENTITYTYPE = "entitytype";
-    const QString KEY_TASKTYPE = "task";
-    const QString KEY_MILESTONETYPE = "milestone";
-    const QString KEY_STARTDATETIME = "startdatetime";
-    const QString KEY_ENDDATETIME = "enddatetime";
-    const QString KEY_COMPLETITION = "completition";
 
     void UpdateFreeDaysView();
     void UpdateProjectView();

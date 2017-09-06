@@ -35,6 +35,8 @@ public:
     void RemoveTaskOrMilestone(int index, int parent = -1);
     void SetFreeDays(Days days);
     void SetFreeDaysColor(QColor color);
+    void SaveProjectAs(const QString filename);
+    int OpenFile(const QString filename, AbstractView *view);
 
 private:
     FreeDaysModel *freeDays;
