@@ -36,8 +36,9 @@ protected:
     void setRemoved(bool b) { isRemoved = b; }
     void setGroupChanged(bool b) { isGroupChanged = b; }
     void ReplaceEntity(int index, GenericTask* entity);
-    void RemoveEntityAt(int index) { taskList.removeAt(index); }
-
+    void RemoveEntityAt(int index) { taskList.removeAt(index); } 
+    void setBeforeCreation();
+    void resetAfterCreation();
 };
 
 #endif // TASKGROUP_H

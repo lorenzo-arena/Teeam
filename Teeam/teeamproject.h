@@ -25,6 +25,7 @@ private:
     bool taskGroupChanged;
     bool projectChanged;
     bool entitiesListChanged;
+    bool bSilentMode;
 
     // identificativi per file salvataggio
     const QString KEY_PROJECT = "teeamproject";
@@ -40,7 +41,10 @@ private:
     const QString KEY_ENDDATETIME = "enddatetime";
     const QString KEY_COMPLETITION = "completition";
 
-    void ShowEntities();
+
+    void SetBeforeCreation();
+    void ResetAfterCreation();
+
 public:
     void AddTaskGroup(TaskGroup* taskGroup);
     void AddTaskOrMilestone(GenericTask *entity);
@@ -56,6 +60,7 @@ public:
     bool IsNew() { return isNew; }
     void SetNew(bool b) { isNew = b; }
     void ShowGroups();
+    void ShowEntities();
     void RemoveTaskGroup(int index);
     void RemoveTaskOrMilestone(int index, int parent);
     void EditTaskOrMilestone(GenericTask *entity, int index, int parent = -1);
@@ -65,13 +70,6 @@ public:
     int GetTaskGroupListSize() { return taskGroupList.length(); }
     void SaveProjectAs(const QString filename);
     int OpenFile(const QString filename, AbstractView *view);
-
-
-    // TODO : implementare metodi edit (potrebbe essere anche il controller a modificare
-    //        i parametri), che si occupa di applicare changed; e entities con changed o new
-    //        vengono ridisegnati allo stesso modo, ma se � solo changed si evita di assegnare una
-    //        riga
-
 };
 
 #endif // TEEAMPROJECT_H

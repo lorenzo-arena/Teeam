@@ -15,6 +15,7 @@ TeeamProject::TeeamProject(QString projectName, QList<QString> peopleList)
     this->taskGroupChanged = false;
 	this->entitiesListChanged = false;
     this->isNew = true;
+    this->bSilentMode = false;
 }
 
 void TeeamProject::setName(QString projectName)
@@ -22,7 +23,8 @@ void TeeamProject::setName(QString projectName)
     this->name = projectName;
     projectChanged = true;
     bChanged = true;
-    notify();
+    if(!bSilentMode)
+        notify();
     projectChanged = false;
     bChanged = false;
 }
@@ -32,7 +34,8 @@ void TeeamProject::setPeopleList(QList<QString> peopleList)
     this->peopleList = peopleList;
     projectChanged = true;
     bChanged = true;
-    notify();
+    if(!bSilentMode)
+        notify();
     projectChanged = false;
     bChanged = false;
 }
@@ -42,7 +45,8 @@ void TeeamProject::AddTaskGroup(TaskGroup *taskGroup)
     taskGroupList.append(taskGroup);
     taskGroupChanged = true;
     bChanged = true;
-    notify();
+    if(!bSilentMode)
+        notify();
     taskGroupChanged = false;
     bChanged = false;
     taskGroup->setNew(false);
@@ -53,7 +57,8 @@ void TeeamProject::AddTaskOrMilestone(GenericTask *entity)
     entitiesList.append(entity);
     entitiesListChanged = true;
     bChanged = true;
-    notify();
+    if(!bSilentMode)
+        notify();
     entitiesListChanged = false;
     bChanged = false;
     entity->setNew(false);
@@ -67,7 +72,8 @@ void TeeamProject::AddTaskOrMilestoneToGroup(GenericTask *entity, int groupIndex
 		taskGroupList.at(groupIndex)->setChanged(true);
 		taskGroupChanged = true;
 		bChanged = true;
-		notify();
+        if(!bSilentMode)
+            notify();
 		taskGroupList.at(groupIndex)->setChanged(false);
 		taskGroupChanged = false;
 		bChanged = false;
@@ -80,7 +86,8 @@ void TeeamProject::Show()
 {
     projectChanged = true;
     bChanged = true;
-    notify();
+    if(!bSilentMode)
+        notify();
     projectChanged = false;
     bChanged = false;
 }
@@ -94,7 +101,8 @@ void TeeamProject::ShowGroups()
         bChanged = true;
         taskGroupList.at(i)->setChanged(true);
         taskGroupList.at(i)->setGroupChanged(true);
-        notify();
+        if(!bSilentMode)
+            notify();
         taskGroupChanged = false;
         bChanged = false;
         taskGroupList.at(i)->setChanged(false);
@@ -104,15 +112,49 @@ void TeeamProject::ShowGroups()
 
 void TeeamProject::ShowEntities()
 {
+    // In un colpo solo le faccio vedere tutte
+    // perché nel model ho un ciclo
+    entitiesListChanged = true;
+    bChanged = true;
+    for(int i = 0; i < entitiesList.length(); i++)
+        entitiesList.at(i)->setChanged(true);
+
+    if(!bSilentMode)
+        notify();
+
+    entitiesListChanged = false;
+    bChanged = false;
+    for(int i = 0; i < entitiesList.length(); i++)
+        entitiesList.at(i)->setChanged(false);
+}
+
+void TeeamProject::SetBeforeCreation()
+{
+    SetNew(true);
+
+    for(int i = 0; i < taskGroupList.length(); i++)
+    {
+        taskGroupList.at(i)->setBeforeCreation();
+    }
+
     for(int i = 0; i < entitiesList.length(); i++)
     {
-        entitiesListChanged = true;
-        bChanged = true;
-        entitiesList.at(i)->setChanged(true);
-        notify();
-        entitiesListChanged = false;
-        bChanged = false;
-        entitiesList.at(i)->setChanged(false);
+        entitiesList.at(i)->setNew(true);
+    }
+}
+
+void TeeamProject::ResetAfterCreation()
+{
+    SetNew(false);
+
+    for(int i = 0; i < taskGroupList.length(); i++)
+    {
+        taskGroupList.at(i)->resetAfterCreation();
+    }
+
+    for(int i = 0; i < entitiesList.length(); i++)
+    {
+        entitiesList.at(i)->setNew(false);
     }
 }
 
@@ -123,7 +165,8 @@ void TeeamProject::RemoveTaskGroup(int index)
         taskGroupChanged = true;
         bChanged = true;
         taskGroupList.at(index)->setRemoved(true);
-        notify();
+        if(!bSilentMode)
+            notify();
         taskGroupChanged = false;
         bChanged = false;
         taskGroupList.removeAt(index);
@@ -140,7 +183,8 @@ void TeeamProject::RemoveTaskOrMilestone(int index, int parent)
             entitiesListChanged = true;
             bChanged = true;
             entitiesList.at(index)->setRemoved(true);
-            notify();
+            if(!bSilentMode)
+                notify();
             entitiesListChanged = false;
             bChanged = false;
             entitiesList.removeAt(index);
@@ -155,7 +199,8 @@ void TeeamProject::RemoveTaskOrMilestone(int index, int parent)
             bChanged = true;
             taskGroupList.at(parent)->setChanged(true);
             taskGroupList.at(parent)->GetEntityAt(index)->setRemoved(true);
-            notify();
+            if(!bSilentMode)
+                notify();
             taskGroupChanged = false;
             bChanged = false;
             taskGroupList.at(parent)->setChanged(false);
@@ -175,7 +220,8 @@ void TeeamProject::EditTaskOrMilestone(GenericTask *entity, int index, int paren
             entity->setChanged(true);
             entitiesListChanged = true;
             bChanged = true;
-            notify();
+            if(!bSilentMode)
+                notify();
             entitiesListChanged = false;
             bChanged = false;
             entity->setChanged(false);
@@ -193,7 +239,8 @@ void TeeamProject::EditTaskOrMilestone(GenericTask *entity, int index, int paren
                 taskGroupList.at(parent)->setChanged(true);
                 taskGroupChanged = true;
                 bChanged = true;
-                notify();
+                if(!bSilentMode)
+                    notify();
                 taskGroupList.at(parent)->setChanged(false);
                 taskGroupChanged = false;
                 bChanged = false;
@@ -308,6 +355,8 @@ int TeeamProject::OpenFile(const QString filename, AbstractView *view)
 {
     try
     {
+        bSilentMode = true;
+
         QFile file(filename);
         if (!file.open(QFile::ReadOnly | QFile::Text))
         {
@@ -327,8 +376,6 @@ int TeeamProject::OpenFile(const QString filename, AbstractView *view)
         {
             xmlReader.readNextStartElement();
         }
-
-        this->SetNew(true);
 
         // Controllo che l'elemento più alto sia un project
         if(xmlReader.name() == KEY_PROJECT)
@@ -555,25 +602,25 @@ int TeeamProject::OpenFile(const QString filename, AbstractView *view)
     }
     catch (int error)
     {
-        this->SetNew(false);
+        bSilentMode = false;
         return error;
     }
 
     this->projectChanged = true;
 
+    bSilentMode = false;
+
+    SetBeforeCreation();
+
     Show();
 
-    for(int i = 0; i < taskGroupList.length(); i++)
-        taskGroupList.at(i)->setNew(true);
     ShowGroups();
 
-    for(int i = 0; i < entitiesList.length(); i++)
-        entitiesList.at(i)->setNew(true);
     ShowEntities();
 
-    this->projectChanged = false;
+    ResetAfterCreation();
 
-    this->SetNew(false);
+    this->projectChanged = false;
 
     return NO_ERROR;
 }

@@ -19,6 +19,7 @@ class TeeamProject;
 class GenericTask : public GanttEntity
 {
     friend class TeeamProject;
+    friend class TaskGroup;
 public:
     GenericTask(){ isNew = true; bChanged = false; isRemoved = false; entityType = No_type; }
     bool IsNew() { return isNew; }

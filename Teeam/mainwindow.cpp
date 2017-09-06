@@ -115,7 +115,7 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
     settings.endGroup();
 
     // Disabilito alcune voci dal menu se non ho caricato un progetto
-    if(!bEmptyProject)
+    if(bEmptyProject)
     {
         DisableMenu();
     }
@@ -356,15 +356,21 @@ void MainWindow::UpdateTaskGroupView()
     {
         const QModelIndex projectIndex = viewModel->index(0,0);
 
-        if(projectModel->GetTaskGroupAt(i)->IsNew())
+        if(projectModel->GetTaskGroupAt(i)->IsNew() ||
+           projectModel->GetTaskGroupAt(i)->isChanged())
         {
-            // Ogni nuovo
-            if ( !viewModel->insertRow( i, projectIndex ) )
-                return;
-
             int row = i;
-            if ( row == 0 && projectIndex.isValid() )
-                viewModel->insertColumns( viewModel->columnCount( projectIndex ), 5, projectIndex );
+
+            if(projectModel->GetTaskGroupAt(i)->IsNew())
+            {
+                // Ogni nuovo
+                if ( !viewModel->insertRow( i, projectIndex ) )
+                    return;
+
+
+                if ( row == 0 && projectIndex.isValid() )
+                    viewModel->insertColumns( viewModel->columnCount( projectIndex ), 5, projectIndex );
+            }
 
             viewModel->setData( viewModel->index( row, 0, projectIndex ), projectModel->GetTaskGroupAt(i)->getName() );
             viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeSummary );
@@ -378,28 +384,6 @@ void MainWindow::UpdateTaskGroupView()
             viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setDropEnabled(true);
             viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setDragEnabled(false);
 #endif
-
-        }
-        else if(projectModel->GetTaskGroupAt(i)->isChanged())
-        {
-            // Controllo se ho fatto modifiche al group
-            if(projectModel->GetTaskGroupAt(i)->IsGroupChanged())
-            {
-                int row = i;
-
-                viewModel->setData( viewModel->index( row, 0, projectIndex ), projectModel->GetTaskGroupAt(i)->getName() );
-                viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeSummary );
-
-                QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
-                leftView->expand(projectIndex);
-
-                viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(false);
-
-#ifdef DRAGNDROP
-                viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setDropEnabled(true);
-                viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setDragEnabled(false);
-#endif
-            }
 
             // Se ho aggiunto un task a una lista:
             for (int j = 0; j < projectModel->GetTaskGroupAt(i)->GetEntitiesListSize(); j++)
@@ -597,11 +581,11 @@ void MainWindow::on_actionNew_Project_triggered()
         return;
     }
 
+    bEmptyProject = false;
     TeeamProject *newProject = new TeeamProject(dialog->GetProjectName(), dialog->GetPeopleList());
     this->projectModel = newProject;
     newProject->attach(this);
     ganttController->NewProject(newProject);
-    bEmptyProject = false;
 
     // Abilito alcune voci del menu 
     EnableMenu();
@@ -974,8 +958,22 @@ void MainWindow::DeleteProject()
     ganttController->NewProject(newProject);
 
     viewModel = new QStandardItemModel( 0, 6, this );
-    viewModel->setHeaderData( 0, Qt::Horizontal, tr( "Project Tree View" ) );
+    QString nameHeader = "Name";
+    QString startHeader = "Start";
+    QString endHeader = "End";
+    QString completitionHeader = "Completition";
+    viewModel->setHeaderData( 0, Qt::Horizontal, nameHeader );
+    viewModel->setHeaderData( 2, Qt::Horizontal, startHeader );
+    viewModel->setHeaderData( 3, Qt::Horizontal, endHeader );
+    viewModel->setHeaderData( 4, Qt::Horizontal, completitionHeader );
     ui->ganttView->setModel( viewModel );
+
+    QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
+    leftView->header()->setStretchLastSection( true );
+    leftView->setColumnWidth(0, 150);
+    leftView->setColumnWidth(2, 250);
+    leftView->setColumnWidth(3, 250);
+    leftView->setColumnWidth(4, 200);
 
     bEmptyProject = true;
     DisableMenu();
@@ -1117,7 +1115,10 @@ void MainWindow::on_actionOpen_File_triggered()
                                        tr("Teeam files (*.tmproj)"));
 
     setCursor(Qt::WaitCursor);
+
+    DeleteProject();
     bEmptyProject = false;
+
     if(ganttController->OpenFile(filename, this) != NO_ERROR)
     {
         DeleteProject();

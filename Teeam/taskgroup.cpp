@@ -31,3 +31,17 @@ void TaskGroup::ReplaceEntity(int index, GenericTask *entity)
         taskList.replace(index, entity);
     }
 }
+
+void TaskGroup::setBeforeCreation()
+{
+    isNew = true;
+    for (int i = 0; i < taskList.length(); i++)
+        taskList.at(i)->setNew(true);
+}
+
+void TaskGroup::resetAfterCreation()
+{
+    isNew = false;
+    for (int i = 0; i < taskList.length(); i++)
+        taskList.at(i)->setNew(false);
+}
