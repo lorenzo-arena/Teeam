@@ -102,6 +102,20 @@ void TeeamProject::ShowGroups()
     }
 }
 
+void TeeamProject::ShowEntities()
+{
+    for(int i = 0; i < entitiesList.length(); i++)
+    {
+        entitiesListChanged = true;
+        bChanged = true;
+        entitiesList.at(i)->setChanged(true);
+        notify();
+        entitiesListChanged = false;
+        bChanged = false;
+        entitiesList.at(i)->setChanged(false);
+    }
+}
+
 void TeeamProject::RemoveTaskGroup(int index)
 {
     if(index < taskGroupList.length())
@@ -546,9 +560,19 @@ int TeeamProject::OpenFile(const QString filename, AbstractView *view)
     }
 
     this->projectChanged = true;
-    this->taskGroupChanged = true;
+
     Show();
+
+    for(int i = 0; i < taskGroupList.length(); i++)
+        taskGroupList.at(i)->setNew(true);
     ShowGroups();
+
+    for(int i = 0; i < entitiesList.length(); i++)
+        entitiesList.at(i)->setNew(true);
+    ShowEntities();
+
+    this->projectChanged = false;
+
     this->SetNew(false);
 
     return NO_ERROR;

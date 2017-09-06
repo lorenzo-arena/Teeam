@@ -40,6 +40,7 @@ private:
     const QString KEY_ENDDATETIME = "enddatetime";
     const QString KEY_COMPLETITION = "completition";
 
+    void ShowEntities();
 public:
     void AddTaskGroup(TaskGroup* taskGroup);
     void AddTaskOrMilestone(GenericTask *entity);
@@ -68,7 +69,7 @@ public:
 
     // TODO : implementare metodi edit (potrebbe essere anche il controller a modificare
     //        i parametri), che si occupa di applicare changed; e entities con changed o new
-    //        vengono ridisegnati allo stesso modo, ma se è solo changed si evita di assegnare una
+    //        vengono ridisegnati allo stesso modo, ma se ï¿½ solo changed si evita di assegnare una
     //        riga
 
 };
