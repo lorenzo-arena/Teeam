@@ -721,6 +721,86 @@ void MainWindow::on_actionTreeView_del(const QModelIndex &index)
     RemoveEntityFromIndex(index);
 }
 
+
+void MainWindow::on_action_ItemChanged(QStandardItem *item)
+{
+    QModelIndex index = item->index();
+
+    if(index.isValid())
+    {/*
+        viewModel->setData( viewModel->index( index.row(), 0, index.parent() ), qvariant_cast<QString>(item->data( KDGantt::KDGanttRoleBase)), KDGantt::KDGanttRoleBase);
+        viewModel->setData( viewModel->index( index.row(), 1, index.parent() ), qvariant_cast<QDateTime>(item->data( KDGantt::StartTimeRole)), KDGantt::StartTimeRole);
+        viewModel->setData( viewModel->index( index.row(), 2, index.parent() ), qvariant_cast<QDateTime>(item->data(KDGantt::EndTimeRole)), KDGantt::EndTimeRole );
+        viewModel->setData( viewModel->index( index.row(), 3, index.parent() ), qvariant_cast<int>(item->data(KDGantt::TaskCompletionRole)), KDGantt::TaskCompletionRole );
+        viewModel->setData( viewModel->index( index.row(), 4, index.parent() ), qvariant_cast<KDGantt::ItemType>(item->data(KDGantt::ItemTypeRole)), KDGantt::ItemTypeRole );*/
+
+
+       /* viewModel->setData( viewModel->index( index.row(), 0, index.parent() ), qvariant_cast<QString>(item->data( KDGantt::KDGanttRoleBase)), KDGantt::KDGanttRoleBase );
+        viewModel->setData( viewModel->index( index.row(), 1, index.parent() ), qvariant_cast<KDGantt::ItemType>(item->data(KDGantt::ItemTypeRole)), KDGantt::ItemTypeRole );
+        viewModel->setData( viewModel->index( index.row(), 2, index.parent() ), qvariant_cast<QDateTime>(item->data( KDGantt::StartTimeRole)), KDGantt::StartTimeRole );
+        viewModel->setData( viewModel->index( index.row(), 3, index.parent() ), qvariant_cast<QDateTime>(item->data(KDGantt::EndTimeRole)), KDGantt::EndTimeRole );
+        viewModel->setData( viewModel->index( index.row(), 4, index.parent() ), qvariant_cast<int>(item->data(KDGantt::TaskCompletionRole)), KDGantt::TaskCompletionRole );*/
+
+        if(index.parent().parent().isValid())
+        {
+            // Entity in un gruppo
+            int row = index.row();
+            int group = index.parent().row();
+
+            if(projectModel->GetTaskGroupAt(group)->GetEntityAt(row)->getEntityType() == Task_type)
+            {
+                //QString name = qvariant_cast<QString>(item->data( KDGantt::KDGanttRoleBase));
+                //if(name == "")
+                //    name = static_cast<Task*>(projectModel->GetTaskGroupAt(group)->GetEntityAt(row))->getName();
+                QString name = static_cast<Task*>(projectModel->GetTaskGroupAt(group)->GetEntityAt(row))->getName();
+
+                QDateTime start = qvariant_cast<QDateTime>(item->data( KDGantt::StartTimeRole));
+                if(!start.isValid())
+                    start = static_cast<Task*>(projectModel->GetTaskGroupAt(group)->GetEntityAt(row))->getStart();
+
+                QDateTime end = qvariant_cast<QDateTime>(item->data(KDGantt::EndTimeRole));
+                if(!end.isValid())
+                    end = static_cast<Task*>(projectModel->GetTaskGroupAt(group)->GetEntityAt(row))->getEnd();
+
+                int completition = static_cast<Task*>(projectModel->GetTaskGroupAt(group)->GetEntityAt(row))->getCompletition();
+
+                QStringList people = static_cast<Task*>(projectModel->GetTaskGroupAt(group)->GetEntityAt(row))->getPeople();
+
+
+                ganttController->EditTaskOrMilestone(this,
+                                                     name,
+                                                     start,
+                                                     end,
+                                                     people,
+                                                     completition,
+                                                     group,
+                                                     row,
+                                                     group);
+            }
+
+            /*QString name = qvariant_cast<QString>(item->data( KDGantt::KDGanttRoleBase));
+            if(name == "")
+                name = projectModel->GetTaskGroupAt(group)->GetEntityAt(row)->getEntityType()
+            KDGantt::ItemType itemType = qvariant_cast<KDGantt::ItemType>(item->data(KDGantt::ItemTypeRole));
+            QDateTime start = qvariant_cast<QDateTime>(item->data( KDGantt::StartTimeRole));
+            QDateTime end = qvariant_cast<QDateTime>(item->data(KDGantt::EndTimeRole));
+            int completition = qvariant_cast<int>(item->data(KDGantt::TaskCompletionRole));
+            int pippo = 0;*/
+        }
+        else if (index.parent().isValid())
+        {
+            // Entity indipendente
+            /*int row = index.row();
+            QString name = qvariant_cast<QString>(item->data( KDGantt::KDGanttRoleBase));
+            KDGantt::ItemType itemType = qvariant_cast<KDGantt::ItemType>(item->data(KDGantt::ItemTypeRole));
+            QDateTime start = qvariant_cast<QDateTime>(item->data( KDGantt::StartTimeRole));
+            QDateTime end = qvariant_cast<QDateTime>(item->data(KDGantt::EndTimeRole));
+            int completition = qvariant_cast<int>(item->data(KDGantt::TaskCompletionRole));
+            int pippo = 0;*/
+        }
+    }
+}
+
 void MainWindow::EditEntityAtIndex(const QModelIndex index)
 {
     if(index.row() == 0 && index.column() == 0 && !index.parent().isValid())
@@ -1140,22 +1220,6 @@ void MainWindow::on_action_Save_as_triggered()
         xmlWriter.writeEndDocument();
 
         file.close();
-    }
-}
-
-void MainWindow::on_action_ItemChanged(QStandardItem *item)
-{
-    QModelIndex index = item->index();
-
-    if(index.isValid())
-    {
-        //viewModel->setData( viewModel->index( index.row(), 0, index.parent() ), item->data( static_cast<Task *>(projectModel->GetEntityAt(i))->getName() );
-        viewModel->setData( viewModel->index( index.row(), 1, index.parent() ), qvariant_cast<KDGantt::ItemType>(item->data( KDGantt::ItemTypeRole)));
-        //if( qvariant_cast<QDateTime>(item->data(KDGantt::StartTimeRole)) != 0 )
-            viewModel->setData( viewModel->index( index.row(), 2, index.parent() ), qvariant_cast<QDateTime>(item->data(KDGantt::StartTimeRole)), KDGantt::StartTimeRole );
-        //if( qvariant_cast<QDateTime>(item->data(KDGantt::EndTimeRole)) != 0 )
-            viewModel->setData( viewModel->index( index.row(), 3, index.parent() ), qvariant_cast<QDateTime>(item->data(KDGantt::EndTimeRole)), KDGantt::EndTimeRole );
-        //viewModel->setData( viewModel->index( index.row(), 4, index.parent() ), static_cast<Task *>(projectModel->GetEntityAt(i))->getCompletition() );
     }
 }
 
