@@ -95,19 +95,18 @@ void TeeamProject::Show()
 void TeeamProject::ShowGroups()
 {
     // TODO : refactor!!
+    taskGroupChanged = true;
+    bChanged = true;
     for(int i = 0; i < taskGroupList.length(); i++)
-    {
-        taskGroupChanged = true;
-        bChanged = true;
         taskGroupList.at(i)->setChanged(true);
-        taskGroupList.at(i)->setGroupChanged(true);
-        if(!bSilentMode)
-            notify();
-        taskGroupChanged = false;
-        bChanged = false;
+
+    if(!bSilentMode)
+        notify();
+
+    taskGroupChanged = false;
+    bChanged = false;
+    for(int i = 0; i < taskGroupList.length(); i++)
         taskGroupList.at(i)->setChanged(false);
-        taskGroupList.at(i)->setGroupChanged(false);
-    }
 }
 
 void TeeamProject::ShowEntities()
