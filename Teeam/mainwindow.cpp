@@ -1003,29 +1003,34 @@ void MainWindow::closeEvent(QCloseEvent *eventArgs)
 {
     QSettings settings;
 
-    on_action_Close_Project_triggered();
+    QMessageBox::StandardButton result =  on_action_Close_Project_triggered();
 
-    settings.beginGroup(REG_KEY_MAINWINDOW);
-    settings.setValue(REG_KEY_MAINWINDOW_MAXIMIZED, isMaximized());
-    settings.setValue(REG_KEY_MAINWINDOW_SIZE, size());
-    settings.endGroup();
+    if(result != QMessageBox::Cancel)
+    {
+        settings.beginGroup(REG_KEY_MAINWINDOW);
+        settings.setValue(REG_KEY_MAINWINDOW_MAXIMIZED, isMaximized());
+        settings.setValue(REG_KEY_MAINWINDOW_SIZE, size());
+        settings.endGroup();
 
-    settings.beginGroup(REG_KEY_DATETIMEVIEW);
-    settings.beginGroup(REG_KEY_DATETIMEVIEW_FREEDAYSGROUP);
-    settings.setValue(REG_KEY_DATETIMEVIEW_MON, dateTimeGrid->freeDays().contains(Qt::Monday));
-    settings.setValue(REG_KEY_DATETIMEVIEW_TUE, dateTimeGrid->freeDays().contains(Qt::Tuesday));
-    settings.setValue(REG_KEY_DATETIMEVIEW_WED, dateTimeGrid->freeDays().contains(Qt::Wednesday));
-    settings.setValue(REG_KEY_DATETIMEVIEW_THU, dateTimeGrid->freeDays().contains(Qt::Thursday));
-    settings.setValue(REG_KEY_DATETIMEVIEW_FRI, dateTimeGrid->freeDays().contains(Qt::Friday));
-    settings.setValue(REG_KEY_DATETIMEVIEW_SAT, dateTimeGrid->freeDays().contains(Qt::Saturday));
-    settings.setValue(REG_KEY_DATETIMEVIEW_SUN, dateTimeGrid->freeDays().contains(Qt::Sunday));
-    settings.setValue(REG_KEY_DATETIMEVIEW_COLOR, dateTimeGrid->freeDaysBrush().color());
-    settings.endGroup();
-    settings.setValue(REG_KEY_DATETIMEVIEW_DAYWIDTH, dateTimeGrid->dayWidth());
-    settings.setValue(REG_KEY_DATETIMEVIEW_SCALE, dateTimeGrid->scale());
-    settings.endGroup();
+        settings.beginGroup(REG_KEY_DATETIMEVIEW);
+        settings.beginGroup(REG_KEY_DATETIMEVIEW_FREEDAYSGROUP);
+        settings.setValue(REG_KEY_DATETIMEVIEW_MON, dateTimeGrid->freeDays().contains(Qt::Monday));
+        settings.setValue(REG_KEY_DATETIMEVIEW_TUE, dateTimeGrid->freeDays().contains(Qt::Tuesday));
+        settings.setValue(REG_KEY_DATETIMEVIEW_WED, dateTimeGrid->freeDays().contains(Qt::Wednesday));
+        settings.setValue(REG_KEY_DATETIMEVIEW_THU, dateTimeGrid->freeDays().contains(Qt::Thursday));
+        settings.setValue(REG_KEY_DATETIMEVIEW_FRI, dateTimeGrid->freeDays().contains(Qt::Friday));
+        settings.setValue(REG_KEY_DATETIMEVIEW_SAT, dateTimeGrid->freeDays().contains(Qt::Saturday));
+        settings.setValue(REG_KEY_DATETIMEVIEW_SUN, dateTimeGrid->freeDays().contains(Qt::Sunday));
+        settings.setValue(REG_KEY_DATETIMEVIEW_COLOR, dateTimeGrid->freeDaysBrush().color());
+        settings.endGroup();
+        settings.setValue(REG_KEY_DATETIMEVIEW_DAYWIDTH, dateTimeGrid->dayWidth());
+        settings.setValue(REG_KEY_DATETIMEVIEW_SCALE, dateTimeGrid->scale());
+        settings.endGroup();
 
-    eventArgs->accept();
+        eventArgs->accept();
+    }
+    else
+        eventArgs->ignore();
 }
 
 void MainWindow::on_action_Quit_triggered()
@@ -1135,7 +1140,7 @@ void MainWindow::on_actionOpen_File_triggered()
     return;
 }
 
-void MainWindow::on_action_Close_Project_triggered()
+QMessageBox::StandardButton MainWindow::on_action_Close_Project_triggered()
 {
     if(!bEmptyProject)
     {
@@ -1147,18 +1152,18 @@ void MainWindow::on_action_Close_Project_triggered()
                                                           QMessageBox::Cancel);
 
         if(result == QMessageBox::Cancel)
-            return;
+            return QMessageBox::Cancel;
         else if(result == QMessageBox::No)
         {
             DeleteProject();
-            return;
+            return QMessageBox::No;
         }
         else if(result == QMessageBox::Yes)
         {
             on_action_Save_as_triggered();
             DeleteProject();
-            return;
+            return QMessageBox::Yes;
         }
     }
-    return;
+    return QMessageBox::No;
 }

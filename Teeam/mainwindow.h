@@ -9,6 +9,7 @@
 
 #include <QMainWindow>
 #include <QStandardItemModel>
+#include <QMessageBox>
 
 #include <KDGanttDateTimeGrid>
 #include <KDGanttConstraintModel>
@@ -66,7 +67,7 @@ private slots:
 
     void on_actionOpen_File_triggered();
 
-    void on_action_Close_Project_triggered();
+    QMessageBox::StandardButton on_action_Close_Project_triggered();
 
 private:
     void initGanttView();
