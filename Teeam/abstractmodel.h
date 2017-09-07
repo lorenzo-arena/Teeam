@@ -8,7 +8,7 @@
 class AbstractModel
 {
 public:
-    AbstractModel(){}
+    AbstractModel(){ bChanged = false; }
     virtual ~AbstractModel(){}
 
 public:

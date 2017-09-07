@@ -133,3 +133,13 @@ void GanttController::SetFreeDaysColor(QColor color)
     this->freeDays->SetFreeDaysColor(color);
 }
 
+void GanttController::SaveProjectAs(const QString filename)
+{
+    project->SaveProjectAs(filename);
+}
+
+int GanttController::OpenFile(const QString filename, AbstractView *view)
+{
+    return project->OpenFile(filename, view);
+}
+

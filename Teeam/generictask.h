@@ -9,6 +9,7 @@
 
 typedef enum
 {
+	No_type,
     Task_type,
     Milestone_type
 } EntityType;
@@ -18,8 +19,9 @@ class TeeamProject;
 class GenericTask : public GanttEntity
 {
     friend class TeeamProject;
+    friend class TaskGroup;
 public:
-    GenericTask(){ isNew = true; bChanged = false; isRemoved = false; }
+    GenericTask(){ isNew = true; bChanged = false; isRemoved = false; entityType = No_type; }
     bool IsNew() { return isNew; }
     EntityType getEntityType() { return entityType; }
 
@@ -28,7 +30,6 @@ protected:
     void setRemoved(bool b) { isRemoved = b; }
     QColor color;
     QList<GenericTask*> dependecies;
-    QList<QString> people;
     EntityType entityType; // La uso per distinguere tra Task e Milestone
 
 public:

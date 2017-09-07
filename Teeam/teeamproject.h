@@ -25,6 +25,25 @@ private:
     bool taskGroupChanged;
     bool projectChanged;
     bool entitiesListChanged;
+    bool bSilentMode;
+
+    // identificativi per file salvataggio
+    const QString KEY_PROJECT = "teeamproject";
+    const QString KEY_PROJECTPARAMETERS = "projectparameters";
+    const QString KEY_NAME = "name";
+    const QString KEY_PERSON = "person";
+    const QString KEY_GROUP = "group";
+    const QString KEY_ENTITY = "entity";
+    const QString KEY_ENTITYTYPE = "entitytype";
+    const QString KEY_TASKTYPE = "task";
+    const QString KEY_MILESTONETYPE = "milestone";
+    const QString KEY_STARTDATETIME = "startdatetime";
+    const QString KEY_ENDDATETIME = "enddatetime";
+    const QString KEY_COMPLETITION = "completition";
+
+
+    void SetBeforeCreation();
+    void ResetAfterCreation();
 
 public:
     void AddTaskGroup(TaskGroup* taskGroup);
@@ -41,6 +60,7 @@ public:
     bool IsNew() { return isNew; }
     void SetNew(bool b) { isNew = b; }
     void ShowGroups();
+    void ShowEntities();
     void RemoveTaskGroup(int index);
     void RemoveTaskOrMilestone(int index, int parent);
     void EditTaskOrMilestone(GenericTask *entity, int index, int parent = -1);
@@ -48,11 +68,8 @@ public:
     int GetEntitiesListSize() { return entitiesList.length(); }
     TaskGroup * GetTaskGroupAt(int index) { return taskGroupList.at(index); }
     int GetTaskGroupListSize() { return taskGroupList.length(); }
-
-    // TODO : implementare metodi edit (potrebbe essere anche il controller a modificare
-    //        i parametri), che si occupa di applicare changed; e entities con changed o new
-    //        vengono ridisegnati allo stesso modo, ma se è solo changed si evita di assegnare una
-    //        riga
+    void SaveProjectAs(const QString filename);
+    int OpenFile(const QString filename, AbstractView *view);
 };
 
 #endif // TEEAMPROJECT_H

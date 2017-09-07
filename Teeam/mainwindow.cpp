@@ -25,10 +25,9 @@
 #include <QSet>
 #include <QLocale>
 #include <QMessageBox>
-#include <QXmlStreamWriter>
-#include <QXmlStreamReader>
 #include <QFileDialog>
 
+#ifdef DATETIMESCALE_MOD
 TeeamDateTimeScaleFormatter::TeeamDateTimeScaleFormatter(const KDGantt::DateTimeScaleFormatter &other)
     : DateTimeScaleFormatter(other)
 {
@@ -48,6 +47,7 @@ QString TeeamDateTimeScaleFormatter::text(const QDateTime &datetime)
     result = locale.toString(datetime, QLocale::ShortFormat);
     return result;
 }
+#endif
 
 MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, QString appVersion, TeeamProject *projectModel, QWidget *parent) :
     QMainWindow(parent),
@@ -59,9 +59,21 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
     this->freeDaysModel = freeDaysModel;
     this->freeDaysModel->attach(this);
 
-    this->projectModel = projectModel;
     if(projectModel != nullptr)
+    {
+        this->projectModel = projectModel;
         this->projectModel->attach(this);
+        bEmptyProject = false;
+    }
+    else
+    {
+        QStringList emptylist;
+        TeeamProject *newProject = new TeeamProject("", emptylist);
+        this->projectModel = newProject;
+        newProject->attach(this);
+        ganttController->NewProject(newProject);
+        bEmptyProject = true;
+    }
 
     this->ganttController = ganttController;
 
@@ -103,7 +115,7 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
     settings.endGroup();
 
     // Disabilito alcune voci dal menu se non ho caricato un progetto
-    if(this->projectModel == nullptr)
+    if(bEmptyProject)
     {
         DisableMenu();
     }
@@ -114,22 +126,34 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
 MainWindow::~MainWindow()
 {
     if(dateTimeGrid != nullptr)
+    {
         delete dateTimeGrid;
+    }
 
     if(ganttController != nullptr)
-    delete ganttController;
+    {
+        delete ganttController;
+    }
 
     if(freeDaysModel != nullptr)
-    delete freeDaysModel;
+    {
+        delete freeDaysModel;
+    }
 
     if(viewModel != nullptr)
-    delete viewModel;
+    {
+        delete viewModel;
+    }
 
     if(costraintModel != nullptr)
-    delete costraintModel;
+    {
+        delete costraintModel;
+    }
 
     if(projectModel != nullptr)
+    {
         delete projectModel;
+    }
 
     delete ui;
 }
@@ -149,14 +173,25 @@ void MainWindow::initGanttView()
     ********************************/
 
     dateTimeGrid = new KDGantt::DateTimeGrid();
+
+#ifdef DATETIMESCALE_MOD
     dateTimeGrid->setUserDefinedLowerScale(new TeeamDateTimeScaleFormatter(*(dateTimeGrid->userDefinedLowerScale())));
     dateTimeGrid->setUserDefinedUpperScale(new TeeamDateTimeScaleFormatter(*(dateTimeGrid->userDefinedUpperScale())));
+#endif
+
     ui->ganttView->graphicsView()->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     ui->ganttView->setGrid( dateTimeGrid );
     ui->ganttView->graphicsView()->setHeaderContextMenuPolicy(Qt::ContextMenuPolicy::NoContextMenu);
 
     viewModel = new QStandardItemModel( 0, 6, this );
-    viewModel->setHeaderData( 0, Qt::Horizontal, tr( "Project Tree View" ) );
+    QString nameHeader = "Name";
+    QString startHeader = "Start";
+    QString endHeader = "End";
+    QString completitionHeader = "Completition";
+    viewModel->setHeaderData( 0, Qt::Horizontal, nameHeader );
+    viewModel->setHeaderData( 2, Qt::Horizontal, startHeader );
+    viewModel->setHeaderData( 3, Qt::Horizontal, endHeader );
+    viewModel->setHeaderData( 4, Qt::Horizontal, completitionHeader );
     ui->ganttView->setModel( viewModel );
 
     QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
@@ -169,11 +204,15 @@ void MainWindow::initGanttView()
     leftView->setExpandsOnDoubleClick(false);
     leftView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     leftView->setColumnHidden( 1, true );
-    leftView->setColumnHidden( 2, true );
-    leftView->setColumnHidden( 3, true );
-    leftView->setColumnHidden( 4, true );
+    leftView->setColumnHidden( 2, false );
+    leftView->setColumnHidden( 3, false );
+    leftView->setColumnHidden( 4, false );
     leftView->setColumnHidden( 5, true );
     leftView->header()->setStretchLastSection( true );
+    leftView->setColumnWidth(0, 150);
+    leftView->setColumnWidth(2, 250);
+    leftView->setColumnWidth(3, 250);
+    leftView->setColumnWidth(4, 200);
 
     //connect(ui->ganttView->graphicsView()->model(), SIGNAL(itemChanged(QStandardItem*)), this, SLOT(on_action_ItemChanged(QStandardItem*)));
     connect(viewModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(on_action_ItemChanged(QStandardItem*)));
@@ -215,7 +254,7 @@ void MainWindow::UpdateView()
         UpdateFreeDaysView();
     }
 
-    if(projectModel != nullptr)
+    if(!bEmptyProject)
     {
         if(projectModel->isChanged())
         {
@@ -276,10 +315,23 @@ void MainWindow::UpdateProjectView()
     if(projectModel->IsNew())
     {
         viewModel = new QStandardItemModel( 0, 6, this );
-        viewModel->setHeaderData( 0, Qt::Horizontal, tr( "Project Tree View" ) );
+        QString nameHeader = "Name";
+        QString startHeader = "Start";
+        QString endHeader = "End";
+        QString completitionHeader = "Completition";
+        viewModel->setHeaderData( 0, Qt::Horizontal, nameHeader );
+        viewModel->setHeaderData( 2, Qt::Horizontal, startHeader );
+        viewModel->setHeaderData( 3, Qt::Horizontal, endHeader );
+        viewModel->setHeaderData( 4, Qt::Horizontal, completitionHeader );
         ui->ganttView->setModel( viewModel );
         //connect(ui->ganttView->graphicsView()->model(), SIGNAL(itemChanged(QStandardItem*)), this, SLOT(on_action_ItemChanged(QStandardItem*)));
         connect(viewModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(on_action_ItemChanged(QStandardItem*)));
+
+        QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
+        leftView->setColumnWidth(0, 150);
+        leftView->setColumnWidth(2, 250);
+        leftView->setColumnWidth(3, 250);
+        leftView->setColumnWidth(4, 200);
 
         if (viewModel->rowCount() == 0)
         {
@@ -309,15 +361,21 @@ void MainWindow::UpdateTaskGroupView()
     {
         const QModelIndex projectIndex = viewModel->index(0,0);
 
-        if(projectModel->GetTaskGroupAt(i)->IsNew())
+        if(projectModel->GetTaskGroupAt(i)->IsNew() ||
+           projectModel->GetTaskGroupAt(i)->isChanged())
         {
-            // Ogni nuovo
-            if ( !viewModel->insertRow( i, projectIndex ) )
-                return;
-
             int row = i;
-            if ( row == 0 && projectIndex.isValid() )
-                viewModel->insertColumns( viewModel->columnCount( projectIndex ), 5, projectIndex );
+
+            if(projectModel->GetTaskGroupAt(i)->IsNew())
+            {
+                // Ogni nuovo
+                if ( !viewModel->insertRow( i, projectIndex ) )
+                    return;
+
+
+                if ( row == 0 && projectIndex.isValid() )
+                    viewModel->insertColumns( viewModel->columnCount( projectIndex ), 5, projectIndex );
+            }
 
             viewModel->setData( viewModel->index( row, 0, projectIndex ), projectModel->GetTaskGroupAt(i)->getName() );
             viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeSummary );
@@ -331,28 +389,6 @@ void MainWindow::UpdateTaskGroupView()
             viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setDropEnabled(true);
             viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setDragEnabled(false);
 #endif
-
-        }
-        else if(projectModel->GetTaskGroupAt(i)->isChanged())
-        {
-            // Controllo se ho fatto modifiche al group
-            if(projectModel->GetTaskGroupAt(i)->IsGroupChanged())
-            {
-                int row = i;
-
-                viewModel->setData( viewModel->index( row, 0, projectIndex ), projectModel->GetTaskGroupAt(i)->getName() );
-                viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeSummary );
-
-                QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
-                leftView->expand(projectIndex);
-
-                viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(true);
-
-#ifdef DRAGNDROP
-                viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setDropEnabled(true);
-                viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setDragEnabled(false);
-#endif
-            }
 
             // Se ho aggiunto un task a una lista:
             for (int j = 0; j < projectModel->GetTaskGroupAt(i)->GetEntitiesListSize(); j++)
@@ -379,16 +415,20 @@ void MainWindow::UpdateTaskGroupView()
                     {
                         viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getName() );
                         viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeTask );
+						// Devo settare il modello sia per la ganttView che per la TreeView
                         viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getStart(), KDGantt::StartTimeRole );
+                        viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getStart().toString("dd/MM/yyyy hh:mm") );
                         viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getEnd(), KDGantt::EndTimeRole );
+                        viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getEnd().toString("dd/MM/yyyy hh:mm") );
                         viewModel->setData( viewModel->index( row, 4, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getCompletition() );
                     }
                     else if(projectModel->GetTaskGroupAt(i)->GetEntityAt(j)->getEntityType() == Milestone_type)
                     {
                         viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Milestone *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getName() );
                         viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeEvent );
+						// Devo settare il modello sia per la ganttView che per la TreeView
                         viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Milestone *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getDateTime(), KDGantt::StartTimeRole );
-                        viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Milestone *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getDateTime(), KDGantt::EndTimeRole );
+                        viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Milestone *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getDateTime().toString("dd/MM/yyyy hh:mm") );
                     }
 
                     viewModel->itemFromIndex(viewModel->index(row, 0, parent))->setEditable(true);
@@ -447,16 +487,20 @@ void MainWindow::UpdateEntitiesView()
             {
                 viewModel->setData( viewModel->index( row, 0, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getName() );
                 viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeTask );
+                // Devo settare il modello sia per la ganttView che per la TreeView
                 viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getStart(), KDGantt::StartTimeRole );
+                viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getStart().toString("dd/MM/yyyy hh:mm") );
                 viewModel->setData( viewModel->index( row, 3, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getEnd(), KDGantt::EndTimeRole );
+                viewModel->setData( viewModel->index( row, 3, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getEnd().toString("dd/MM/yyyy hh:mm") );
                 viewModel->setData( viewModel->index( row, 4, projectIndex ), static_cast<Task *>(projectModel->GetEntityAt(i))->getCompletition() );
             }
             else if(projectModel->GetEntityAt(i)->getEntityType() == Milestone_type)
             {
                 viewModel->setData( viewModel->index( row, 0, projectIndex ), static_cast<Milestone *>(projectModel->GetEntityAt(i))->getName() );
                 viewModel->setData( viewModel->index( row, 1, projectIndex ), KDGantt::TypeEvent );
+                // Devo settare il modello sia per la ganttView che per la TreeView
                 viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Milestone *>(projectModel->GetEntityAt(i))->getDateTime(), KDGantt::StartTimeRole );
-                viewModel->setData( viewModel->index( row, 3, projectIndex ), static_cast<Milestone *>(projectModel->GetEntityAt(i))->getDateTime(), KDGantt::EndTimeRole );
+                viewModel->setData( viewModel->index( row, 2, projectIndex ), static_cast<Milestone *>(projectModel->GetEntityAt(i))->getDateTime().toString("dd/MM/yyyy hh:mm") );
             }
 
             viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(true);
@@ -509,7 +553,7 @@ void MainWindow::DisableMenu()
 
 void MainWindow::on_actionNew_Project_triggered()
 {
-    if(projectModel != nullptr)
+    if(!bEmptyProject)
     {
         // Controllo se ho eliminato il progetto
         QMessageBox::StandardButton result = QMessageBox::information(this,
@@ -542,12 +586,13 @@ void MainWindow::on_actionNew_Project_triggered()
         return;
     }
 
+    bEmptyProject = false;
     TeeamProject *newProject = new TeeamProject(dialog->GetProjectName(), dialog->GetPeopleList());
     this->projectModel = newProject;
     newProject->attach(this);
     ganttController->NewProject(newProject);
 
-    // Abilito alcune voci del menu
+    // Abilito alcune voci del menu 
     EnableMenu();
 
     delete dialog;
@@ -991,15 +1036,31 @@ void MainWindow::DeleteProject()
     // TODO : refactor
     QStringList list;
     TeeamProject *newProject = new TeeamProject("", list);
-    this->projectModel = nullptr;
+    if(projectModel != nullptr)
+        delete projectModel;
+    this->projectModel = newProject;
     newProject->attach(this);
     ganttController->NewProject(newProject);
 
     viewModel = new QStandardItemModel( 0, 6, this );
-    viewModel->setHeaderData( 0, Qt::Horizontal, tr( "Project Tree View" ) );
+    QString nameHeader = "Name";
+    QString startHeader = "Start";
+    QString endHeader = "End";
+    QString completitionHeader = "Completition";
+    viewModel->setHeaderData( 0, Qt::Horizontal, nameHeader );
+    viewModel->setHeaderData( 2, Qt::Horizontal, startHeader );
+    viewModel->setHeaderData( 3, Qt::Horizontal, endHeader );
+    viewModel->setHeaderData( 4, Qt::Horizontal, completitionHeader );
     ui->ganttView->setModel( viewModel );
-    //connect(ui->ganttView->graphicsView()->model(), SIGNAL(itemChanged(QStandardItem*)), this, SLOT(on_action_ItemChanged(QStandardItem*)));
-    connect(viewModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(on_action_ItemChanged(QStandardItem*)));
+
+    QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
+    leftView->header()->setStretchLastSection( true );
+    leftView->setColumnWidth(0, 150);
+    leftView->setColumnWidth(2, 250);
+    leftView->setColumnWidth(3, 250);
+    leftView->setColumnWidth(4, 200);
+
+    bEmptyProject = true;
     DisableMenu();
 }
 
@@ -1027,29 +1088,34 @@ void MainWindow::closeEvent(QCloseEvent *eventArgs)
 {
     QSettings settings;
 
-    on_action_Close_Project_triggered();
+    QMessageBox::StandardButton result =  on_action_Close_Project_triggered();
 
-    settings.beginGroup(REG_KEY_MAINWINDOW);
-    settings.setValue(REG_KEY_MAINWINDOW_MAXIMIZED, isMaximized());
-    settings.setValue(REG_KEY_MAINWINDOW_SIZE, size());
-    settings.endGroup();
+    if(result != QMessageBox::Cancel)
+    {
+        settings.beginGroup(REG_KEY_MAINWINDOW);
+        settings.setValue(REG_KEY_MAINWINDOW_MAXIMIZED, isMaximized());
+        settings.setValue(REG_KEY_MAINWINDOW_SIZE, size());
+        settings.endGroup();
 
-    settings.beginGroup(REG_KEY_DATETIMEVIEW);
-    settings.beginGroup(REG_KEY_DATETIMEVIEW_FREEDAYSGROUP);
-    settings.setValue(REG_KEY_DATETIMEVIEW_MON, dateTimeGrid->freeDays().contains(Qt::Monday));
-    settings.setValue(REG_KEY_DATETIMEVIEW_TUE, dateTimeGrid->freeDays().contains(Qt::Tuesday));
-    settings.setValue(REG_KEY_DATETIMEVIEW_WED, dateTimeGrid->freeDays().contains(Qt::Wednesday));
-    settings.setValue(REG_KEY_DATETIMEVIEW_THU, dateTimeGrid->freeDays().contains(Qt::Thursday));
-    settings.setValue(REG_KEY_DATETIMEVIEW_FRI, dateTimeGrid->freeDays().contains(Qt::Friday));
-    settings.setValue(REG_KEY_DATETIMEVIEW_SAT, dateTimeGrid->freeDays().contains(Qt::Saturday));
-    settings.setValue(REG_KEY_DATETIMEVIEW_SUN, dateTimeGrid->freeDays().contains(Qt::Sunday));
-    settings.setValue(REG_KEY_DATETIMEVIEW_COLOR, dateTimeGrid->freeDaysBrush().color());
-    settings.endGroup();
-    settings.setValue(REG_KEY_DATETIMEVIEW_DAYWIDTH, dateTimeGrid->dayWidth());
-    settings.setValue(REG_KEY_DATETIMEVIEW_SCALE, dateTimeGrid->scale());
-    settings.endGroup();
+        settings.beginGroup(REG_KEY_DATETIMEVIEW);
+        settings.beginGroup(REG_KEY_DATETIMEVIEW_FREEDAYSGROUP);
+        settings.setValue(REG_KEY_DATETIMEVIEW_MON, dateTimeGrid->freeDays().contains(Qt::Monday));
+        settings.setValue(REG_KEY_DATETIMEVIEW_TUE, dateTimeGrid->freeDays().contains(Qt::Tuesday));
+        settings.setValue(REG_KEY_DATETIMEVIEW_WED, dateTimeGrid->freeDays().contains(Qt::Wednesday));
+        settings.setValue(REG_KEY_DATETIMEVIEW_THU, dateTimeGrid->freeDays().contains(Qt::Thursday));
+        settings.setValue(REG_KEY_DATETIMEVIEW_FRI, dateTimeGrid->freeDays().contains(Qt::Friday));
+        settings.setValue(REG_KEY_DATETIMEVIEW_SAT, dateTimeGrid->freeDays().contains(Qt::Saturday));
+        settings.setValue(REG_KEY_DATETIMEVIEW_SUN, dateTimeGrid->freeDays().contains(Qt::Sunday));
+        settings.setValue(REG_KEY_DATETIMEVIEW_COLOR, dateTimeGrid->freeDaysBrush().color());
+        settings.endGroup();
+        settings.setValue(REG_KEY_DATETIMEVIEW_DAYWIDTH, dateTimeGrid->dayWidth());
+        settings.setValue(REG_KEY_DATETIMEVIEW_SCALE, dateTimeGrid->scale());
+        settings.endGroup();
 
-    eventArgs->accept();
+        eventArgs->accept();
+    }
+    else
+        eventArgs->ignore();
 }
 
 void MainWindow::on_action_Quit_triggered()
@@ -1059,7 +1125,7 @@ void MainWindow::on_action_Quit_triggered()
 
 void MainWindow::on_action_Edit_Project_triggered()
 {
-    if(projectModel != nullptr)
+    if(!bEmptyProject)
     {
         AddProjectDialog *dialog = new AddProjectDialog( projectModel->GetName(), projectModel->GetPeopleList(), this );
         dialog->setWindowTitle("Edit Project");
@@ -1083,7 +1149,7 @@ void MainWindow::on_action_Edit_Project_triggered()
 
 void MainWindow::on_action_Edit_Task_Group_triggered()
 {
-    if(projectModel != nullptr)
+    if(!bEmptyProject)
     {
         QList<QString> groups;
         for (int i = 0; i < projectModel->GetTaskGroupListSize(); i++)
@@ -1124,103 +1190,12 @@ void MainWindow::on_action_Save_as_triggered()
                                        tr("Save Teeam Project"), ".",
                                        tr("Teeam files (*.tmproj)"));
 
-    if(projectModel != nullptr && filename != "")
+    setCursor(Qt::WaitCursor);
+    if(filename != "")
     {
-        QFile file(filename);
-        file.open(QIODevice::WriteOnly);
-
-        QXmlStreamWriter xmlWriter(&file);
-        xmlWriter.setAutoFormatting(true);
-        xmlWriter.writeStartDocument();
-
-        xmlWriter.writeComment("Do not modify!");
-
-        // Inizio il salvataggio del progetto
-        xmlWriter.writeStartElement(KEY_PROJECT);
-
-        xmlWriter.writeStartElement(KEY_PROJECTPARAMETERS);
-
-        // Salvo il nome
-        xmlWriter.writeTextElement(KEY_NAME, projectModel->GetName() );
-
-        // Salvo l'elenco di persone
-        for(int i = 0; i < projectModel->GetPeopleList().length(); i++)
-            xmlWriter.writeTextElement(KEY_PERSON, projectModel->GetPeopleList().at(i));
-
-        xmlWriter.writeEndElement();
-
-        // Salvo i gruppi
-        for(int i = 0; i < projectModel->GetTaskGroupListSize(); i++)
-        {
-            xmlWriter.writeStartElement(KEY_GROUP);
-            xmlWriter.writeTextElement(KEY_NAME, projectModel->GetTaskGroupAt(i)->getName() );
-            for(int j = 0; j < projectModel->GetTaskGroupAt(i)->GetEntitiesListSize(); j++)
-            {
-                xmlWriter.writeStartElement(KEY_ENTITY);
-                if(projectModel->GetTaskGroupAt(i)->GetEntityAt(j)->getEntityType() == Task_type)
-                {
-                    xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_TASKTYPE);
-                    xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getName());
-
-                    for(int k = 0; k < static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getPeople().length(); k++)
-                        xmlWriter.writeTextElement(KEY_PERSON, static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getPeople().at(k));
-
-                    xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getStart().toString());
-                    xmlWriter.writeTextElement(KEY_ENDDATETIME, static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getEnd().toString());
-
-                    xmlWriter.writeTextElement(KEY_COMPLETITION, QString::number(static_cast<Task*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getCompletition()));
-                }
-                else if(projectModel->GetTaskGroupAt(i)->GetEntityAt(j)->getEntityType() == Milestone_type)
-                {
-                    xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_MILESTONETYPE);
-                    xmlWriter.writeTextElement(KEY_NAME, static_cast<Milestone*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getName());
-
-                    for(int k = 0; k < static_cast<Milestone*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getPeople().length(); k++)
-                        xmlWriter.writeTextElement(KEY_PERSON, static_cast<Milestone*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getPeople().at(k));
-
-                    xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Milestone*>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getDateTime().toString());
-                }
-                 xmlWriter.writeEndElement();
-            }
-            xmlWriter.writeEndElement();
-        }
-
-        // Salvo i task/milestone fuori dai gruppi
-        for(int i = 0; i < projectModel->GetEntitiesListSize(); i++)
-        {
-            xmlWriter.writeStartElement(KEY_ENTITY);
-            if(projectModel->GetEntityAt(i)->getEntityType() == Task_type)
-            {
-                xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_TASKTYPE);
-                xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(projectModel->GetEntityAt(i))->getName());
-
-                for(int k = 0; k < static_cast<Task*>(projectModel->GetEntityAt(i))->getPeople().length(); k++)
-                    xmlWriter.writeTextElement(KEY_PERSON, static_cast<Task*>(projectModel->GetEntityAt(i))->getPeople().at(k));
-
-                xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Task*>(projectModel->GetEntityAt(i))->getStart().toString());
-                xmlWriter.writeTextElement(KEY_ENDDATETIME, static_cast<Task*>(projectModel->GetEntityAt(i))->getEnd().toString());
-
-                xmlWriter.writeTextElement(KEY_COMPLETITION, QString::number(static_cast<Task*>(projectModel->GetEntityAt(i))->getCompletition()));
-            }
-            else if(projectModel->GetEntityAt(i)->getEntityType() == Milestone_type)
-            {
-                xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_MILESTONETYPE);
-                xmlWriter.writeTextElement(KEY_NAME, static_cast<Milestone*>(projectModel->GetEntityAt(i))->getName());
-
-                for(int k = 0; k < static_cast<Milestone*>(projectModel->GetEntityAt(i))->getPeople().length(); k++)
-                    xmlWriter.writeTextElement(KEY_PERSON, static_cast<Milestone*>(projectModel->GetEntityAt(i))->getPeople().at(k));
-
-                xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Milestone*>(projectModel->GetEntityAt(i))->getDateTime().toString());
-            }
-            xmlWriter.writeEndElement();
-        }
-
-        xmlWriter.writeEndElement();
-
-        xmlWriter.writeEndDocument();
-
-        file.close();
+        ganttController->SaveProjectAs(filename);
     }
+    setCursor(Qt::ArrowCursor);
 }
 
 void MainWindow::on_actionOpen_File_triggered()
@@ -1231,263 +1206,28 @@ void MainWindow::on_actionOpen_File_triggered()
 
     setCursor(Qt::WaitCursor);
 
-    QFile file(filename);
-    if (!file.open(QFile::ReadOnly | QFile::Text))
+    DeleteProject();
+    bEmptyProject = false;
+
+    if(ganttController->OpenFile(filename, this) != NO_ERROR)
     {
-        setCursor(Qt::ArrowCursor);
-        return;
+        DeleteProject();
+        bEmptyProject = true;
+        QMessageBox::warning(this, "Warning", "File not valid.");
     }
-
-    try
+    else
     {
-        QXmlStreamReader xmlReader;
-        xmlReader.setDevice(&file);
-
-        QXmlStreamReader::TokenType token = xmlReader.readNext();
-
-        if(token == QXmlStreamReader::Invalid)
-        {
-            setCursor(Qt::ArrowCursor);
-            return;
-        }
-        else if(token == QXmlStreamReader::StartDocument)
-        {
-            xmlReader.readNextStartElement();
-        }
-
-        // Controllo che l'elemento più alto sia un project
-        if(xmlReader.name() == KEY_PROJECT)
-        {
-            QString name;
-            QStringList people;
-            xmlReader.readNextStartElement();
-
-            if(xmlReader.name() == KEY_PROJECTPARAMETERS)
-            {
-               xmlReader.readNextStartElement();
-               if(xmlReader.name() == KEY_NAME)
-                   name = xmlReader.readElementText();
-               else
-                   throw INVALID_FILE;
-
-               xmlReader.readNextStartElement();
-               while(xmlReader.name() == KEY_PERSON)
-               {
-                   people << xmlReader.readElementText();
-                   xmlReader.readNextStartElement();
-               }
-
-               TeeamProject *tempProj = new TeeamProject(name, people);
-               this->projectModel = tempProj;
-               tempProj->attach(this);
-               ganttController->NewProject(tempProj);
-            }
-
-            int groupIndex = 0;
-            while(xmlReader.readNextStartElement())
-            {
-                if(xmlReader.name() == KEY_GROUP)
-                {
-                   xmlReader.readNextStartElement();
-                   if(xmlReader.name() == KEY_NAME)
-                   {
-                        ganttController->AddTaskGroup(this, xmlReader.readElementText());
-
-                        xmlReader.readNextStartElement();
-                        while(xmlReader.name() == KEY_ENTITY)
-                        {
-                            xmlReader.readNextStartElement();
-                            if(xmlReader.name() == KEY_ENTITYTYPE)
-                            {
-                                QString type = xmlReader.readElementText();
-
-                                if(type == KEY_TASKTYPE)
-                                {
-                                    QString name;
-                                    QDateTime start, end;
-                                    QStringList taskPeople;
-                                    int completition;
-
-                                    xmlReader.readNextStartElement();
-                                    if(xmlReader.name() == KEY_NAME)
-                                        name = xmlReader.readElementText();
-                                    else
-                                        throw INVALID_FILE;
-
-                                    xmlReader.readNextStartElement();
-                                    while(xmlReader.name() == KEY_PERSON)
-                                    {
-                                        taskPeople << xmlReader.readElementText();
-                                        xmlReader.readNextStartElement();
-                                    }
-
-                                    if(xmlReader.name() == KEY_STARTDATETIME)
-                                        start = QDateTime::fromString(xmlReader.readElementText());
-                                    else
-                                        throw INVALID_FILE;
-
-                                    xmlReader.readNextStartElement();
-                                    if(xmlReader.name() == KEY_ENDDATETIME)
-                                        end = QDateTime::fromString(xmlReader.readElementText());
-                                    else
-                                        throw INVALID_FILE;
-
-                                    xmlReader.readNextStartElement();
-                                    if(xmlReader.name() == KEY_COMPLETITION)
-                                        completition = xmlReader.readElementText().toInt();
-                                    else
-                                        throw INVALID_FILE;
-
-                                    ganttController->AddTask(this, name, start, end, taskPeople, completition, groupIndex);
-                                }
-                                else if(type == KEY_MILESTONETYPE)
-                                {
-                                    QString name;
-                                    QDateTime dateTime;
-                                    QStringList milestonePeople;
-
-                                    xmlReader.readNextStartElement();
-                                    if(xmlReader.name() == KEY_NAME)
-                                        name = xmlReader.readElementText();
-                                    else
-                                        throw INVALID_FILE;
-
-                                    xmlReader.readNextStartElement();
-                                    while(xmlReader.name() == KEY_PERSON)
-                                    {
-                                        milestonePeople << xmlReader.readElementText();
-                                        xmlReader.readNextStartElement();
-                                    }
-
-                                    if(xmlReader.name() == KEY_STARTDATETIME)
-                                        dateTime = QDateTime::fromString(xmlReader.readElementText());
-                                    else
-                                        throw INVALID_FILE;
-
-                                    ganttController->AddMilestone(this, name, dateTime, milestonePeople, groupIndex);
-                                }
-                                else
-                                    throw INVALID_FILE;
-                            }
-                            else
-                                throw INVALID_FILE;
-
-                            xmlReader.readNextStartElement();
-                            xmlReader.readNextStartElement();
-                        }
-                   }
-                   else
-                       throw INVALID_FILE;
-
-                   groupIndex++;
-                }
-                else if(xmlReader.name() == KEY_ENTITY)
-                {
-                    xmlReader.readNextStartElement();
-
-                    if(xmlReader.name() == KEY_ENTITYTYPE)
-                    {
-                        QString type = xmlReader.readElementText();
-
-                        if(type == KEY_TASKTYPE)
-                        {
-                            QString name;
-                            QDateTime start, end;
-                            QStringList taskPeople;
-                            int completition;
-
-                            xmlReader.readNextStartElement();
-                            if(xmlReader.name() == KEY_NAME)
-                                name = xmlReader.readElementText();
-                            else
-                                throw INVALID_FILE;
-
-                            xmlReader.readNextStartElement();
-                            while(xmlReader.name() == KEY_PERSON)
-                            {
-                                taskPeople << xmlReader.readElementText();
-                                xmlReader.readNextStartElement();
-                            }
-
-                            if(xmlReader.name() == KEY_STARTDATETIME)
-                                start = QDateTime::fromString(xmlReader.readElementText());
-                            else
-                                throw INVALID_FILE;
-
-                            xmlReader.readNextStartElement();
-                            if(xmlReader.name() == KEY_ENDDATETIME)
-                                end = QDateTime::fromString(xmlReader.readElementText());
-                            else
-                                throw INVALID_FILE;
-
-                            xmlReader.readNextStartElement();
-                            if(xmlReader.name() == KEY_COMPLETITION)
-                                completition = xmlReader.readElementText().toInt();
-                            else
-                                throw INVALID_FILE;
-
-                            ganttController->AddTask(this, name, start, end, taskPeople, completition);
-                        }
-                        else if(type == KEY_MILESTONETYPE)
-                        {
-                            QString name;
-                            QDateTime dateTime;
-                            QStringList milestonePeople;
-
-                            xmlReader.readNextStartElement();
-                            if(xmlReader.name() == KEY_NAME)
-                                name = xmlReader.readElementText();
-                            else
-                                throw INVALID_FILE;
-
-                            xmlReader.readNextStartElement();
-                            while(xmlReader.name() == KEY_PERSON)
-                            {
-                                milestonePeople << xmlReader.readElementText();
-                                xmlReader.readNextStartElement();
-                            }
-
-                            if(xmlReader.name() == KEY_STARTDATETIME)
-                                dateTime = QDateTime::fromString(xmlReader.readElementText());
-                            else
-                                throw INVALID_FILE;
-
-                            ganttController->AddMilestone(this, name, dateTime, milestonePeople);
-                        }
-                        else
-                            throw INVALID_FILE;
-                    }
-                    else
-                        throw INVALID_FILE;
-
-                    xmlReader.readNextStartElement();
-                }
-                else
-                    throw INVALID_FILE;
-            }
-
-            // È terminato il caricamento
-            EnableMenu();
-        }
-        else
-            throw INVALID_FILE;
-    }
-    catch (int error)
-    {
-        if(error == INVALID_FILE)
-        {
-            DeleteProject();
-            QMessageBox::warning(this, "Warning", "File not valid.");
-        }
+        // È terminato il caricamento
+        EnableMenu();
     }
 
     setCursor(Qt::ArrowCursor);
     return;
 }
 
-void MainWindow::on_action_Close_Project_triggered()
+QMessageBox::StandardButton MainWindow::on_action_Close_Project_triggered()
 {
-    if(projectModel != nullptr)
+    if(!bEmptyProject)
     {
         // Controllo se ho eliminato il progetto
         QMessageBox::StandardButton result = QMessageBox::information(this,
@@ -1497,18 +1237,18 @@ void MainWindow::on_action_Close_Project_triggered()
                                                           QMessageBox::Cancel);
 
         if(result == QMessageBox::Cancel)
-            return;
+            return QMessageBox::Cancel;
         else if(result == QMessageBox::No)
         {
             DeleteProject();
-            return;
+            return QMessageBox::No;
         }
         else if(result == QMessageBox::Yes)
         {
             on_action_Save_as_triggered();
             DeleteProject();
-            return;
+            return QMessageBox::Yes;
         }
     }
-    return;
+    return QMessageBox::No;
 }
