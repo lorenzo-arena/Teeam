@@ -61,6 +61,7 @@ private slots:
     bool eventFilter(QObject *target, QEvent *event);
     void closeEvent(QCloseEvent *eventArgs);
     void on_action_Save_as_triggered();
+    void on_action_ItemChanged(QStandardItem* item);
 
     void on_actionOpen_File_triggered();
 

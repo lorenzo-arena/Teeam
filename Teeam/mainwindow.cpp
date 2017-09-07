@@ -175,6 +175,9 @@ void MainWindow::initGanttView()
     leftView->setColumnHidden( 5, true );
     leftView->header()->setStretchLastSection( true );
 
+    //connect(ui->ganttView->graphicsView()->model(), SIGNAL(itemChanged(QStandardItem*)), this, SLOT(on_action_ItemChanged(QStandardItem*)));
+    connect(viewModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(on_action_ItemChanged(QStandardItem*)));
+
 #ifdef DRAGNDROP
     leftView->setDragEnabled(true);
     leftView->viewport()->setAcceptDrops(true);
@@ -275,6 +278,8 @@ void MainWindow::UpdateProjectView()
         viewModel = new QStandardItemModel( 0, 6, this );
         viewModel->setHeaderData( 0, Qt::Horizontal, tr( "Project Tree View" ) );
         ui->ganttView->setModel( viewModel );
+        //connect(ui->ganttView->graphicsView()->model(), SIGNAL(itemChanged(QStandardItem*)), this, SLOT(on_action_ItemChanged(QStandardItem*)));
+        connect(viewModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(on_action_ItemChanged(QStandardItem*)));
 
         if (viewModel->rowCount() == 0)
         {
@@ -286,7 +291,7 @@ void MainWindow::UpdateProjectView()
     viewModel->setData( viewModel->index( 0, 0 ), projectModel->GetName() );
     viewModel->setData( viewModel->index( 0, 1 ), KDGantt::TypeSummary );
 
-    viewModel->itemFromIndex(viewModel->index(0, 0))->setEditable(false);
+    viewModel->itemFromIndex(viewModel->index(0, 0))->setEditable(true);
 
 #ifdef DRAGNDROP
     viewModel->itemFromIndex(viewModel->index(0, 0))->setDragEnabled(false);
@@ -320,7 +325,7 @@ void MainWindow::UpdateTaskGroupView()
             QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
             leftView->expand(projectIndex);
 
-            viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(false);
+            viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(true);
 
 #ifdef DRAGNDROP
             viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setDropEnabled(true);
@@ -341,7 +346,7 @@ void MainWindow::UpdateTaskGroupView()
                 QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
                 leftView->expand(projectIndex);
 
-                viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(false);
+                viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(true);
 
 #ifdef DRAGNDROP
                 viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setDropEnabled(true);
@@ -386,7 +391,7 @@ void MainWindow::UpdateTaskGroupView()
                         viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Milestone *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getDateTime(), KDGantt::EndTimeRole );
                     }
 
-                    viewModel->itemFromIndex(viewModel->index(row, 0, parent))->setEditable(false);
+                    viewModel->itemFromIndex(viewModel->index(row, 0, parent))->setEditable(true);
 
 #ifdef DRAGNDROP
                     viewModel->itemFromIndex(viewModel->index(row, 0, parent))->setDragEnabled(true);
@@ -454,7 +459,7 @@ void MainWindow::UpdateEntitiesView()
                 viewModel->setData( viewModel->index( row, 3, projectIndex ), static_cast<Milestone *>(projectModel->GetEntityAt(i))->getDateTime(), KDGantt::EndTimeRole );
             }
 
-            viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(false);
+            viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setEditable(true);
 
 #ifdef DRAGNDROP
             viewModel->itemFromIndex(viewModel->index(row, 0, projectIndex))->setDragEnabled(true);
@@ -913,7 +918,8 @@ void MainWindow::DeleteProject()
     viewModel = new QStandardItemModel( 0, 6, this );
     viewModel->setHeaderData( 0, Qt::Horizontal, tr( "Project Tree View" ) );
     ui->ganttView->setModel( viewModel );
-
+    //connect(ui->ganttView->graphicsView()->model(), SIGNAL(itemChanged(QStandardItem*)), this, SLOT(on_action_ItemChanged(QStandardItem*)));
+    connect(viewModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(on_action_ItemChanged(QStandardItem*)));
     DisableMenu();
 }
 
@@ -1134,6 +1140,22 @@ void MainWindow::on_action_Save_as_triggered()
         xmlWriter.writeEndDocument();
 
         file.close();
+    }
+}
+
+void MainWindow::on_action_ItemChanged(QStandardItem *item)
+{
+    QModelIndex index = item->index();
+
+    if(index.isValid())
+    {
+        //viewModel->setData( viewModel->index( index.row(), 0, index.parent() ), item->data( static_cast<Task *>(projectModel->GetEntityAt(i))->getName() );
+        viewModel->setData( viewModel->index( index.row(), 1, index.parent() ), qvariant_cast<KDGantt::ItemType>(item->data( KDGantt::ItemTypeRole)));
+        //if( qvariant_cast<QDateTime>(item->data(KDGantt::StartTimeRole)) != 0 )
+            viewModel->setData( viewModel->index( index.row(), 2, index.parent() ), qvariant_cast<QDateTime>(item->data(KDGantt::StartTimeRole)), KDGantt::StartTimeRole );
+        //if( qvariant_cast<QDateTime>(item->data(KDGantt::EndTimeRole)) != 0 )
+            viewModel->setData( viewModel->index( index.row(), 3, index.parent() ), qvariant_cast<QDateTime>(item->data(KDGantt::EndTimeRole)), KDGantt::EndTimeRole );
+        //viewModel->setData( viewModel->index( index.row(), 4, index.parent() ), static_cast<Task *>(projectModel->GetEntityAt(i))->getCompletition() );
     }
 }
 
