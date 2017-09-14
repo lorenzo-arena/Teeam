@@ -3,6 +3,7 @@
 #include "teeamproject.h"
 
 #include <QApplication>
+#include <QMessageBox>
 
 int main(int argc, char *argv[])
 {
@@ -16,9 +17,17 @@ int main(int argc, char *argv[])
 
     // TODO : add project initialization
 
-    GanttController ganttController(&freeDays);//, nullptr);
+    QString projectFilePath = "";
 
-    MainWindow w(&ganttController, &freeDays, "v" + qApp->applicationVersion());//, nullptr);
+    // Sto aprendo un file con il programma
+    if(argc == 2)
+    {
+        // Prelevo il percorso del file
+        projectFilePath = a.arguments().at(1);
+    }
+
+    GanttController ganttController(&freeDays);//, nullptr);
+    MainWindow w(&ganttController, &freeDays, "v" + qApp->applicationVersion(), projectFilePath);
     w.setWindowTitle(qApp->applicationName() + " v" + qApp->applicationVersion());
     w.show();
 

@@ -37,7 +37,7 @@ class MainWindow : public QMainWindow, public AbstractView
     Q_OBJECT
 
 public:
-    explicit MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, QString appVersion, TeeamProject *projectModel = nullptr, QWidget *parent = nullptr);
+    explicit MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, QString appVersion, QString projectPath = "", QWidget *parent = nullptr);
     ~MainWindow();
 
     void UpdateView();

@@ -49,31 +49,18 @@ QString TeeamDateTimeScaleFormatter::text(const QDateTime &datetime)
 }
 #endif
 
-MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, QString appVersion, TeeamProject *projectModel, QWidget *parent) :
+MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDaysModel, QString appVersion, QString projectPath, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
+    // all'inizio imposto il progetto come vuoto
+    bEmptyProject = true;
+
     // Aggancio i vari modelli
     this->freeDaysModel = freeDaysModel;
     this->freeDaysModel->attach(this);
-
-    if(projectModel != nullptr)
-    {
-        this->projectModel = projectModel;
-        this->projectModel->attach(this);
-        bEmptyProject = false;
-    }
-    else
-    {
-        QStringList emptylist;
-        TeeamProject *newProject = new TeeamProject("", emptylist);
-        this->projectModel = newProject;
-        newProject->attach(this);
-        ganttController->NewProject(newProject);
-        bEmptyProject = true;
-    }
 
     this->ganttController = ganttController;
 
@@ -114,13 +101,46 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
     settings.endGroup();
     settings.endGroup();
 
+    ui->statusBar->showMessage(appVersion);
+
+    QStringList emptylist;
+    TeeamProject *newProject = new TeeamProject("", emptylist);
+    this->projectModel = newProject;
+    newProject->attach(this);
+    ganttController->NewProject(newProject);
+
+    QString temp = "C:\\Users\\laren\\Desktop\\Test_1.tmproj ";
+
+    if(temp != "")
+    //if(projectPath != "")
+    {
+        setCursor(Qt::WaitCursor);
+        if(ganttController->OpenFile(temp, this) != NO_ERROR)
+        {
+            bEmptyProject = true;
+            setCursor(Qt::ArrowCursor);
+            QMessageBox::warning(this, "Warning", "File not valid.", QMessageBox::Ok);
+            QCoreApplication::quit();
+        }
+        else
+        {
+            // È terminato il caricamento
+            EnableMenu();
+            bEmptyProject = false;
+            setCursor(Qt::ArrowCursor);
+        }
+    }
+    else
+    {
+        bEmptyProject = true;
+    }
+
     // Disabilito alcune voci dal menu se non ho caricato un progetto
     if(bEmptyProject)
     {
         DisableMenu();
     }
 
-    ui->statusBar->showMessage(appVersion);
 }
 
 MainWindow::~MainWindow()
