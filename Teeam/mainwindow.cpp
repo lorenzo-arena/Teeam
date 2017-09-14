@@ -244,6 +244,7 @@ void MainWindow::initGanttView()
     ui->ganttView->installEventFilter(this);
 }
 
+//************** Metodi per l'aggiornamento della view ******
 void MainWindow::UpdateView()
 {
     if(freeDaysModel->isChanged())
@@ -755,7 +756,6 @@ void MainWindow::on_actionTreeView_rightclick(const QPoint &point)
     }
 }
 
-
 void MainWindow::on_actionTreeView_del(const QModelIndex &index)
 {
     RemoveEntityFromIndex(index);
@@ -979,60 +979,6 @@ void MainWindow::DeleteProject()
     DisableMenu();
 }
 
-bool MainWindow::eventFilter(QObject* target, QEvent* event)
-{
-    if(target == ui->ganttView )
-    {
-        if(event->type() == QEvent::KeyPress )
-        {
-            QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
-            if(keyEvent->key() == Qt::Key_Delete )
-            {
-                QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView());
-                on_actionTreeView_del(leftView->currentIndex());
-                leftView->setCurrentIndex(viewModel->index(0,0)); // Per disabilitare la possibilità di cancellare mezzo progetto
-                leftView->clearSelection();                       // premendo "Canc" più volte
-            }
-        }
-    }
-
-    return QMainWindow::eventFilter(target, event);
-}
-
-void MainWindow::closeEvent(QCloseEvent *eventArgs)
-{
-    QSettings settings;
-
-    QMessageBox::StandardButton result =  on_action_Close_Project_triggered();
-
-    if(result != QMessageBox::Cancel)
-    {
-        settings.beginGroup(REG_KEY_MAINWINDOW);
-        settings.setValue(REG_KEY_MAINWINDOW_MAXIMIZED, isMaximized());
-        settings.setValue(REG_KEY_MAINWINDOW_SIZE, size());
-        settings.endGroup();
-
-        settings.beginGroup(REG_KEY_DATETIMEVIEW);
-        settings.beginGroup(REG_KEY_DATETIMEVIEW_FREEDAYSGROUP);
-        settings.setValue(REG_KEY_DATETIMEVIEW_MON, dateTimeGrid->freeDays().contains(Qt::Monday));
-        settings.setValue(REG_KEY_DATETIMEVIEW_TUE, dateTimeGrid->freeDays().contains(Qt::Tuesday));
-        settings.setValue(REG_KEY_DATETIMEVIEW_WED, dateTimeGrid->freeDays().contains(Qt::Wednesday));
-        settings.setValue(REG_KEY_DATETIMEVIEW_THU, dateTimeGrid->freeDays().contains(Qt::Thursday));
-        settings.setValue(REG_KEY_DATETIMEVIEW_FRI, dateTimeGrid->freeDays().contains(Qt::Friday));
-        settings.setValue(REG_KEY_DATETIMEVIEW_SAT, dateTimeGrid->freeDays().contains(Qt::Saturday));
-        settings.setValue(REG_KEY_DATETIMEVIEW_SUN, dateTimeGrid->freeDays().contains(Qt::Sunday));
-        settings.setValue(REG_KEY_DATETIMEVIEW_COLOR, dateTimeGrid->freeDaysBrush().color());
-        settings.endGroup();
-        settings.setValue(REG_KEY_DATETIMEVIEW_DAYWIDTH, dateTimeGrid->dayWidth());
-        settings.setValue(REG_KEY_DATETIMEVIEW_SCALE, dateTimeGrid->scale());
-        settings.endGroup();
-
-        eventArgs->accept();
-    }
-    else
-        eventArgs->ignore();
-}
-
 void MainWindow::on_action_Quit_triggered()
 {
     QApplication::quit();
@@ -1167,3 +1113,62 @@ QMessageBox::StandardButton MainWindow::on_action_Close_Project_triggered()
     }
     return QMessageBox::No;
 }
+
+//********** Metodi per l'override degli eventi **********
+bool MainWindow::eventFilter(QObject* target, QEvent* event)
+{
+    if(target == ui->ganttView )
+    {
+        if(event->type() == QEvent::KeyPress )
+        {
+            QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+            if(keyEvent->key() == Qt::Key_Delete )
+            {
+                QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView());
+                on_actionTreeView_del(leftView->currentIndex());
+                leftView->setCurrentIndex(viewModel->index(0,0)); // Per disabilitare la possibilità di cancellare mezzo progetto
+                leftView->clearSelection();                       // premendo "Canc" più volte
+            }
+        }
+    }
+
+    return QMainWindow::eventFilter(target, event);
+}
+
+void MainWindow::closeEvent(QCloseEvent *eventArgs)
+{
+    QSettings settings;
+
+    QMessageBox::StandardButton result =  on_action_Close_Project_triggered();
+
+    if(result != QMessageBox::Cancel)
+    {
+        settings.beginGroup(REG_KEY_MAINWINDOW);
+        settings.setValue(REG_KEY_MAINWINDOW_MAXIMIZED, isMaximized());
+        settings.setValue(REG_KEY_MAINWINDOW_SIZE, size());
+        settings.endGroup();
+
+        settings.beginGroup(REG_KEY_DATETIMEVIEW);
+        settings.beginGroup(REG_KEY_DATETIMEVIEW_FREEDAYSGROUP);
+        settings.setValue(REG_KEY_DATETIMEVIEW_MON, dateTimeGrid->freeDays().contains(Qt::Monday));
+        settings.setValue(REG_KEY_DATETIMEVIEW_TUE, dateTimeGrid->freeDays().contains(Qt::Tuesday));
+        settings.setValue(REG_KEY_DATETIMEVIEW_WED, dateTimeGrid->freeDays().contains(Qt::Wednesday));
+        settings.setValue(REG_KEY_DATETIMEVIEW_THU, dateTimeGrid->freeDays().contains(Qt::Thursday));
+        settings.setValue(REG_KEY_DATETIMEVIEW_FRI, dateTimeGrid->freeDays().contains(Qt::Friday));
+        settings.setValue(REG_KEY_DATETIMEVIEW_SAT, dateTimeGrid->freeDays().contains(Qt::Saturday));
+        settings.setValue(REG_KEY_DATETIMEVIEW_SUN, dateTimeGrid->freeDays().contains(Qt::Sunday));
+        settings.setValue(REG_KEY_DATETIMEVIEW_COLOR, dateTimeGrid->freeDaysBrush().color());
+        settings.endGroup();
+        settings.setValue(REG_KEY_DATETIMEVIEW_DAYWIDTH, dateTimeGrid->dayWidth());
+        settings.setValue(REG_KEY_DATETIMEVIEW_SCALE, dateTimeGrid->scale());
+        settings.endGroup();
+
+        eventArgs->accept();
+    }
+    else
+        eventArgs->ignore();
+}
+
+
+
+
