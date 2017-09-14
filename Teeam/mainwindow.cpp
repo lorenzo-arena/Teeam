@@ -324,7 +324,6 @@ void MainWindow::UpdateProjectView()
         viewModel->setHeaderData( 3, Qt::Horizontal, endHeader );
         viewModel->setHeaderData( 4, Qt::Horizontal, completitionHeader );
         ui->ganttView->setModel( viewModel );
-        //connect(ui->ganttView->graphicsView()->model(), SIGNAL(itemChanged(QStandardItem*)), this, SLOT(on_action_ItemChanged(QStandardItem*)));
         connect(viewModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(on_action_ItemChanged(QStandardItem*)));
 
         QTreeView* leftView = qobject_cast<QTreeView*>( ui->ganttView->leftView() );
@@ -770,78 +769,95 @@ void MainWindow::on_actionTreeView_del(const QModelIndex &index)
 void MainWindow::on_action_ItemChanged(QStandardItem *item)
 {
     QModelIndex index = item->index();
+    QModelIndex parent = index.parent();
+    int entityIndex = index.row();
 
-    if(index.isValid())
-    {/*
-        viewModel->setData( viewModel->index( index.row(), 0, index.parent() ), qvariant_cast<QString>(item->data( KDGantt::KDGanttRoleBase)), KDGantt::KDGanttRoleBase);
-        viewModel->setData( viewModel->index( index.row(), 1, index.parent() ), qvariant_cast<QDateTime>(item->data( KDGantt::StartTimeRole)), KDGantt::StartTimeRole);
-        viewModel->setData( viewModel->index( index.row(), 2, index.parent() ), qvariant_cast<QDateTime>(item->data(KDGantt::EndTimeRole)), KDGantt::EndTimeRole );
-        viewModel->setData( viewModel->index( index.row(), 3, index.parent() ), qvariant_cast<int>(item->data(KDGantt::TaskCompletionRole)), KDGantt::TaskCompletionRole );
-        viewModel->setData( viewModel->index( index.row(), 4, index.parent() ), qvariant_cast<KDGantt::ItemType>(item->data(KDGantt::ItemTypeRole)), KDGantt::ItemTypeRole );*/
+    // Questo slot viene chiamato ogni volta che aggiorno un item;
+    // quindi anche alla creazione e alla modifica di gruppi, progetti..;
+    // in realtà ho bisogno soltanto di entrare qui in solo se ho D&D,
+    // allora controllo di non avere TypeNone e TypeSummary
+    bool typeOk = false;
 
+    typeOk = (qvariant_cast<KDGantt::ItemType>(viewModel->data(viewModel->index( entityIndex, 1, parent ))) != KDGantt::TypeSummary) &&
+             (qvariant_cast<KDGantt::ItemType>(viewModel->data(viewModel->index( entityIndex, 1, parent ))) != KDGantt::TypeNone);
 
-       /* viewModel->setData( viewModel->index( index.row(), 0, index.parent() ), qvariant_cast<QString>(item->data( KDGantt::KDGanttRoleBase)), KDGantt::KDGanttRoleBase );
-        viewModel->setData( viewModel->index( index.row(), 1, index.parent() ), qvariant_cast<KDGantt::ItemType>(item->data(KDGantt::ItemTypeRole)), KDGantt::ItemTypeRole );
-        viewModel->setData( viewModel->index( index.row(), 2, index.parent() ), qvariant_cast<QDateTime>(item->data( KDGantt::StartTimeRole)), KDGantt::StartTimeRole );
-        viewModel->setData( viewModel->index( index.row(), 3, index.parent() ), qvariant_cast<QDateTime>(item->data(KDGantt::EndTimeRole)), KDGantt::EndTimeRole );
-        viewModel->setData( viewModel->index( index.row(), 4, index.parent() ), qvariant_cast<int>(item->data(KDGantt::TaskCompletionRole)), KDGantt::TaskCompletionRole );*/
-
-        if(index.parent().parent().isValid())
+    if(index.isValid() && typeOk)
+    {
+        if(index.parent().isValid() && index.parent().parent().isValid())
         {
             // Entity in un gruppo
-            int row = index.row();
             int group = index.parent().row();
 
-            if(projectModel->GetTaskGroupAt(group)->GetEntityAt(row)->getEntityType() == Task_type)
+            if(projectModel->GetTaskGroupAt(group)->GetEntityAt(entityIndex)->getEntityType() == Task_type &&
+               !projectModel->GetTaskGroupAt(group)->GetEntityAt(entityIndex)->IsNew())
             {
-                //QString name = qvariant_cast<QString>(item->data( KDGantt::KDGanttRoleBase));
-                //if(name == "")
-                //    name = static_cast<Task*>(projectModel->GetTaskGroupAt(group)->GetEntityAt(row))->getName();
-                QString name = static_cast<Task*>(projectModel->GetTaskGroupAt(group)->GetEntityAt(row))->getName();
+                QString name = static_cast<Task*>(projectModel->GetTaskGroupAt(group)->GetEntityAt(entityIndex))->getName();
 
                 QDateTime start = qvariant_cast<QDateTime>(item->data( KDGantt::StartTimeRole));
                 if(!start.isValid())
-                    start = static_cast<Task*>(projectModel->GetTaskGroupAt(group)->GetEntityAt(row))->getStart();
+                    start = static_cast<Task*>(projectModel->GetTaskGroupAt(group)->GetEntityAt(entityIndex))->getStart();
 
                 QDateTime end = qvariant_cast<QDateTime>(item->data(KDGantt::EndTimeRole));
                 if(!end.isValid())
-                    end = static_cast<Task*>(projectModel->GetTaskGroupAt(group)->GetEntityAt(row))->getEnd();
+                    end = static_cast<Task*>(projectModel->GetTaskGroupAt(group)->GetEntityAt(entityIndex))->getEnd();
 
-                int completition = static_cast<Task*>(projectModel->GetTaskGroupAt(group)->GetEntityAt(row))->getCompletition();
+                int completition = static_cast<Task*>(projectModel->GetTaskGroupAt(group)->GetEntityAt(entityIndex))->getCompletition();
 
-                QStringList people = static_cast<Task*>(projectModel->GetTaskGroupAt(group)->GetEntityAt(row))->getPeople();
+                QStringList people = static_cast<Task*>(projectModel->GetTaskGroupAt(group)->GetEntityAt(entityIndex))->getPeople();
 
-
-                ganttController->EditTaskOrMilestone(this,
-                                                     name,
-                                                     start,
-                                                     end,
-                                                     people,
-                                                     completition,
-                                                     group,
-                                                     row,
-                                                     group);
+                ganttController->EditTaskOrMilestone(this, name, start, end, people, completition, group, entityIndex, group);
             }
+            else if(projectModel->GetTaskGroupAt(group)->GetEntityAt(entityIndex)->getEntityType() == Milestone_type &&
+                    !projectModel->GetTaskGroupAt(group)->GetEntityAt(entityIndex)->IsNew())
+            {
+                QString name = static_cast<Milestone*>(projectModel->GetTaskGroupAt(group)->GetEntityAt(entityIndex))->getName();
 
-            /*QString name = qvariant_cast<QString>(item->data( KDGantt::KDGanttRoleBase));
-            if(name == "")
-                name = projectModel->GetTaskGroupAt(group)->GetEntityAt(row)->getEntityType()
-            KDGantt::ItemType itemType = qvariant_cast<KDGantt::ItemType>(item->data(KDGantt::ItemTypeRole));
-            QDateTime start = qvariant_cast<QDateTime>(item->data( KDGantt::StartTimeRole));
-            QDateTime end = qvariant_cast<QDateTime>(item->data(KDGantt::EndTimeRole));
-            int completition = qvariant_cast<int>(item->data(KDGantt::TaskCompletionRole));
-            int pippo = 0;*/
+                QDateTime start = qvariant_cast<QDateTime>(item->data( KDGantt::StartTimeRole));
+                if(!start.isValid())
+                    start = static_cast<Milestone*>(projectModel->GetTaskGroupAt(group)->GetEntityAt(entityIndex))->getDateTime();
+
+                QStringList people = static_cast<Milestone*>(projectModel->GetTaskGroupAt(group)->GetEntityAt(entityIndex))->getPeople();
+
+                ganttController->EditTaskOrMilestone(this, name, start, people, group, entityIndex, group);
+            }
         }
-        else if (index.parent().isValid())
+        else if (index.parent().isValid() && !index.parent().parent().isValid())
         {
-            // Entity indipendente
-            /*int row = index.row();
-            QString name = qvariant_cast<QString>(item->data( KDGantt::KDGanttRoleBase));
-            KDGantt::ItemType itemType = qvariant_cast<KDGantt::ItemType>(item->data(KDGantt::ItemTypeRole));
-            QDateTime start = qvariant_cast<QDateTime>(item->data( KDGantt::StartTimeRole));
-            QDateTime end = qvariant_cast<QDateTime>(item->data(KDGantt::EndTimeRole));
-            int completition = qvariant_cast<int>(item->data(KDGantt::TaskCompletionRole));
-            int pippo = 0;*/
+            // Entity indipendente, correggo l'indice
+            entityIndex = index.row() - projectModel->GetTaskGroupListSize();
+
+            if(projectModel->GetEntityAt(entityIndex)->getEntityType() == Task_type &&
+                    !projectModel->GetEntityAt(entityIndex)->IsNew())
+            {
+                QString name = static_cast<Task*>(projectModel->GetEntityAt(entityIndex))->getName();
+
+                QDateTime start = qvariant_cast<QDateTime>(item->data( KDGantt::StartTimeRole));
+                if(!start.isValid())
+                    start = static_cast<Task*>(projectModel->GetEntityAt(entityIndex))->getStart();
+
+                QDateTime end = qvariant_cast<QDateTime>(item->data(KDGantt::EndTimeRole));
+                if(!end.isValid())
+                    end = static_cast<Task*>(projectModel->GetEntityAt(entityIndex))->getEnd();
+
+                int completition = static_cast<Task*>(projectModel->GetEntityAt(entityIndex))->getCompletition();
+
+                QStringList people = static_cast<Task*>(projectModel->GetEntityAt(entityIndex))->getPeople();
+
+                ganttController->EditTaskOrMilestone(this, name, start, end, people, completition, -1, entityIndex, -1);
+            }
+            else if(projectModel->GetEntityAt(entityIndex)->getEntityType() == Milestone_type &&
+                    !projectModel->GetEntityAt(entityIndex)->IsNew())
+            {
+                QString name = static_cast<Milestone*>(projectModel->GetEntityAt(entityIndex))->getName();
+
+                QDateTime start = qvariant_cast<QDateTime>(item->data( KDGantt::StartTimeRole));
+                if(!start.isValid())
+                    start = static_cast<Milestone*>(projectModel->GetEntityAt(entityIndex))->getDateTime();
+
+                QStringList people = static_cast<Milestone*>(projectModel->GetEntityAt(entityIndex))->getPeople();
+
+                ganttController->EditTaskOrMilestone(this, name, start, people, -1, entityIndex, -1);
+            }
         }
     }
 }
