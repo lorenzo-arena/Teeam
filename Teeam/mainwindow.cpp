@@ -109,18 +109,18 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
     newProject->attach(this);
     ganttController->NewProject(newProject);
 
-    QString temp = "C:\\Users\\laren\\Desktop\\Test_1.tmproj ";
-
-    if(temp != "")
-    //if(projectPath != "")
+    if(projectPath != "")
     {
         setCursor(Qt::WaitCursor);
-        if(ganttController->OpenFile(temp, this) != NO_ERROR)
+
+        // Deve essere messo per permettere l'aggiornamento della view
+        bEmptyProject = false;
+
+        if(ganttController->OpenFile(projectPath, this) != NO_ERROR)
         {
             bEmptyProject = true;
             setCursor(Qt::ArrowCursor);
             QMessageBox::warning(this, "Warning", "File not valid.", QMessageBox::Ok);
-            QCoreApplication::quit();
         }
         else
         {
