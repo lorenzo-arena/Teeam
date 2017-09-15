@@ -5,6 +5,7 @@
 
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
+#include <QFile>
 
 TeeamProject::TeeamProject(QString projectName, QList<QString> peopleList)
 {
