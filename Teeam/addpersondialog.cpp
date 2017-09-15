@@ -3,7 +3,7 @@
 
 #include <QMessageBox>
 
-AddPersonDialog::AddPersonDialog(QWidget *parent, Qt::WindowFlags f ) :
+AddPersonDialog::AddPersonDialog(QStringList people, QWidget *parent, Qt::WindowFlags f ) :
     QDialog(parent),
     ui(new Ui::AddPersonDialog)
 {
@@ -17,6 +17,8 @@ AddPersonDialog::AddPersonDialog(QWidget *parent, Qt::WindowFlags f ) :
     setWindowFlags(windowFlags() | Qt::Window);
 
     ui->personNamelineEdit->setFocus();
+
+    this->actualPeople = people;
 }
 
 AddPersonDialog::~AddPersonDialog()
@@ -48,6 +50,21 @@ void AddPersonDialog::on_okbutton_clicked()
     }
     else
     {
+        bool bAlreadyExist = false;
+        for( int index = 0; index < actualPeople.length(); index++)
+        {
+            if(editText == actualPeople.at(index))
+            {
+                bAlreadyExist = true;
+            }
+        }
+
+        if(bAlreadyExist)
+        {
+            QMessageBox::warning(this, "Error", "You must specify a different name for the new person.", QMessageBox::Ok);
+            return;
+        }
+
         personName = ui->personNamelineEdit->text();
         QDialog::accept();
     }

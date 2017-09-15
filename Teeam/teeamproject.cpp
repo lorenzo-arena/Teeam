@@ -30,15 +30,57 @@ void TeeamProject::setName(QString projectName)
     bChanged = false;
 }
 
-void TeeamProject::setPeopleList(QList<QString> peopleList)
+void TeeamProject::setPeopleList(QList<QString> newPeopleList)
 {
-    this->peopleList = peopleList;
+    peopleList = newPeopleList;
+
+    int index = 0;
+
+    while(index < peopleList.length())
+    {
+        if(index < newPeopleList.length())
+        {
+            if(peopleList.at(index) != newPeopleList.at(index))
+            {
+                searchPersonAndRemove(peopleList.at(index));
+                peopleList.removeAt(index);
+            }
+            else
+            {
+                index++;
+            }
+        }
+        else
+        {
+            searchPersonAndRemove(peopleList.at(index));
+            peopleList.removeAt(index);
+        }
+    }
+
+    // TODO : aggiungere istruzioni per l'update di tutto il progetto
+
     projectChanged = true;
     bChanged = true;
     if(!bSilentMode)
         notify();
     projectChanged = false;
     bChanged = false;
+}
+
+void TeeamProject::searchPersonAndRemove(QString personName)
+{
+    // TODO : creare algoritmo che si frulla tutti i task/milestone
+    //        sia fuori che dentro i gruppi e rimuove la persona se presente
+
+    for(int index = 0; index < entitiesList.length(); index++)
+    {
+        // TODO : aggiungere metodo nelle entities che rimuove la persona
+    }
+
+    for(int index = 0; index < taskGroupList.length(); index++)
+    {
+        // TODO : aggiungere metodo nei gruppi che chiede alle sue entities di rimuovere le persone
+    }
 }
 
 void TeeamProject::AddTaskGroup(TaskGroup *taskGroup)
@@ -128,7 +170,7 @@ void TeeamProject::ShowEntities()
         entitiesList.at(i)->setChanged(false);
 }
 
-void TeeamProject::SetBeforeCreation()
+void TeeamProject::setBeforeCreation()
 {
     SetNew(true);
 
@@ -143,7 +185,7 @@ void TeeamProject::SetBeforeCreation()
     }
 }
 
-void TeeamProject::ResetAfterCreation()
+void TeeamProject::resetAfterCreation()
 {
     SetNew(false);
 

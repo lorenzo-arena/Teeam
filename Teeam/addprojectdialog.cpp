@@ -97,14 +97,15 @@ bool AddProjectDialog::eventFilter(QObject* target, QEvent* event)
 
 void AddProjectDialog::on_addPersonButton_clicked()
 {
-    AddPersonDialog *dialog = new AddPersonDialog( this );
+    QStringList tempList = peopleModel.stringList();
+
+    AddPersonDialog *dialog = new AddPersonDialog( tempList, this );
     if ( dialog->exec() == QDialog::Rejected || !dialog ) {
         delete dialog;
         return;
     }
 
-    // Lo aggiungo alla seconda
-    QStringList tempList = peopleModel.stringList();
+    // Lo aggiungo alla lista
     tempList << dialog->GetPersonName();
     peopleModel.setStringList(tempList);
     ui->peoplelistView->setModel(&peopleModel);

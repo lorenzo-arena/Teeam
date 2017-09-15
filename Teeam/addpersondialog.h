@@ -14,7 +14,7 @@ class AddPersonDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddPersonDialog(QWidget *parent = 0, Qt::WindowFlags f = 0 );
+    explicit AddPersonDialog(QStringList people, QWidget *parent = 0, Qt::WindowFlags f = 0 );
     ~AddPersonDialog();
 
     QString GetPersonName() { return personName; }
@@ -29,6 +29,7 @@ private slots:
 private:
     Ui::AddPersonDialog *ui;
     QString personName;
+    QStringList actualPeople;
 };
 
 #endif // ADDPERSONDIALOG_H

@@ -42,8 +42,9 @@ private:
     const QString KEY_COMPLETITION = "completition";
 
 
-    void SetBeforeCreation();
-    void ResetAfterCreation();
+    void setBeforeCreation();
+    void resetAfterCreation();
+    void searchPersonAndRemove(QString personName);
 
 public:
     void AddTaskGroup(TaskGroup* taskGroup);
@@ -55,7 +56,7 @@ public:
     QString GetName() { return name; }
     QList<QString> GetPeopleList() { return peopleList; }
     void setName(QString projectName);
-    void setPeopleList(QList<QString> peopleList);
+    void setPeopleList(QList<QString> newPeopleList);
     void Show();
     bool IsNew() { return isNew; }
     void SetNew(bool b) { isNew = b; }
