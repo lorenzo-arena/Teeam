@@ -28,6 +28,7 @@ public:
 protected:
     void setNew(bool b) { isNew = b; }
     void setRemoved(bool b) { isRemoved = b; }
+    void searchAndRemovePerson(QString person);
     QColor color;
     QList<GenericTask*> dependecies;
     EntityType entityType; // La uso per distinguere tra Task e Milestone
