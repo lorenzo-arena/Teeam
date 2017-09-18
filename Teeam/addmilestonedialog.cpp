@@ -4,8 +4,8 @@
 #include <QDateTime>
 #include <QMessageBox>
 
-AddMilestoneDialog::AddMilestoneDialog(QList<QString> groupList, QList<QString> peopleList, QWidget *parent) :
-    QDialog(parent),
+AddMilestoneDialog::AddMilestoneDialog(QList<QString> groupList, QList<QString> peopleList, QWidget *parent, Qt::WindowFlags f) :
+    QDialog(parent, f),
     ui(new Ui::AddMilestoneDialog)
 {
     ui->setupUi(this);

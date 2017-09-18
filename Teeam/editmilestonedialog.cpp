@@ -4,8 +4,8 @@
 #include <QDateTime>
 #include <QMessageBox>
 
-EditMilestoneDialog::EditMilestoneDialog(QWidget *parent) :
-    QDialog(parent),
+EditMilestoneDialog::EditMilestoneDialog(QWidget *parent, Qt::WindowFlags f) :
+    QDialog(parent, f),
     ui(new Ui::EditMilestoneDialog)
 {
     ui->setupUi(this);
@@ -53,8 +53,8 @@ EditMilestoneDialog::EditMilestoneDialog(QWidget *parent) :
     ui->lineEdit->setFocus();*/
 }
 
-EditMilestoneDialog::EditMilestoneDialog(QString milestoneName, int group, QList<QString> milestoneGroups, QList<QString> milestonePeople, QList<QString> totalPeople, QDateTime start, QWidget *parent) :
-    QDialog(parent),
+EditMilestoneDialog::EditMilestoneDialog(QString milestoneName, int group, QList<QString> milestoneGroups, QList<QString> milestonePeople, QList<QString> totalPeople, QDateTime start, QWidget *parent, Qt::WindowFlags f) :
+    QDialog(parent, f),
     ui(new Ui::EditMilestoneDialog)
 {
     ui->setupUi(this);

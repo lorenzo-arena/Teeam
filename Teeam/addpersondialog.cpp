@@ -4,7 +4,7 @@
 #include <QMessageBox>
 
 AddPersonDialog::AddPersonDialog(QStringList people, QWidget *parent, Qt::WindowFlags f ) :
-    QDialog(parent),
+    QDialog(parent, f),
     ui(new Ui::AddPersonDialog)
 {
     ui->setupUi(this);
@@ -15,6 +15,7 @@ AddPersonDialog::AddPersonDialog(QStringList people, QWidget *parent, Qt::Window
 
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowFlags(windowFlags() | Qt::Window);
+    setWindowFlags(windowFlags() | f);
 
     ui->personNamelineEdit->setFocus();
 

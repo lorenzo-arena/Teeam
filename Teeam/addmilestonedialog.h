@@ -16,7 +16,7 @@ class AddMilestoneDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddMilestoneDialog(QList<QString> groupList, QList<QString> peopleList, QWidget *parent = 0);
+    explicit AddMilestoneDialog(QList<QString> groupList, QList<QString> peopleList, QWidget *parent = 0, Qt::WindowFlags f = 0 );
     ~AddMilestoneDialog();
     int GetSelectedGroup() { return selectedGroup - 1; } // L'indice è zero-based
     QString GetMilestoneName() { return name; }

@@ -16,7 +16,7 @@ class AddTaskDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddTaskDialog(QList<QString> groupList, QList<QString> peopleList, QWidget *parent = 0);
+    explicit AddTaskDialog(QList<QString> groupList, QList<QString> peopleList, QWidget *parent = 0, Qt::WindowFlags f = 0 );
     ~AddTaskDialog();
     int GetSelectedGroup() { return selectedGroup - 1; } // L'indice è zero-based
     QString GetTaskName() { return name; }

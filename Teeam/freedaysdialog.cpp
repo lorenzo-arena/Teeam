@@ -4,8 +4,8 @@
 #include <QColorDialog>
 #include <QBrush>
 
-FreeDaysDialog::FreeDaysDialog(Days days, QColor color, QWidget *parent) :
-    QDialog(parent),
+FreeDaysDialog::FreeDaysDialog(Days days, QColor color, QWidget *parent, Qt::WindowFlags f) :
+    QDialog(parent, f),
     ui(new Ui::FreeDaysDialog)
 {
     ui->setupUi(this);

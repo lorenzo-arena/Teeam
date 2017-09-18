@@ -4,8 +4,8 @@
 #include <QDateTime>
 #include <QMessageBox>
 
-EditTaskDialog::EditTaskDialog(TeeamProject *project, QWidget *parent) :
-    QDialog(parent),
+EditTaskDialog::EditTaskDialog(TeeamProject *project, QWidget *parent, Qt::WindowFlags f) :
+    QDialog(parent, f),
     ui(new Ui::EditTaskDialog)
 {
     ui->setupUi(this);
@@ -53,8 +53,8 @@ EditTaskDialog::EditTaskDialog(TeeamProject *project, QWidget *parent) :
     ui->lineEdit->setFocus();*/
 }
 
-EditTaskDialog::EditTaskDialog(QString taskName, int group, QList<QString> taskGroups, QList<QString> taskPeople, QList<QString> totalPeople, QDateTime start, QDateTime end, int completition, QWidget *parent) :
-    QDialog(parent),
+EditTaskDialog::EditTaskDialog(QString taskName, int group, QList<QString> taskGroups, QList<QString> taskPeople, QList<QString> totalPeople, QDateTime start, QDateTime end, int completition, QWidget *parent, Qt::WindowFlags f) :
+    QDialog(parent, f),
     ui(new Ui::EditTaskDialog)
 {
     ui->setupUi(this);

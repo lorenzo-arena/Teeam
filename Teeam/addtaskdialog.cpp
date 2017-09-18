@@ -4,8 +4,8 @@
 #include <QDateTime>
 #include <QMessageBox>
 
-AddTaskDialog::AddTaskDialog(QList<QString> groupList, QList<QString> peopleList, QWidget *parent) :
-    QDialog(parent),
+AddTaskDialog::AddTaskDialog(QList<QString> groupList, QList<QString> peopleList, QWidget *parent, Qt::WindowFlags f) :
+    QDialog(parent, f),
     ui(new Ui::AddTaskDialog)
 {
     ui->setupUi(this);

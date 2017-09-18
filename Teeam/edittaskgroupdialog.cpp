@@ -4,7 +4,7 @@
 #include <QMessageBox>
 
 EditTaskGroupDialog::EditTaskGroupDialog(const QList<QString>& groups, QWidget *parent, int selectedGroup, Qt::WindowFlags f) :
-    QDialog(parent),
+    QDialog(parent, f),
     ui(new Ui::EditTaskGroupDialog)
 {
     ui->setupUi(this);

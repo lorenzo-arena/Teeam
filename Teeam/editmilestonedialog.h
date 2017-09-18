@@ -22,8 +22,8 @@ class EditMilestoneDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit EditMilestoneDialog(QWidget *parent = 0);
-    explicit EditMilestoneDialog(QString milestoneName, int group, QList<QString> milestoneGroups, QList<QString> milestonePeople, QList<QString> totalPeople, QDateTime start, QWidget *parent = 0);
+    explicit EditMilestoneDialog(QWidget *parent = 0, Qt::WindowFlags f = 0 );
+    explicit EditMilestoneDialog(QString milestoneName, int group, QList<QString> milestoneGroups, QList<QString> milestonePeople, QList<QString> totalPeople, QDateTime start, QWidget *parent = 0, Qt::WindowFlags f = 0 );
     ~EditMilestoneDialog();
     int GetSelectedGroup() { return selectedGroup - 1; } // L'indice è zero-based
     QString GetMilestoneName() { return name; }

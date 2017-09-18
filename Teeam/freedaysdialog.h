@@ -15,7 +15,7 @@ class FreeDaysDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit FreeDaysDialog(Days days, QColor color, QWidget *parent = 0);
+    explicit FreeDaysDialog(Days days, QColor color, QWidget *parent = 0, Qt::WindowFlags f = 0 );
     ~FreeDaysDialog();
     Days GetSelectedDays();
     QColor GetSelectedColor();
