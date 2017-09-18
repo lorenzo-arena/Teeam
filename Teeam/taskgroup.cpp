@@ -45,3 +45,11 @@ void TaskGroup::resetAfterCreation()
     for (int i = 0; i < taskList.length(); i++)
         taskList.at(i)->setNew(false);
 }
+
+void TaskGroup::searchAndRemovePerson(QString person)
+{
+    for(int index = 0; index < taskList.length(); index++)
+    {
+        taskList.at(index)->searchAndRemovePerson(person);
+    }
+}

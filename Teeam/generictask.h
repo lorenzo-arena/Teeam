@@ -28,7 +28,15 @@ public:
 protected:
     void setNew(bool b) { isNew = b; }
     void setRemoved(bool b) { isRemoved = b; }
-    void searchAndRemovePerson(QString person);
+    void searchAndRemovePerson(QString person)
+    {
+        for(int index = 0; index < people.length(); index++)
+        {
+            if(people.at(index) == person)
+                people.removeAt(index);
+        }
+    }
+
     QColor color;
     QList<GenericTask*> dependecies;
     EntityType entityType; // La uso per distinguere tra Task e Milestone

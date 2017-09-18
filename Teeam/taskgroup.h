@@ -39,6 +39,7 @@ protected:
     void RemoveEntityAt(int index) { taskList.removeAt(index); } 
     void setBeforeCreation();
     void resetAfterCreation();
+    void searchAndRemovePerson(QString person);
 };
 
 #endif // TASKGROUP_H

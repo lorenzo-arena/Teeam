@@ -15,8 +15,6 @@ int main(int argc, char *argv[])
 
     FreeDaysModel freeDays;
 
-    // TODO : add project initialization
-
     QString projectFilePath = "";
 
     // Sto aprendo un file con il programma

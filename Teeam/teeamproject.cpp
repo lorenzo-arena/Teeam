@@ -32,8 +32,6 @@ void TeeamProject::setName(QString projectName)
 
 void TeeamProject::setPeopleList(QList<QString> newPeopleList)
 {
-    peopleList = newPeopleList;
-
     int index = 0;
 
     while(index < peopleList.length())
@@ -57,7 +55,7 @@ void TeeamProject::setPeopleList(QList<QString> newPeopleList)
         }
     }
 
-    // TODO : aggiungere istruzioni per l'update di tutto il progetto
+    peopleList = newPeopleList;
 
     projectChanged = true;
     bChanged = true;
@@ -65,21 +63,23 @@ void TeeamProject::setPeopleList(QList<QString> newPeopleList)
         notify();
     projectChanged = false;
     bChanged = false;
+
+ // TODO : aggiungere istruzioni per l'update di tutto il progetto
+
+    ShowGroups();
+    ShowEntities();
 }
 
 void TeeamProject::searchPersonAndRemove(QString personName)
 {
-    // TODO : creare algoritmo che si frulla tutti i task/milestone
-    //        sia fuori che dentro i gruppi e rimuove la persona se presente
-
     for(int index = 0; index < entitiesList.length(); index++)
     {
-        // TODO : aggiungere metodo nelle entities che rimuove la persona
+        entitiesList.at(index)->searchAndRemovePerson(personName);
     }
 
     for(int index = 0; index < taskGroupList.length(); index++)
     {
-        // TODO : aggiungere metodo nei gruppi che chiede alle sue entities di rimuovere le persone
+        taskGroupList.at(index)->searchAndRemovePerson(personName);
     }
 }
 
@@ -652,7 +652,7 @@ int TeeamProject::OpenFile(const QString filename, AbstractView *view)
 
     bSilentMode = false;
 
-    SetBeforeCreation();
+    setBeforeCreation();
 
     Show();
 
@@ -660,7 +660,7 @@ int TeeamProject::OpenFile(const QString filename, AbstractView *view)
 
     ShowEntities();
 
-    ResetAfterCreation();
+    resetAfterCreation();
 
     this->projectChanged = false;
 

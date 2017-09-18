@@ -145,7 +145,7 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
 
 MainWindow::~MainWindow()
 {
-    if(dateTimeGrid != nullptr)
+    /*if(dateTimeGrid != nullptr)
     {
         delete dateTimeGrid;
     }
@@ -173,7 +173,9 @@ MainWindow::~MainWindow()
     if(projectModel != nullptr)
     {
         delete projectModel;
-    }
+    }*/
+
+    // TODO : risistemare pulizia risorse
 
     delete ui;
 }
