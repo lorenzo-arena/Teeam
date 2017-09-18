@@ -125,7 +125,7 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
         else
         {
             // È terminato il caricamento
-            EnableMenu();
+            enableMenu();
             bEmptyProject = false;
             setCursor(Qt::ArrowCursor);
         }
@@ -271,7 +271,7 @@ void MainWindow::UpdateView()
 {
     if(freeDaysModel->isChanged())
     {
-        UpdateFreeDaysView();
+        updateFreeDaysView();
     }
 
     if(!bEmptyProject)
@@ -280,18 +280,18 @@ void MainWindow::UpdateView()
         {
             if(projectModel->IsProjectChanged())
             {
-                UpdateProjectView();
+                updateProjectView();
             }
 
             if(projectModel->IsTaskGroupChanged())
             {
-                UpdateTaskGroupView();
+                updateTaskGroupView();
             }
 
             // TODO : refactor??
             if(projectModel->IsEntitiesListChanged())
             {
-                UpdateEntitiesView();
+                updateEntitiesView();
             }
         }
     }
@@ -303,7 +303,7 @@ void MainWindow::UpdateView()
     return;
 }
 
-void MainWindow::UpdateFreeDaysView()
+void MainWindow::updateFreeDaysView()
 {
     QSet<Qt::DayOfWeek> days;
     if(freeDaysModel->GetFreeDays().bMonday)
@@ -327,7 +327,7 @@ void MainWindow::UpdateFreeDaysView()
     dateTimeGrid->setFreeDaysBrush(brush);
 }
 
-void MainWindow::UpdateProjectView()
+void MainWindow::updateProjectView()
 {
     // Abilito la scrollbar verticale
     ui->ganttView->graphicsView()->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
@@ -373,7 +373,7 @@ void MainWindow::UpdateProjectView()
     //leftView->expand(viewModel->index( 0, 0 ));
 }
 
-void MainWindow::UpdateTaskGroupView()
+void MainWindow::updateTaskGroupView()
 {
     for(int i = 0; i < projectModel->GetTaskGroupListSize(); i++)
     {
@@ -478,7 +478,7 @@ void MainWindow::UpdateTaskGroupView()
     }
 }
 
-void MainWindow::UpdateEntitiesView()
+void MainWindow::updateEntitiesView()
 {
     for(int i = 0; i < projectModel->GetEntitiesListSize(); i++)
     {
@@ -542,7 +542,7 @@ void MainWindow::UpdateEntitiesView()
     }
 }
 
-void MainWindow::EnableMenu()
+void MainWindow::enableMenu()
 {
     // Abilito alcune voci del menu
     ui->action_Save_as->setEnabled(true);
@@ -586,15 +586,12 @@ void MainWindow::on_actionNew_Project_triggered()
         }
         else if(result == QMessageBox::No)
         {
-            DeleteProject();
+            deleteProject();
         }
         else if(result == QMessageBox::Yes)
         {
-            // Fare in modo che se scelgo di salvare e poi premo cancel nella
-            // dialog di salvataggio si annulla tutto (adesso invece non salvo il proj
-            // e lo cancello)
-            on_action_Save_as_triggered();
-            DeleteProject();
+            if(projectSaveAs())
+                deleteProject();
         }
     }
 
@@ -611,7 +608,7 @@ void MainWindow::on_actionNew_Project_triggered()
     ganttController->NewProject(newProject);
 
     // Abilito alcune voci del menu 
-    EnableMenu();
+    enableMenu();
 
     delete dialog;
     return;
@@ -741,7 +738,7 @@ void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
 	QString text = "DoubleClicked row: " + QString::number(index.row()) + "; column: " + QString::number(index.column());
     qDebug() << text;
 
-    EditEntityAtIndex(index);
+    editEntityAtIndex(index);
 }
 
 void MainWindow::on_actionTreeView_rightclick(const QPoint &point)
@@ -760,11 +757,11 @@ void MainWindow::on_actionTreeView_rightclick(const QPoint &point)
         {
             if( selectedVoice->text() == editText )
             {
-                EditEntityAtIndex(index);
+                editEntityAtIndex(index);
             }
             else if( selectedVoice->text() == removeText )
             {
-                RemoveEntityFromIndex(index);
+                removeEntityFromIndex(index);
             }
             else
             {
@@ -780,10 +777,10 @@ void MainWindow::on_actionTreeView_rightclick(const QPoint &point)
 
 void MainWindow::on_actionTreeView_del(const QModelIndex &index)
 {
-    RemoveEntityFromIndex(index);
+    removeEntityFromIndex(index);
 }
 
-void MainWindow::EditEntityAtIndex(const QModelIndex index)
+void MainWindow::editEntityAtIndex(const QModelIndex index)
 {
     if(index.row() == 0 && index.column() == 0 && !index.parent().isValid())
     {
@@ -935,7 +932,7 @@ void MainWindow::EditEntityAtIndex(const QModelIndex index)
     }
 }
 
-void MainWindow::RemoveEntityFromIndex(const QModelIndex index)
+void MainWindow::removeEntityFromIndex(const QModelIndex index)
 {
     if(index.isValid())
     {
@@ -968,7 +965,7 @@ void MainWindow::RemoveEntityFromIndex(const QModelIndex index)
     }
 }
 
-void MainWindow::DeleteProject()
+void MainWindow::deleteProject()
 {
     // TODO : refactor
     QStringList list;
@@ -1069,6 +1066,11 @@ void MainWindow::on_action_Edit_Milestone_triggered()
 
 void MainWindow::on_action_Save_as_triggered()
 {
+    projectSaveAs();
+}
+
+bool MainWindow::projectSaveAs()
+{
     QString filename = QFileDialog::getSaveFileName(this,
                                        tr("Save Teeam Project"), ".",
                                        tr("Teeam files (*.tmproj)"));
@@ -1077,8 +1079,11 @@ void MainWindow::on_action_Save_as_triggered()
     if(filename != "")
     {
         ganttController->SaveProjectAs(filename);
+        setCursor(Qt::ArrowCursor);
+        return true;
     }
     setCursor(Qt::ArrowCursor);
+    return false;
 }
 
 void MainWindow::on_actionOpen_File_triggered()
@@ -1089,26 +1094,26 @@ void MainWindow::on_actionOpen_File_triggered()
 
     setCursor(Qt::WaitCursor);
 
-    DeleteProject();
+    deleteProject();
     bEmptyProject = false;
 
     if(ganttController->OpenFile(filename, this) != NO_ERROR)
     {
-        DeleteProject();
+        deleteProject();
         bEmptyProject = true;
         QMessageBox::warning(this, "Warning", "File not valid.");
     }
     else
     {
         // È terminato il caricamento
-        EnableMenu();
+        enableMenu();
     }
 
     setCursor(Qt::ArrowCursor);
     return;
 }
 
-QMessageBox::StandardButton MainWindow::on_action_Close_Project_triggered()
+void MainWindow::on_action_Close_Project_triggered()
 {
     if(!bEmptyProject)
     {
@@ -1120,20 +1125,19 @@ QMessageBox::StandardButton MainWindow::on_action_Close_Project_triggered()
                                                           QMessageBox::Cancel);
 
         if(result == QMessageBox::Cancel)
-            return QMessageBox::Cancel;
+            return;
         else if(result == QMessageBox::No)
         {
-            DeleteProject();
-            return QMessageBox::No;
+            deleteProject();
         }
         else if(result == QMessageBox::Yes)
         {
-            on_action_Save_as_triggered();
-            DeleteProject();
-            return QMessageBox::Yes;
+            if(projectSaveAs())
+            {
+                deleteProject();
+            }
         }
     }
-    return QMessageBox::No;
 }
 
 //********** Metodi per l'override degli eventi **********
@@ -1159,36 +1163,61 @@ bool MainWindow::eventFilter(QObject* target, QEvent* event)
 
 void MainWindow::closeEvent(QCloseEvent *eventArgs)
 {
+    // Richiedo se si vuole salvare il file
+    if(!bEmptyProject)
+    {
+        QMessageBox::StandardButton result = QMessageBox::information(this,
+                                                          "Warning",
+                                                          "Do you want to save the project?",
+                                                          QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
+                                                          QMessageBox::Cancel);
+
+        if(result == QMessageBox::Cancel)
+        {
+            eventArgs->ignore();
+            return;
+        }
+        else if(result == QMessageBox::No)
+        {
+            deleteProject();
+        }
+        else if(result == QMessageBox::Yes)
+        {
+            if(projectSaveAs())
+            {
+                deleteProject();
+            }
+            else
+            {
+                eventArgs->ignore();
+                return;
+            }
+        }
+    }
+
     QSettings settings;
 
-    QMessageBox::StandardButton result =  on_action_Close_Project_triggered();
+    settings.beginGroup(REG_KEY_MAINWINDOW);
+    settings.setValue(REG_KEY_MAINWINDOW_MAXIMIZED, isMaximized());
+    settings.setValue(REG_KEY_MAINWINDOW_SIZE, size());
+    settings.endGroup();
 
-    if(result != QMessageBox::Cancel)
-    {
-        settings.beginGroup(REG_KEY_MAINWINDOW);
-        settings.setValue(REG_KEY_MAINWINDOW_MAXIMIZED, isMaximized());
-        settings.setValue(REG_KEY_MAINWINDOW_SIZE, size());
-        settings.endGroup();
+    settings.beginGroup(REG_KEY_DATETIMEVIEW);
+    settings.beginGroup(REG_KEY_DATETIMEVIEW_FREEDAYSGROUP);
+    settings.setValue(REG_KEY_DATETIMEVIEW_MON, dateTimeGrid->freeDays().contains(Qt::Monday));
+    settings.setValue(REG_KEY_DATETIMEVIEW_TUE, dateTimeGrid->freeDays().contains(Qt::Tuesday));
+    settings.setValue(REG_KEY_DATETIMEVIEW_WED, dateTimeGrid->freeDays().contains(Qt::Wednesday));
+    settings.setValue(REG_KEY_DATETIMEVIEW_THU, dateTimeGrid->freeDays().contains(Qt::Thursday));
+    settings.setValue(REG_KEY_DATETIMEVIEW_FRI, dateTimeGrid->freeDays().contains(Qt::Friday));
+    settings.setValue(REG_KEY_DATETIMEVIEW_SAT, dateTimeGrid->freeDays().contains(Qt::Saturday));
+    settings.setValue(REG_KEY_DATETIMEVIEW_SUN, dateTimeGrid->freeDays().contains(Qt::Sunday));
+    settings.setValue(REG_KEY_DATETIMEVIEW_COLOR, dateTimeGrid->freeDaysBrush().color());
+    settings.endGroup();
+    settings.setValue(REG_KEY_DATETIMEVIEW_DAYWIDTH, dateTimeGrid->dayWidth());
+    settings.setValue(REG_KEY_DATETIMEVIEW_SCALE, dateTimeGrid->scale());
+    settings.endGroup();
 
-        settings.beginGroup(REG_KEY_DATETIMEVIEW);
-        settings.beginGroup(REG_KEY_DATETIMEVIEW_FREEDAYSGROUP);
-        settings.setValue(REG_KEY_DATETIMEVIEW_MON, dateTimeGrid->freeDays().contains(Qt::Monday));
-        settings.setValue(REG_KEY_DATETIMEVIEW_TUE, dateTimeGrid->freeDays().contains(Qt::Tuesday));
-        settings.setValue(REG_KEY_DATETIMEVIEW_WED, dateTimeGrid->freeDays().contains(Qt::Wednesday));
-        settings.setValue(REG_KEY_DATETIMEVIEW_THU, dateTimeGrid->freeDays().contains(Qt::Thursday));
-        settings.setValue(REG_KEY_DATETIMEVIEW_FRI, dateTimeGrid->freeDays().contains(Qt::Friday));
-        settings.setValue(REG_KEY_DATETIMEVIEW_SAT, dateTimeGrid->freeDays().contains(Qt::Saturday));
-        settings.setValue(REG_KEY_DATETIMEVIEW_SUN, dateTimeGrid->freeDays().contains(Qt::Sunday));
-        settings.setValue(REG_KEY_DATETIMEVIEW_COLOR, dateTimeGrid->freeDaysBrush().color());
-        settings.endGroup();
-        settings.setValue(REG_KEY_DATETIMEVIEW_DAYWIDTH, dateTimeGrid->dayWidth());
-        settings.setValue(REG_KEY_DATETIMEVIEW_SCALE, dateTimeGrid->scale());
-        settings.endGroup();
-
-        eventArgs->accept();
-    }
-    else
-        eventArgs->ignore();
+    eventArgs->accept();
 }
 
 

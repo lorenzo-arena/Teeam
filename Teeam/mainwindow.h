@@ -61,13 +61,11 @@ private slots:
     void on_action_Edit_Task_Group_triggered();
     void on_action_Edit_Task_triggered();
     void on_action_Edit_Milestone_triggered();
+    void on_action_Save_as_triggered();
+    void on_actionOpen_File_triggered();
+    void on_action_Close_Project_triggered();
     bool eventFilter(QObject *target, QEvent *event);
     void closeEvent(QCloseEvent *eventArgs);
-    void on_action_Save_as_triggered();
-
-    void on_actionOpen_File_triggered();
-
-    QMessageBox::StandardButton on_action_Close_Project_triggered();
 
 private:
     void initGanttView();
@@ -102,14 +100,15 @@ private:
     const QString REG_KEY_DATETIMEVIEW_SUN = "sun";
     const QString REG_KEY_DATETIMEVIEW_COLOR = "color";
 
-    void UpdateFreeDaysView();
-    void UpdateProjectView();
-    void UpdateTaskGroupView();
-    void UpdateEntitiesView();
-    void DeleteProject();
-    void EnableMenu();
-    void EditEntityAtIndex(const QModelIndex index);
-    void RemoveEntityFromIndex(const QModelIndex index);
+    void updateFreeDaysView();
+    void updateProjectView();
+    void updateTaskGroupView();
+    void updateEntitiesView();
+    void deleteProject();
+    void enableMenu();
+    void editEntityAtIndex(const QModelIndex index);
+    void removeEntityFromIndex(const QModelIndex index);
+    bool projectSaveAs();
 };
 
 #endif // MAINWINDOW_H

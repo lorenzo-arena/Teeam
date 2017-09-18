@@ -15,9 +15,7 @@ EditTaskDialog::EditTaskDialog(TeeamProject *project, QWidget *parent) :
 
     // TODO : implementare!
 
-
     /*
-
     this->project = *project;
 
     // Setto i vari elementi della dialog
@@ -76,6 +74,7 @@ EditTaskDialog::EditTaskDialog(QString taskName, int group, QList<QString> taskG
         ui->baseGroupcomboBox->addItem(taskGroups.at(this->selectedGroup));
     else
         ui->baseGroupcomboBox->addItem("None");
+
     ui->baseGroupcomboBox->setCurrentIndex(0);
     ui->baseGroupcomboBox->setEnabled(false);
 
@@ -86,8 +85,10 @@ EditTaskDialog::EditTaskDialog(QString taskName, int group, QList<QString> taskG
     ui->lineEdit->setText(taskName);
 
     ui->taskGroupcomboBox->addItem("None");
+
     for (int i = 0; i < taskGroups.length(); i++)
         ui->taskGroupcomboBox->addItem(taskGroups.at(i));
+
     if(group >= 0)
         ui->taskGroupcomboBox->setCurrentIndex(group + 1);
     else
