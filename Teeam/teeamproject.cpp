@@ -11,7 +11,7 @@ TeeamProject::TeeamProject(QString projectName, QList<QString> peopleList)
 {
     this->name = projectName;
     this->peopleList = peopleList;
-    this->bChanged = false;
+    this->changed = false;
     this->projectChanged = false;
     this->taskGroupChanged = false;
 	this->entitiesListChanged = false;
@@ -23,11 +23,11 @@ void TeeamProject::setName(QString projectName)
 {
     this->name = projectName;
     projectChanged = true;
-    bChanged = true;
+    changed = true;
     if(!bSilentMode)
         notify();
     projectChanged = false;
-    bChanged = false;
+    changed = false;
 }
 
 void TeeamProject::setPeopleList(QList<QString> newPeopleList)
@@ -58,11 +58,11 @@ void TeeamProject::setPeopleList(QList<QString> newPeopleList)
     peopleList = newPeopleList;
 
     projectChanged = true;
-    bChanged = true;
+    changed = true;
     if(!bSilentMode)
         notify();
     projectChanged = false;
-    bChanged = false;
+    changed = false;
 
  // TODO : aggiungere istruzioni per l'update di tutto il progetto
 
@@ -87,11 +87,11 @@ void TeeamProject::AddTaskGroup(TaskGroup *taskGroup)
 {
     taskGroupList.append(taskGroup);
     taskGroupChanged = true;
-    bChanged = true;
+    changed = true;
     if(!bSilentMode)
         notify();
     taskGroupChanged = false;
-    bChanged = false;
+    changed = false;
     taskGroup->setNew(false);
 }
 
@@ -99,11 +99,11 @@ void TeeamProject::AddTaskOrMilestone(GenericTask *entity)
 {
     entitiesList.append(entity);
     entitiesListChanged = true;
-    bChanged = true;
+    changed = true;
     if(!bSilentMode)
         notify();
     entitiesListChanged = false;
-    bChanged = false;
+    changed = false;
     entity->setNew(false);
 }
 
@@ -114,12 +114,12 @@ void TeeamProject::AddTaskOrMilestoneToGroup(GenericTask *entity, int groupIndex
 		taskGroupList.at(groupIndex)->AddTask(entity);
 		taskGroupList.at(groupIndex)->setChanged(true);
 		taskGroupChanged = true;
-		bChanged = true;
+		changed = true;
         if(!bSilentMode)
             notify();
 		taskGroupList.at(groupIndex)->setChanged(false);
 		taskGroupChanged = false;
-		bChanged = false;
+		changed = false;
 		entity->setNew(false);
 	}
 }
@@ -128,18 +128,18 @@ void TeeamProject::AddTaskOrMilestoneToGroup(GenericTask *entity, int groupIndex
 void TeeamProject::Show()
 {
     projectChanged = true;
-    bChanged = true;
+    changed = true;
     if(!bSilentMode)
         notify();
     projectChanged = false;
-    bChanged = false;
+    changed = false;
 }
 
 void TeeamProject::ShowGroups()
 {
     // TODO : refactor!!
     taskGroupChanged = true;
-    bChanged = true;
+    changed = true;
     for(int i = 0; i < taskGroupList.length(); i++)
         taskGroupList.at(i)->setChanged(true);
 
@@ -147,7 +147,7 @@ void TeeamProject::ShowGroups()
         notify();
 
     taskGroupChanged = false;
-    bChanged = false;
+    changed = false;
     for(int i = 0; i < taskGroupList.length(); i++)
         taskGroupList.at(i)->setChanged(false);
 }
@@ -157,7 +157,7 @@ void TeeamProject::ShowEntities()
     // In un colpo solo le faccio vedere tutte
     // perché nel model ho un ciclo
     entitiesListChanged = true;
-    bChanged = true;
+    changed = true;
     for(int i = 0; i < entitiesList.length(); i++)
         entitiesList.at(i)->setChanged(true);
 
@@ -165,7 +165,7 @@ void TeeamProject::ShowEntities()
         notify();
 
     entitiesListChanged = false;
-    bChanged = false;
+    changed = false;
     for(int i = 0; i < entitiesList.length(); i++)
         entitiesList.at(i)->setChanged(false);
 }
@@ -205,12 +205,12 @@ void TeeamProject::RemoveTaskGroup(int index)
     if(index < taskGroupList.length())
     {
         taskGroupChanged = true;
-        bChanged = true;
+        changed = true;
         taskGroupList.at(index)->setRemoved(true);
         if(!bSilentMode)
             notify();
         taskGroupChanged = false;
-        bChanged = false;
+        changed = false;
         taskGroupList.removeAt(index);
     }
 }
@@ -223,12 +223,12 @@ void TeeamProject::RemoveTaskOrMilestone(int index, int parent)
         if(index < entitiesList.length())
         {
             entitiesListChanged = true;
-            bChanged = true;
+            changed = true;
             entitiesList.at(index)->setRemoved(true);
             if(!bSilentMode)
                 notify();
             entitiesListChanged = false;
-            bChanged = false;
+            changed = false;
             entitiesList.removeAt(index);
         }
     }
@@ -238,15 +238,15 @@ void TeeamProject::RemoveTaskOrMilestone(int index, int parent)
         if(index < taskGroupList.at(parent)->GetEntitiesListSize())
         {
             taskGroupChanged = true;
-            bChanged = true;
+            changed = true;
             taskGroupList.at(parent)->setChanged(true);
             taskGroupList.at(parent)->GetEntityAt(index)->setRemoved(true);
             if(!bSilentMode)
                 notify();
             taskGroupChanged = false;
-            bChanged = false;
+            changed = false;
             taskGroupList.at(parent)->setChanged(false);
-            taskGroupList.at(parent)->RemoveEntityAt(index);
+            taskGroupList.at(parent)->removeEntityAt(index);
         }
     }
 }
@@ -261,11 +261,11 @@ void TeeamProject::EditTaskOrMilestone(GenericTask *entity, int index, int paren
             entity->setNew(false);
             entity->setChanged(true);
             entitiesListChanged = true;
-            bChanged = true;
+            changed = true;
             if(!bSilentMode)
                 notify();
             entitiesListChanged = false;
-            bChanged = false;
+            changed = false;
             entity->setChanged(false);
         }
     }
@@ -275,17 +275,17 @@ void TeeamProject::EditTaskOrMilestone(GenericTask *entity, int index, int paren
         {
             if(index < taskGroupList.at(parent)->GetEntitiesListSize())
             {
-                taskGroupList.at(parent)->ReplaceEntity(index, entity);
+                taskGroupList.at(parent)->replaceEntity(index, entity);
                 entity->setNew(false);
                 entity->setChanged(true);
                 taskGroupList.at(parent)->setChanged(true);
                 taskGroupChanged = true;
-                bChanged = true;
+                changed = true;
                 if(!bSilentMode)
                     notify();
                 taskGroupList.at(parent)->setChanged(false);
                 taskGroupChanged = false;
-                bChanged = false;
+                changed = false;
                 entity->setChanged(false);
             }
         }
@@ -323,30 +323,30 @@ void TeeamProject::SaveProjectAs(const QString filename)
         for(int i = 0; i < GetTaskGroupListSize(); i++)
         {
             xmlWriter.writeStartElement(KEY_GROUP);
-            xmlWriter.writeTextElement(KEY_NAME, GetTaskGroupAt(i)->getName() );
+            xmlWriter.writeTextElement(KEY_NAME, GetTaskGroupAt(i)->GetName() );
             for(int j = 0; j < GetTaskGroupAt(i)->GetEntitiesListSize(); j++)
             {
                 xmlWriter.writeStartElement(KEY_ENTITY);
                 if(GetTaskGroupAt(i)->GetEntityAt(j)->getEntityType() == Task_type)
                 {
                     xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_TASKTYPE);
-                    xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(GetTaskGroupAt(i)->GetEntityAt(j))->getName());
+                    xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(GetTaskGroupAt(i)->GetEntityAt(j))->GetName());
 
-                    for(int k = 0; k < static_cast<Task*>(GetTaskGroupAt(i)->GetEntityAt(j))->getPeople().length(); k++)
-                        xmlWriter.writeTextElement(KEY_PERSON, static_cast<Task*>(GetTaskGroupAt(i)->GetEntityAt(j))->getPeople().at(k));
+                    for(int k = 0; k < static_cast<Task*>(GetTaskGroupAt(i)->GetEntityAt(j))->GetPeople().length(); k++)
+                        xmlWriter.writeTextElement(KEY_PERSON, static_cast<Task*>(GetTaskGroupAt(i)->GetEntityAt(j))->GetPeople().at(k));
 
-                    xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Task*>(GetTaskGroupAt(i)->GetEntityAt(j))->getStart().toString());
-                    xmlWriter.writeTextElement(KEY_ENDDATETIME, static_cast<Task*>(GetTaskGroupAt(i)->GetEntityAt(j))->getEnd().toString());
+                    xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Task*>(GetTaskGroupAt(i)->GetEntityAt(j))->GetStart().toString());
+                    xmlWriter.writeTextElement(KEY_ENDDATETIME, static_cast<Task*>(GetTaskGroupAt(i)->GetEntityAt(j))->GetEnd().toString());
 
-                    xmlWriter.writeTextElement(KEY_COMPLETITION, QString::number(static_cast<Task*>(GetTaskGroupAt(i)->GetEntityAt(j))->getCompletition()));
+                    xmlWriter.writeTextElement(KEY_COMPLETITION, QString::number(static_cast<Task*>(GetTaskGroupAt(i)->GetEntityAt(j))->GetCompletition()));
                 }
                 else if(GetTaskGroupAt(i)->GetEntityAt(j)->getEntityType() == Milestone_type)
                 {
                     xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_MILESTONETYPE);
-                    xmlWriter.writeTextElement(KEY_NAME, static_cast<Milestone*>(GetTaskGroupAt(i)->GetEntityAt(j))->getName());
+                    xmlWriter.writeTextElement(KEY_NAME, static_cast<Milestone*>(GetTaskGroupAt(i)->GetEntityAt(j))->GetName());
 
-                    for(int k = 0; k < static_cast<Milestone*>(GetTaskGroupAt(i)->GetEntityAt(j))->getPeople().length(); k++)
-                        xmlWriter.writeTextElement(KEY_PERSON, static_cast<Milestone*>(GetTaskGroupAt(i)->GetEntityAt(j))->getPeople().at(k));
+                    for(int k = 0; k < static_cast<Milestone*>(GetTaskGroupAt(i)->GetEntityAt(j))->GetPeople().length(); k++)
+                        xmlWriter.writeTextElement(KEY_PERSON, static_cast<Milestone*>(GetTaskGroupAt(i)->GetEntityAt(j))->GetPeople().at(k));
 
                     xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Milestone*>(GetTaskGroupAt(i)->GetEntityAt(j))->getDateTime().toString());
                 }
@@ -362,23 +362,23 @@ void TeeamProject::SaveProjectAs(const QString filename)
             if(GetEntityAt(i)->getEntityType() == Task_type)
             {
                 xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_TASKTYPE);
-                xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(GetEntityAt(i))->getName());
+                xmlWriter.writeTextElement(KEY_NAME, static_cast<Task*>(GetEntityAt(i))->GetName());
 
-                for(int k = 0; k < static_cast<Task*>(GetEntityAt(i))->getPeople().length(); k++)
-                    xmlWriter.writeTextElement(KEY_PERSON, static_cast<Task*>(GetEntityAt(i))->getPeople().at(k));
+                for(int k = 0; k < static_cast<Task*>(GetEntityAt(i))->GetPeople().length(); k++)
+                    xmlWriter.writeTextElement(KEY_PERSON, static_cast<Task*>(GetEntityAt(i))->GetPeople().at(k));
 
-                xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Task*>(GetEntityAt(i))->getStart().toString());
-                xmlWriter.writeTextElement(KEY_ENDDATETIME, static_cast<Task*>(GetEntityAt(i))->getEnd().toString());
+                xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Task*>(GetEntityAt(i))->GetStart().toString());
+                xmlWriter.writeTextElement(KEY_ENDDATETIME, static_cast<Task*>(GetEntityAt(i))->GetEnd().toString());
 
-                xmlWriter.writeTextElement(KEY_COMPLETITION, QString::number(static_cast<Task*>(GetEntityAt(i))->getCompletition()));
+                xmlWriter.writeTextElement(KEY_COMPLETITION, QString::number(static_cast<Task*>(GetEntityAt(i))->GetCompletition()));
             }
             else if(GetEntityAt(i)->getEntityType() == Milestone_type)
             {
                 xmlWriter.writeTextElement(KEY_ENTITYTYPE, KEY_MILESTONETYPE);
-                xmlWriter.writeTextElement(KEY_NAME, static_cast<Milestone*>(GetEntityAt(i))->getName());
+                xmlWriter.writeTextElement(KEY_NAME, static_cast<Milestone*>(GetEntityAt(i))->GetName());
 
-                for(int k = 0; k < static_cast<Milestone*>(GetEntityAt(i))->getPeople().length(); k++)
-                    xmlWriter.writeTextElement(KEY_PERSON, static_cast<Milestone*>(GetEntityAt(i))->getPeople().at(k));
+                for(int k = 0; k < static_cast<Milestone*>(GetEntityAt(i))->GetPeople().length(); k++)
+                    xmlWriter.writeTextElement(KEY_PERSON, static_cast<Milestone*>(GetEntityAt(i))->GetPeople().at(k));
 
                 xmlWriter.writeTextElement(KEY_STARTDATETIME, static_cast<Milestone*>(GetEntityAt(i))->getDateTime().toString());
             }

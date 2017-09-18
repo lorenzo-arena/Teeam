@@ -59,8 +59,8 @@ private:
     bool singleEditMode;
     bool multipleEditMode;
 
-    void DisablePanel();
-    void EnablePanel();
+    void disablePanel();
+    void enablePanel();
 };
 
 #endif // EDITTASKDIALOG_H

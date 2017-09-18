@@ -21,9 +21,7 @@ public:
 
 private slots:
     bool eventFilter(QObject *target, QEvent *event);
-
     void on_okbutton_clicked();
-
     void on_cancelbutton_clicked();
 
 private:

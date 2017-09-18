@@ -41,7 +41,6 @@ private:
     const QString KEY_ENDDATETIME = "enddatetime";
     const QString KEY_COMPLETITION = "completition";
 
-
     void setBeforeCreation();
     void resetAfterCreation();
     void searchPersonAndRemove(QString personName);

@@ -24,12 +24,12 @@ EditTaskDialog::EditTaskDialog(TeeamProject *project, QWidget *parent) :
     ui->taskGroupcomboBox->addItem("None");
     ui->taskGroupcomboBox->setCurrentIndex(0);
     for (int i = 0; i < this->project.GetTaskGroupListSize(); i++)
-        ui->taskGroupcomboBox->addItem(this->project.GetTaskGroupAt(i)->getName());
+        ui->taskGroupcomboBox->addItem(this->project.GetTaskGroupAt(i)->GetName());
 
     ui->baseGroupcomboBox->addItem("None");
     ui->baseGroupcomboBox->setCurrentIndex(0);
     for (int i = 0; i < this->project.GetTaskGroupListSize(); i++)
-        ui->baseGroupcomboBox->addItem(this->project.GetTaskGroupAt(i)->getName());
+        ui->baseGroupcomboBox->addItem(this->project.GetTaskGroupAt(i)->GetName());
 
     ui->baseTaskcomboBox->addItem("None");
     ui->baseTaskcomboBox->setCurrentIndex(0);
@@ -38,7 +38,7 @@ EditTaskDialog::EditTaskDialog(TeeamProject *project, QWidget *parent) :
     {
         if(this->project.GetEntityAt(i)->getEntityType() == TASK_CODE)
         {
-            ui->baseTaskcomboBox->addItem(static_cast<Task*>(this->project.GetEntityAt(i))->getName());
+            ui->baseTaskcomboBox->addItem(static_cast<Task*>(this->project.GetEntityAt(i))->GetName());
         }
     }
 
@@ -133,7 +133,7 @@ void EditTaskDialog::on_baseGroupcomboBox_currentIndexChanged(int index)
     if(index == 0 && ui->baseTaskcomboBox->currentIndex() == 0 && multipleEditMode)
     {
         // in entrambe ho selezionato "None", disabilito tutti gli elemtni della dialog
-        DisablePanel();
+        disablePanel();
     }
 }
 
@@ -142,7 +142,7 @@ void EditTaskDialog::on_baseTaskcomboBox_currentIndexChanged(int index)
     if(index == 0 && ui->baseGroupcomboBox->currentIndex() == 0 && multipleEditMode)
     {
         // in entrambe ho selezionato "None", disabilito tutti gli elemtni della dialog
-        DisablePanel();
+        disablePanel();
     }
 }
 
@@ -238,7 +238,7 @@ void EditTaskDialog::on_completitionspinBox_valueChanged(int arg1)
     completition = arg1;
 }
 
-void EditTaskDialog::DisablePanel()
+void EditTaskDialog::disablePanel()
 {
     ui->lineEdit->setEnabled(false);
     ui->taskGroupcomboBox->setEnabled(false);
@@ -251,7 +251,7 @@ void EditTaskDialog::DisablePanel()
     ui->completitionspinBox->setEnabled(false);
 }
 
-void EditTaskDialog::EnablePanel()
+void EditTaskDialog::enablePanel()
 {
     ui->lineEdit->setEnabled(true);
     ui->taskGroupcomboBox->setEnabled(true);

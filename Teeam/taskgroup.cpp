@@ -4,12 +4,12 @@ TaskGroup::TaskGroup(QString taskGroupName)
 {
     this->name = taskGroupName;
     this->isNew = true;
-    this->bChanged = false;
+    this->changed = false;
     this->isRemoved = false;
     this->isGroupChanged = false;
 }
 
-QString TaskGroup::getName()
+QString TaskGroup::GetName()
 {
     return name;
 }
@@ -24,7 +24,7 @@ void TaskGroup::AddTask(GenericTask *task)
     taskList.append(task);
 }
 
-void TaskGroup::ReplaceEntity(int index, GenericTask *entity)
+void TaskGroup::replaceEntity(int index, GenericTask *entity)
 {
     if(index < taskList.length())
     {

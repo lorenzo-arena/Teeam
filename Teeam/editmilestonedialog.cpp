@@ -22,12 +22,12 @@ EditMilestoneDialog::EditMilestoneDialog(QWidget *parent) :
     ui->milestoneGroupcomboBox->addItem("None");
     ui->milestoneGroupcomboBox->setCurrentIndex(0);
     for (int i = 0; i < this->project.GetTaskGroupListSize(); i++)
-        ui->milestoneGroupcomboBox->addItem(this->project.GetTaskGroupAt(i)->getName());
+        ui->milestoneGroupcomboBox->addItem(this->project.GetTaskGroupAt(i)->GetName());
 
     ui->baseGroupcomboBox->addItem("None");
     ui->baseGroupcomboBox->setCurrentIndex(0);
     for (int i = 0; i < this->project.GetTaskGroupListSize(); i++)
-        ui->baseGroupcomboBox->addItem(this->project.GetTaskGroupAt(i)->getName());
+        ui->baseGroupcomboBox->addItem(this->project.GetTaskGroupAt(i)->GetName());
 
     ui->baseTaskcomboBox->addItem("None");
     ui->baseTaskcomboBox->setCurrentIndex(0);
@@ -36,7 +36,7 @@ EditMilestoneDialog::EditMilestoneDialog(QWidget *parent) :
     {
         if(this->project.GetEntityAt(i)->getEntityType() == milestone_CODE)
         {
-            ui->baseTaskcomboBox->addItem(static_cast<Task*>(this->project.GetEntityAt(i))->getName());
+            ui->baseTaskcomboBox->addItem(static_cast<Task*>(this->project.GetEntityAt(i))->GetName());
         }
     }
 
@@ -124,7 +124,7 @@ void EditMilestoneDialog::on_baseGroupcomboBox_currentIndexChanged(int index)
     if(index == 0 && ui->baseMilestonecomboBox->currentIndex() == 0 && multipleEditMode)
     {
         // in entrambe ho selezionato "None", disabilito tutti gli elemtni della dialog
-        DisablePanel();
+        disablePanel();
     }
 }
 
@@ -133,7 +133,7 @@ void EditMilestoneDialog::on_baseMilestonecomboBox_currentIndexChanged(int index
     if(index == 0 && ui->baseGroupcomboBox->currentIndex() == 0 && multipleEditMode)
     {
         // in entrambe ho selezionato "None", disabilito tutti gli elemtni della dialog
-        DisablePanel();
+        disablePanel();
     }
 }
 
@@ -204,7 +204,7 @@ void EditMilestoneDialog::on_milestoneGroupcomboBox_currentIndexChanged(int inde
     selectedGroup = index;
 }
 
-void EditMilestoneDialog::DisablePanel()
+void EditMilestoneDialog::disablePanel()
 {
     ui->lineEdit->setEnabled(false);
     ui->milestoneGroupcomboBox->setEnabled(false);
@@ -215,7 +215,7 @@ void EditMilestoneDialog::DisablePanel()
     ui->startdateTimeEdit->setEnabled(false);
 }
 
-void EditMilestoneDialog::EnablePanel()
+void EditMilestoneDialog::enablePanel()
 {
     ui->lineEdit->setEnabled(true);
     ui->milestoneGroupcomboBox->setEnabled(true);

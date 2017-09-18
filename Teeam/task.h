@@ -18,11 +18,11 @@ private:
 
 public:
     void AddDependency(GenericTask* dependency);
-    QString getName() { return name; }
-    QDateTime getStart() { return start; }
-    QDateTime getEnd() { return end; }
-    QList<QString> getPeople() { return people; }
-    int getCompletition() { return completition; }
+    QString GetName() { return name; }
+    QDateTime GetStart() { return start; }
+    QDateTime GetEnd() { return end; }
+    QList<QString> GetPeople() { return people; }
+    int GetCompletition() { return completition; }
 };
 
 #endif // TASK_H

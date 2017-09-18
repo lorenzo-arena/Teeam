@@ -10,7 +10,7 @@ FreeDaysModel::FreeDaysModel()
     days.bSaturday = false;
     days.bSunday = false;
 
-    bChanged = false;
+    changed = false;
 
     color.setNamedColor("white");
 }
@@ -34,14 +34,14 @@ void FreeDaysModel::SetFreeDays(Days days)
         this->days.bSaturday != days.bSaturday   ||
         this->days.bSunday != days.bSunday )
     {
-        bChanged = true;
+        changed = true;
         this->days = days;
     }
 
-    if(bChanged)
+    if(changed)
         notify();
 
-    bChanged = false;
+    changed = false;
 }
 
 QColor FreeDaysModel::GetFreeDaysColor()
@@ -52,9 +52,9 @@ QColor FreeDaysModel::GetFreeDaysColor()
 void FreeDaysModel::SetFreeDaysColor(QColor color)
 {
     this->color = color;
-    bChanged = true;
+    changed = true;
     notify();
-    bChanged = false;
+    changed = false;
 }
 
 

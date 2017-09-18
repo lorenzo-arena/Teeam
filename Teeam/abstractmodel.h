@@ -8,25 +8,25 @@
 class AbstractModel
 {
 public:
-    AbstractModel(){ bChanged = false; }
+    AbstractModel(){ changed = false; }
     virtual ~AbstractModel(){}
 
 public:
     void attach(AbstractView *view) { viewers.append(view); }
     void detach(AbstractView *view) { viewers.removeAll(view); }
     void notify() {
-        if(bChanged)
+        if(changed)
         {
             for(int i = 0; i < viewers.count(); i++)
                 viewers.at(i)->UpdateView();
         }
-        bChanged = false;
+        changed = false;
     }
-    bool isChanged() { return bChanged; }
+    bool isChanged() { return changed; }
 
 protected:
-    bool bChanged;
-    void setChanged(bool b) { bChanged = b; }
+    bool changed;
+    void setChanged(bool b) { changed = b; }
 
     QList<AbstractView *> viewers;
 };
