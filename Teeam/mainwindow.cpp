@@ -591,7 +591,13 @@ void MainWindow::on_actionNew_Project_triggered()
         else if(result == QMessageBox::Yes)
         {
             if(projectSaveAs())
+            {
                 deleteProject();
+            }
+            else
+            {
+                return;
+            }
         }
     }
 
@@ -1088,6 +1094,34 @@ bool MainWindow::projectSaveAs()
 
 void MainWindow::on_actionOpen_File_triggered()
 {
+    // Prima richiedo l'eventuale salvataggio del progetto attuale
+    if(!bEmptyProject)
+    {
+        // Controllo se ho eliminato il progetto
+        QMessageBox::StandardButton result = QMessageBox::information(this,
+                                                          "Warning",
+                                                          "Do you want to save the project?",
+                                                          QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
+                                                          QMessageBox::Cancel);
+
+        if(result == QMessageBox::Cancel)
+            return;
+        else if(result == QMessageBox::No)
+        {
+            deleteProject();
+        }
+        else if(result == QMessageBox::Yes)
+        {
+            if(projectSaveAs())
+            {
+                deleteProject();
+            }
+            else
+                return;
+        }
+    }
+
+    // .. dopo passo all'apertura del nuovo progetto
     QString filename = QFileDialog::getOpenFileName(this,
                                        tr("Open Teeam Project"), ".",
                                        tr("Teeam files (*.tmproj)"));
