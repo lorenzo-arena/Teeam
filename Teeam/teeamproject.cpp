@@ -19,6 +19,19 @@ TeeamProject::TeeamProject(QString projectName, QList<QString> peopleList)
     this->bSilentMode = false;
 }
 
+TeeamProject::~TeeamProject()
+{
+    while(!entitiesList.empty())
+    {
+        delete entitiesList.takeAt(0);
+    }
+
+    while(!taskGroupList.empty())
+    {
+        delete taskGroupList.takeAt(0);
+    }
+}
+
 void TeeamProject::setName(QString projectName)
 {
     this->name = projectName;
@@ -211,7 +224,7 @@ void TeeamProject::RemoveTaskGroup(int index)
             notify();
         taskGroupChanged = false;
         changed = false;
-        taskGroupList.removeAt(index);
+        delete taskGroupList.takeAt(index);
     }
 }
 
@@ -229,7 +242,7 @@ void TeeamProject::RemoveTaskOrMilestone(int index, int parent)
                 notify();
             entitiesListChanged = false;
             changed = false;
-            entitiesList.removeAt(index);
+            delete entitiesList.takeAt(index);
         }
     }
     else if(parent < taskGroupList.length())
@@ -257,7 +270,9 @@ void TeeamProject::EditTaskOrMilestone(GenericTask *entity, int index, int paren
     {
         if(index < entitiesList.length())
         {
+            GenericTask* temp = entitiesList.at(index);
             entitiesList.replace(index, entity);
+            delete temp;
             entity->setNew(false);
             entity->setChanged(true);
             entitiesListChanged = true;

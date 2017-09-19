@@ -55,6 +55,11 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
 {
     ui->setupUi(this);
 
+    dateTimeGrid = nullptr;
+    projectModel = nullptr;
+    viewModel = nullptr;
+    costraintModel = nullptr;
+
     // all'inizio imposto il progetto come vuoto
     bEmptyProject = true;
 
@@ -145,19 +150,10 @@ MainWindow::MainWindow(GanttController *ganttController, FreeDaysModel *freeDays
 
 MainWindow::~MainWindow()
 {
-    /*if(dateTimeGrid != nullptr)
+
+    if(dateTimeGrid != nullptr)
     {
         delete dateTimeGrid;
-    }
-
-    if(ganttController != nullptr)
-    {
-        delete ganttController;
-    }
-
-    if(freeDaysModel != nullptr)
-    {
-        delete freeDaysModel;
     }
 
     if(viewModel != nullptr)
@@ -173,9 +169,7 @@ MainWindow::~MainWindow()
     if(projectModel != nullptr)
     {
         delete projectModel;
-    }*/
-
-    // TODO : risistemare pulizia risorse
+    }
 
     delete ui;
 }
@@ -205,6 +199,11 @@ void MainWindow::initGanttView()
     ui->ganttView->setGrid( dateTimeGrid );
     ui->ganttView->graphicsView()->setHeaderContextMenuPolicy(Qt::ContextMenuPolicy::NoContextMenu);
 
+    if(viewModel != nullptr)
+    {
+        delete viewModel;
+        viewModel = nullptr;
+    }
     viewModel = new QStandardItemModel( 0, 6, this );
     QString nameHeader = "Name";
     QString startHeader = "Start";
@@ -334,6 +333,11 @@ void MainWindow::updateProjectView()
 
     if(projectModel->IsNew())
     {
+        if(viewModel != nullptr)
+        {
+            delete viewModel;
+            viewModel = nullptr;
+        }
         viewModel = new QStandardItemModel( 0, 6, this );
         QString nameHeader = "Name";
         QString startHeader = "Start";
@@ -433,7 +437,7 @@ void MainWindow::updateTaskGroupView()
                     {
                         viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->GetName() );
                         viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeTask );
-						// Devo settare il modello sia per la ganttView che per la TreeView
+                        // Devo settare il modello sia per la ganttView che per la TreeView
                         viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->GetStart(), KDGantt::StartTimeRole );
                         viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->GetStart().toString("dd/MM/yyyy hh:mm") );
                         viewModel->setData( viewModel->index( row, 3, parent ), static_cast<Task *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->GetEnd(), KDGantt::EndTimeRole );
@@ -444,7 +448,7 @@ void MainWindow::updateTaskGroupView()
                     {
                         viewModel->setData( viewModel->index( row, 0, parent ), static_cast<Milestone *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->GetName() );
                         viewModel->setData( viewModel->index( row, 1, parent ), KDGantt::TypeEvent );
-						// Devo settare il modello sia per la ganttView che per la TreeView
+                        // Devo settare il modello sia per la ganttView che per la TreeView
                         viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Milestone *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getDateTime(), KDGantt::StartTimeRole );
                         viewModel->setData( viewModel->index( row, 2, parent ), static_cast<Milestone *>(projectModel->GetTaskGroupAt(i)->GetEntityAt(j))->getDateTime().toString("dd/MM/yyyy hh:mm") );
                     }
@@ -613,7 +617,7 @@ void MainWindow::on_actionNew_Project_triggered()
     newProject->attach(this);
     ganttController->NewProject(newProject);
 
-    // Abilito alcune voci del menu 
+    // Abilito alcune voci del menu
     enableMenu();
 
     delete dialog;
@@ -660,8 +664,8 @@ void MainWindow::on_actionAdd_Task_triggered()
     int completition = dialog->GetCompletition();
 
     ganttController->AddTask(this, taskName, start, end, taskPeople, completition, selectedParent);
-    
-	delete dialog;
+
+    delete dialog;
     return;
 }
 
@@ -685,8 +689,8 @@ void MainWindow::on_actionAdd_Milestone_triggered()
     QList<QString> milestonePeople = dialog->GetPeople();
 
     ganttController->AddMilestone(this, milestoneName, start, milestonePeople, selectedParent);
-    
-	delete dialog;
+
+    delete dialog;
     return;
 }
 
@@ -741,7 +745,7 @@ void MainWindow::on_actionSet_Free_Days_triggered()
 
 void MainWindow::on_actionTreeView_doubleclick(const QModelIndex& index)
 {
-	QString text = "DoubleClicked row: " + QString::number(index.row()) + "; column: " + QString::number(index.column());
+    QString text = "DoubleClicked row: " + QString::number(index.row()) + "; column: " + QString::number(index.column());
     qDebug() << text;
 
     editEntityAtIndex(index);
@@ -977,11 +981,19 @@ void MainWindow::deleteProject()
     QStringList list;
     TeeamProject *newProject = new TeeamProject("", list);
     if(projectModel != nullptr)
+    {
         delete projectModel;
+        projectModel = nullptr;
+    }
     this->projectModel = newProject;
     newProject->attach(this);
     ganttController->NewProject(newProject);
 
+    if(viewModel != nullptr)
+    {
+        delete viewModel;
+        viewModel = nullptr;
+    }
     viewModel = new QStandardItemModel( 0, 6, this );
     QString nameHeader = "Name";
     QString startHeader = "Start";

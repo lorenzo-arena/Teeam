@@ -16,17 +16,12 @@ class GanttController
 public:
     GanttController(FreeDaysModel *freeDays, TeeamProject *project = nullptr);
 
-// controller interface
+    // controller interface
 public:
     void NewProject(TeeamProject *newProject);
     void EditProject(QString newName, QList<QString> newPeople);
     void AddTaskGroup(AbstractView *view, QString taskGroupName);
     void EditTaskGroup(int index, QString newName);
-
-    // TODO : implementare metodo EditTaskOrMilestone simile a RemoveTaskOrMilestone
-    // con parent per indivduare se contiene un gruppo e con un controllo sul tipo
-    // per essere sicuro dei dati che si vanno a toccare
-
     void EditTaskOrMilestone(AbstractView *view, QString entityName, QDateTime start, QDateTime end, QList<QString> taskPeople, int completition, int selectedParent, int index, int parent = -1);
     void EditTaskOrMilestone(AbstractView *view, QString entityName, QDateTime start, QList<QString> milestonePeople, int selectedParent, int index, int parent = -1);
     void AddTask(AbstractView *view, QString taskName, QDateTime start, QDateTime end, QList<QString> taskPeople, int completition, int selectedParent = -1);

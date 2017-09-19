@@ -17,6 +17,7 @@ class TeeamProject: public GanttEntity
     friend class TaskGroup;
 public:
     TeeamProject(QString projectName, QList<QString> peopleList);
+     ~TeeamProject();
 
 private:
     QList<TaskGroup*> taskGroupList;
@@ -64,9 +65,9 @@ public:
     void RemoveTaskGroup(int index);
     void RemoveTaskOrMilestone(int index, int parent);
     void EditTaskOrMilestone(GenericTask *entity, int index, int parent = -1);
-    GenericTask * GetEntityAt(int index) { return entitiesList.at(index); }
+    GenericTask* GetEntityAt(int index) { return entitiesList.at(index); }
     int GetEntitiesListSize() { return entitiesList.length(); }
-    TaskGroup * GetTaskGroupAt(int index) { return taskGroupList.at(index); }
+    TaskGroup* GetTaskGroupAt(int index) { return taskGroupList.at(index); }
     int GetTaskGroupListSize() { return taskGroupList.length(); }
     void SaveProjectAs(const QString filename);
     int OpenFile(const QString filename, AbstractView *view);

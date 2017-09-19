@@ -17,12 +17,13 @@ class TaskGroup : public GanttEntity
     friend class TeeamProject;
 public:
     explicit TaskGroup(QString taskGroupName);
+    ~TaskGroup();
     QString GetName();
     void setName(QString newName) { name = newName; }
     bool IsNew();
     void AddTask(GenericTask* task);
     bool IsGroupChanged() { return isGroupChanged; }
-    GenericTask * GetEntityAt(int index) { return taskList.at(index); }
+    GenericTask* GetEntityAt(int index) { return taskList.at(index); }
     int GetEntitiesListSize() { return taskList.length(); }
 
 private:
@@ -36,7 +37,7 @@ protected:
     void setRemoved(bool b) { isRemoved = b; }
     void setGroupChanged(bool b) { isGroupChanged = b; }
     void replaceEntity(int index, GenericTask* entity);
-    void removeEntityAt(int index) { taskList.removeAt(index); }
+    void removeEntityAt(int index) { delete taskList.takeAt(index); }
     void setBeforeCreation();
     void resetAfterCreation();
     void searchAndRemovePerson(QString person);

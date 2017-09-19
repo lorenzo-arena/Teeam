@@ -9,6 +9,14 @@ TaskGroup::TaskGroup(QString taskGroupName)
     this->isGroupChanged = false;
 }
 
+TaskGroup::~TaskGroup()
+{
+    while(!taskList.empty())
+    {
+        delete taskList.takeAt(0);
+    }
+}
+
 QString TaskGroup::GetName()
 {
     return name;
@@ -28,7 +36,9 @@ void TaskGroup::replaceEntity(int index, GenericTask *entity)
 {
     if(index < taskList.length())
     {
+        GenericTask* temp = taskList.at(index);
         taskList.replace(index, entity);
+        delete temp;
     }
 }
 
