@@ -42,6 +42,11 @@ void TaskGroup::replaceEntity(int index, GenericTask *entity)
     }
 }
 
+void TaskGroup::removeEntityAt(int index)
+{
+    delete taskList.takeAt(index);
+}
+
 void TaskGroup::setBeforeCreation()
 {
     isNew = true;

@@ -37,7 +37,7 @@ protected:
     void setRemoved(bool b) { isRemoved = b; }
     void setGroupChanged(bool b) { isGroupChanged = b; }
     void replaceEntity(int index, GenericTask* entity);
-    void removeEntityAt(int index) { delete taskList.takeAt(index); }
+    void removeEntityAt(int index);
     void setBeforeCreation();
     void resetAfterCreation();
     void searchAndRemovePerson(QString person);
